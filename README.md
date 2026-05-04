@@ -127,16 +127,9 @@ It uses `BootstrapLaboratory/rush-delivery@v0.6.2` with the
 `release-packages` entrypoint, `.dagger/release/npm.yaml`, and
 `common/config/rush/.npmrc-publish`.
 
-The release workflow is intentionally gated until Rush Delivery supports
-package-only repositories without fake deploy metadata. Track that support in
-BootstrapLaboratory/rush-delivery#1. To enable live publishing after that
-support lands:
-
-1. Add the GitHub Actions secret `NPM_TOKEN`.
-2. Add the GitHub Actions repository variable
-   `RUSH_DELIVERY_PACKAGE_RELEASE_ENABLED=true`.
-3. Keep `toolchain-image-provider` and `rush-cache-provider` set to `off`
-   unless provider metadata is added intentionally.
+Before running a live release, add the GitHub Actions secret `NPM_TOKEN`.
+Keep `toolchain-image-provider` and `rush-cache-provider` set to `off` unless
+provider metadata is added intentionally.
 
 The first live release is expected to consume the committed Rush change files
 and publish the public Labkit packages as `0.1.0`. The private
