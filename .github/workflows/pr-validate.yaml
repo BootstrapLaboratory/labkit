@@ -1,0 +1,49 @@
+name: pr-validate
+
+on:
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pr-validate-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24
+
+      - name: Install Rush dependencies
+        run: npm run rush:install
+
+      - name: Verify Rush change files
+        env:
+          TARGET_BRANCH: origin/${{ github.base_ref }}
+        run: >
+          node common/scripts/install-run-rush.js change
+          --verify
+          --target-branch "$TARGET_BRANCH"
+          --no-fetch
+
+      - name: Build packages
+        run: npm run rush:build
+
+      - name: Lint packages
+        run: npm run rush:lint
+
+      - name: Test packages
+        run: node common/scripts/install-run-rush.js test --parallelism 1
+
+      - name: Verify packages
+        run: node common/scripts/install-run-rush.js verify --parallelism 1

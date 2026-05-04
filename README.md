@@ -107,6 +107,38 @@ Server-only packages currently publish CommonJS output only. That keeps NestJS
 and TypeORM consumption simple while browser-facing packages remain bundler
 friendly.
 
+## CI And Release
+
+Pull requests run direct Rush validation in
+`.github/workflows/pr-validate.yaml`:
+
+- `rush install`
+- `rush change --verify`
+- `rush build`
+- `rush lint`
+- `rush test`
+- `rush verify`
+
+Package release is configured in `.github/workflows/package-release.yaml`.
+It uses `BootstrapLaboratory/rush-delivery@v0.6.0` with the
+`release-packages` entrypoint, `.dagger/release/npm.yaml`, and
+`common/config/rush/.npmrc-publish`.
+
+The release workflow is intentionally gated until Rush Delivery supports
+package-only repositories without fake deploy metadata. Track that support in
+BootstrapLaboratory/rush-delivery#1. To enable live publishing after that
+support lands:
+
+1. Add the GitHub Actions secret `NPM_TOKEN`.
+2. Add the GitHub Actions repository variable
+   `RUSH_DELIVERY_PACKAGE_RELEASE_ENABLED=true`.
+3. Keep `toolchain-image-provider` and `rush-cache-provider` set to `off`
+   unless provider metadata is added intentionally.
+
+The first live release is expected to consume the committed Rush change files
+and publish the public Labkit packages as `0.1.0`. `@labkit/eslint-config`
+stays private repository tooling.
+
 ## Documentation Policy
 
 Every Labkit package must have a package README that explains:
