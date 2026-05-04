@@ -1,0 +1,17 @@
+# yaml-language-server: $schema=https://bootstraplaboratory.github.io/rush-delivery/schemas/v0.6.0/npm-release.schema.json
+
+kind: npm
+
+versioning:
+  strategy: rush-change-files
+  target_branch: main
+
+auth:
+  kind: token
+  token_env: NPM_TOKEN
+
+publish:
+  registry: https://registry.npmjs.org/
+  tag: latest
+  access: public
+  provenance: true

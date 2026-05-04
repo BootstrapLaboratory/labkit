@@ -1,0 +1,46 @@
+{
+  "name": "@labkit/server-observability",
+  "version": "0.0.1",
+  "description": "Server observability helpers for structured logs and safe error serialization.",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/BootstrapLaboratory/labkit.git",
+    "directory": "packages/server-observability"
+  },
+  "homepage": "https://github.com/BootstrapLaboratory/labkit/tree/main/packages/server-observability#readme",
+  "bugs": {
+    "url": "https://github.com/BootstrapLaboratory/labkit/issues"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "main": "./dist/src/index.js",
+  "types": "./dist/src/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/src/index.d.ts",
+      "default": "./dist/src/index.js"
+    }
+  },
+  "files": [
+    "dist/**/*",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "lint": "eslint .",
+    "test": "npm run build && node --test dist/test/*.test.js",
+    "verify": "npm run test"
+  },
+  "dependencies": {
+    "@labkit/runtime-config": "0.0.1"
+  },
+  "devDependencies": {
+    "@labkit/eslint-config": "0.0.1",
+    "@types/node": "^25.6.0",
+    "eslint": "^10.3.0",
+    "typescript": "^6.0.3"
+  }
+}

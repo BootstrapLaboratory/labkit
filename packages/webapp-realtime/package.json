@@ -1,0 +1,51 @@
+{
+  "name": "@labkit/webapp-realtime",
+  "version": "0.0.1",
+  "description": "Browser realtime connection helpers for GraphQL WebSocket reconnect, heartbeat, and state tracking.",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/BootstrapLaboratory/labkit.git",
+    "directory": "packages/webapp-realtime"
+  },
+  "homepage": "https://github.com/BootstrapLaboratory/labkit/tree/main/packages/webapp-realtime#readme",
+  "bugs": {
+    "url": "https://github.com/BootstrapLaboratory/labkit/issues"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "main": "./dist/src/index.js",
+  "module": "./dist/esm/src/index.js",
+  "types": "./dist/src/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/src/index.d.ts",
+      "import": "./dist/esm/src/index.js",
+      "require": "./dist/src/index.js",
+      "default": "./dist/esm/src/index.js"
+    }
+  },
+  "files": [
+    "dist/**/*",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json && tsc -p tsconfig.esm.json && node ../../common/scripts/write-esm-package-marker.mjs",
+    "lint": "eslint .",
+    "test": "npm run build && node --test dist/test/*.test.js",
+    "verify": "npm run test"
+  },
+  "dependencies": {
+    "@labkit/runtime-config": "0.0.1",
+    "@labkit/webapp-external-store": "0.0.1",
+    "graphql-ws": "^6.0.8"
+  },
+  "devDependencies": {
+    "@labkit/eslint-config": "0.0.1",
+    "@types/node": "^25.6.0",
+    "eslint": "^10.3.0",
+    "typescript": "^6.0.3"
+  }
+}

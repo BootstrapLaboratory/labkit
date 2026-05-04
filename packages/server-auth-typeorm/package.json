@@ -1,0 +1,52 @@
+{
+  "name": "@labkit/server-auth-typeorm",
+  "version": "0.0.1",
+  "description": "TypeORM persistence adapter for Labkit server auth users, accounts, roles, and refresh sessions.",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/BootstrapLaboratory/labkit.git",
+    "directory": "packages/server-auth-typeorm"
+  },
+  "homepage": "https://github.com/BootstrapLaboratory/labkit/tree/main/packages/server-auth-typeorm#readme",
+  "bugs": {
+    "url": "https://github.com/BootstrapLaboratory/labkit/issues"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "main": "./dist/src/index.js",
+  "types": "./dist/src/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/src/index.d.ts",
+      "default": "./dist/src/index.js"
+    }
+  },
+  "files": [
+    "dist/**/*",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "lint": "eslint .",
+    "test": "npm run build && node --test dist/test/*.test.js",
+    "verify": "npm run test"
+  },
+  "dependencies": {
+    "@labkit/server-auth": "0.0.1",
+    "@labkit/server-database": "0.0.1",
+    "@nestjs/common": "^11.1.19",
+    "@nestjs/typeorm": "^11.0.1",
+    "reflect-metadata": "^0.2.2",
+    "rxjs": "^7.8.2",
+    "typeorm": "^0.3.28"
+  },
+  "devDependencies": {
+    "@labkit/eslint-config": "0.0.1",
+    "@types/node": "^25.6.0",
+    "eslint": "^10.3.0",
+    "typescript": "^6.0.3"
+  }
+}

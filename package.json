@@ -1,0 +1,19 @@
+{
+  "name": "labkit",
+  "version": "0.0.0",
+  "private": true,
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "rush": "node common/scripts/install-run-rush.js",
+    "rush:install": "node common/scripts/install-run-rush.js install",
+    "rush:update": "node common/scripts/install-run-rush.js update",
+    "rush:build": "node common/scripts/install-run-rush.js build",
+    "rush:lint": "node common/scripts/install-run-rush.js lint",
+    "rush:test": "node common/scripts/install-run-rush.js test",
+    "rush:verify": "node common/scripts/install-run-rush.js verify",
+    "rush:version": "node common/scripts/install-run-rush.js version",
+    "rush:publish": "node common/scripts/install-run-rush.js publish"
+  }
+}

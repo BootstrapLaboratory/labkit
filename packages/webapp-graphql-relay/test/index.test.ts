@@ -1,0 +1,340 @@
+import assert from "node:assert/strict";
+import test from "node:test";
+import type { Client } from "graphql-ws";
+import type {
+  Environment,
+  GraphQLResponse,
+  OperationType,
+  RequestParameters,
+} from "relay-runtime";
+import type { PreloadedQuery } from "react-relay";
+import {
+  appendRootFieldRecordIfMissing,
+  createAuthAwareRelayFetchFunction,
+  createRelayGraphqlWsConnectionParams,
+  createRelaySubscribeFunction,
+  createUnauthorizedGraphqlResponse,
+  fetchRelayGraphqlOnce,
+  loadRouteQuery,
+  terminateRealtimeClientOnAuthTokenChange,
+  type GraphqlRelayAuthAdapter,
+  type GraphqlRelayFetch,
+} from "../src/index";
+
+function createRequest(name: string, text = "query Test { node }") {
+  return { name, text } as RequestParameters;
+}
+
+function createAuthAdapter(
+  overrides: Partial<GraphqlRelayAuthAdapter> = {},
+): GraphqlRelayAuthAdapter {
+  return {
+    getAccessToken: () => null,
+    getAuthRequestCredentials: () => "include",
+    hasAuthRequiredGraphqlErrors: () => false,
+    refreshStoredAuthSession: async () => null,
+    subscribeAuthState: () => () => {},
+    ...overrides,
+  };
+}
+
+function createFakeClient(onTerminate?: () => void): Client {
+  return {
+    dispose: () => {},
+    iterate: async function* () {},
+    on: () => () => {},
+    subscribe: () => () => {},
+    terminate: () => {
+      onTerminate?.();
+    },
+  };
+}
+
+type TestRouteQuery = OperationType & {
+  readonly variables: {
+    id: string;
+  };
+  readonly response: {
+    viewer: {
+      id: string;
+    };
+  };
+};
+
+test("createRelayGraphqlWsConnectionParams returns bearer authorization when a token exists", () => {
+  assert.deepEqual(
+    createRelayGraphqlWsConnectionParams(() => null),
+    {},
+  );
+  assert.deepEqual(
+    createRelayGraphqlWsConnectionParams(() => "abc"),
+    {
+      authorization: "Bearer abc",
+    },
+  );
+});
+
+test("fetchRelayGraphqlOnce adds auth headers and maps HTTP 401 to GraphQL auth errors", async () => {
+  const fetchCalls: Array<Parameters<GraphqlRelayFetch>> = [];
+  const fetchImplementation: GraphqlRelayFetch = async (...args) => {
+    fetchCalls.push(args);
+
+    return {
+      ok: false,
+      status: 401,
+      json: async () => ({ data: { ignored: true } }),
+    };
+  };
+
+  const response = await fetchRelayGraphqlOnce(
+    {
+      auth: createAuthAdapter({
+        getAccessToken: () => "access-token",
+      }),
+      fetch: fetchImplementation,
+      httpEndpoint: "https://example.com/graphql",
+    },
+    createRequest("ChatQuery"),
+    { id: "1" },
+  );
+
+  assert.equal(fetchCalls.length, 1);
+  assert.equal(fetchCalls[0][0], "https://example.com/graphql");
+  assert.equal(fetchCalls[0][1].credentials, "include");
+  assert.deepEqual(fetchCalls[0][1].headers, {
+    "Content-Type": "application/json",
+    authorization: "Bearer access-token",
+  });
+  assert.deepEqual(JSON.parse(fetchCalls[0][1].body), {
+    query: "query Test { node }",
+    variables: { id: "1" },
+  });
+  assert.deepEqual(response, createUnauthorizedGraphqlResponse());
+});
+
+test("createAuthAwareRelayFetchFunction refreshes once and retries non-auth operations", async () => {
+  const responses: GraphQLResponse[] = [
+    createUnauthorizedGraphqlResponse(),
+    { data: { viewer: { id: "1" } } },
+  ];
+  let refreshes = 0;
+  const fetchImplementation: GraphqlRelayFetch = async () => ({
+    ok: true,
+    status: 200,
+    json: async () => responses.shift()!,
+  });
+  const fetchGraphql = createAuthAwareRelayFetchFunction({
+    auth: createAuthAdapter({
+      hasAuthRequiredGraphqlErrors: (payload) =>
+        Array.isArray((payload as { errors?: unknown }).errors),
+      refreshStoredAuthSession: async () => {
+        refreshes += 1;
+        return {};
+      },
+    }),
+    fetch: fetchImplementation,
+    httpEndpoint: "https://example.com/graphql",
+  });
+
+  const response = await fetchGraphql(createRequest("ChatQuery"), {}, {});
+
+  assert.deepEqual(response, { data: { viewer: { id: "1" } } });
+  assert.equal(refreshes, 1);
+});
+
+test("createAuthAwareRelayFetchFunction does not refresh auth operations", async () => {
+  let refreshes = 0;
+  const fetchGraphql = createAuthAwareRelayFetchFunction({
+    auth: createAuthAdapter({
+      hasAuthRequiredGraphqlErrors: () => true,
+      refreshStoredAuthSession: async () => {
+        refreshes += 1;
+        return {};
+      },
+    }),
+    fetch: async () => ({
+      ok: true,
+      status: 200,
+      json: async () => createUnauthorizedGraphqlResponse(),
+    }),
+    httpEndpoint: "https://example.com/graphql",
+  });
+
+  await fetchGraphql(createRequest("LoginMutation"), {}, {});
+
+  assert.equal(refreshes, 0);
+});
+
+test("createRelaySubscribeFunction forwards Relay operations to graphql-ws", () => {
+  const subscriptions: unknown[] = [];
+  const wsClient: Client = {
+    ...createFakeClient(),
+    subscribe: (payload) => {
+      subscriptions.push(payload);
+      return () => {};
+    },
+  };
+  const subscribe = createRelaySubscribeFunction({ wsClient });
+  const observable = subscribe(
+    createRequest("MessageAdded", "subscription { messageAdded }"),
+    {
+      roomId: "1",
+    },
+    {},
+  );
+
+  assert.ok("subscribe" in observable);
+  observable.subscribe({
+    next: () => {},
+    error: () => {},
+    complete: () => {},
+  });
+
+  assert.deepEqual(subscriptions, [
+    {
+      operationName: "MessageAdded",
+      query: "subscription { messageAdded }",
+      variables: { roomId: "1" },
+    },
+  ]);
+});
+
+test("terminateRealtimeClientOnAuthTokenChange terminates only when the token changes", () => {
+  let token: string | null = null;
+  const authListener: {
+    current?: () => void;
+  } = {};
+  let terminates = 0;
+
+  terminateRealtimeClientOnAuthTokenChange({
+    getAccessToken: () => token,
+    subscribeAuthState: (nextListener) => {
+      authListener.current = nextListener;
+      return () => {};
+    },
+    wsClient: createFakeClient(() => {
+      terminates += 1;
+    }),
+  });
+
+  authListener.current?.();
+  token = "next";
+  authListener.current?.();
+  authListener.current?.();
+
+  assert.equal(terminates, 1);
+});
+
+test("loadRouteQuery disposes the query ref once when the route aborts", () => {
+  const abortController = new AbortController();
+  let disposals = 0;
+  const queryRef = {
+    dispose: () => {
+      disposals += 1;
+    },
+  } as PreloadedQuery<TestRouteQuery>;
+
+  const loadedQueryRef = loadRouteQuery<TestRouteQuery>({
+    abortSignal: abortController.signal,
+    environment: {} as Environment,
+    fetchPolicy: "store-or-network",
+    loadQuery: (_environment, _query, variables, options) => {
+      assert.deepEqual(variables, { id: "1" });
+      assert.equal(options?.fetchPolicy, "store-or-network");
+      return queryRef;
+    },
+    query: {} as never,
+    variables: { id: "1" },
+  });
+
+  abortController.abort();
+  abortController.abort();
+
+  assert.equal(loadedQueryRef, queryRef);
+  assert.equal(disposals, 1);
+});
+
+test("loadRouteQuery disposes immediately when the route signal is already aborted", () => {
+  const abortController = new AbortController();
+  let disposals = 0;
+  abortController.abort();
+
+  loadRouteQuery<TestRouteQuery>({
+    abortSignal: abortController.signal,
+    environment: {} as Environment,
+    loadQuery: () =>
+      ({
+        dispose: () => {
+          disposals += 1;
+        },
+      }) as PreloadedQuery<TestRouteQuery>,
+    query: {} as never,
+    variables: { id: "1" },
+  });
+
+  assert.equal(disposals, 1);
+});
+
+test("loadRouteQuery registers one route abort disposal listener", () => {
+  const listeners: Array<{
+    listener: () => void;
+    options?: { once?: boolean };
+    type: "abort";
+  }> = [];
+  let disposals = 0;
+  const abortSignal = {
+    aborted: false,
+    addEventListener: (
+      type: "abort",
+      listener: () => void,
+      options?: { once?: boolean },
+    ) => {
+      listeners.push({ type, listener, options });
+    },
+  };
+
+  loadRouteQuery<TestRouteQuery>({
+    abortSignal,
+    environment: {} as Environment,
+    loadQuery: () =>
+      ({
+        dispose: () => {
+          disposals += 1;
+        },
+      }) as PreloadedQuery<TestRouteQuery>,
+    query: {} as never,
+    variables: { id: "1" },
+  });
+
+  assert.equal(listeners.length, 1);
+  assert.equal(listeners[0].type, "abort");
+  assert.deepEqual(listeners[0].options, { once: true });
+  assert.equal(disposals, 0);
+
+  listeners[0].listener();
+  listeners[0].listener();
+
+  assert.equal(disposals, 1);
+});
+
+test("appendRootFieldRecordIfMissing appends unique root records", () => {
+  const records = [{ getDataID: () => "existing" }];
+  const incoming = { getDataID: () => "incoming" };
+  let linkedRecords = records;
+  const root = {
+    getLinkedRecords: () => linkedRecords,
+    setLinkedRecords: (nextRecords: typeof records) => {
+      linkedRecords = nextRecords;
+    },
+  };
+  const store = {
+    getRoot: () => root,
+    getRootField: () => incoming,
+  };
+
+  appendRootFieldRecordIfMissing(store as never, "addMessage", "getMessages");
+  appendRootFieldRecordIfMissing(store as never, "addMessage", "getMessages");
+
+  assert.equal(linkedRecords.length, 2);
+  assert.equal(linkedRecords[1], incoming);
+});

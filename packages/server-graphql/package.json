@@ -1,0 +1,58 @@
+{
+  "name": "@labkit/server-graphql",
+  "version": "0.0.1",
+  "description": "Nest GraphQL setup helpers, context integration, scalars, directives, plugins, and runtime options.",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/BootstrapLaboratory/labkit.git",
+    "directory": "packages/server-graphql"
+  },
+  "homepage": "https://github.com/BootstrapLaboratory/labkit/tree/main/packages/server-graphql#readme",
+  "bugs": {
+    "url": "https://github.com/BootstrapLaboratory/labkit/issues"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "main": "./dist/src/index.js",
+  "types": "./dist/src/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/src/index.d.ts",
+      "default": "./dist/src/index.js"
+    }
+  },
+  "files": [
+    "dist/**/*",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "lint": "eslint .",
+    "test": "npm run build && node --test dist/test/*.test.js",
+    "verify": "npm run test"
+  },
+  "dependencies": {
+    "@apollo/server": "^5.5.0",
+    "@graphql-tools/utils": "~11.1.0",
+    "@labkit/auth-contract": "0.0.1",
+    "@labkit/server-config": "0.0.1",
+    "@labkit/server-observability": "0.0.1",
+    "@nestjs/apollo": "^13.3.0",
+    "@nestjs/common": "^11.1.19",
+    "@nestjs/core": "^11.1.19",
+    "@nestjs/graphql": "^13.3.0",
+    "graphql": "^16.13.2",
+    "graphql-query-complexity": "^1.1.0",
+    "reflect-metadata": "^0.2.2",
+    "rxjs": "^7.8.2"
+  },
+  "devDependencies": {
+    "@labkit/eslint-config": "0.0.1",
+    "@types/node": "^25.6.0",
+    "eslint": "^10.3.0",
+    "typescript": "^6.0.3"
+  }
+}

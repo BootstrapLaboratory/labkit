@@ -1,0 +1,11 @@
+{
+  "changes": [
+    {
+      "comment": "Prepare the first public Labkit release.",
+      "type": "minor",
+      "packageName": "@labkit/webapp-ui"
+    }
+  ],
+  "packageName": "@labkit/webapp-ui",
+  "email": "rush-delivery@users.noreply.github.com"
+}

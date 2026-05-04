@@ -1,0 +1,54 @@
+/**
+ * Repo-level Rush commands that coordinate checks across Labkit packages.
+ */
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/rush/v5/command-line.schema.json",
+  "commands": [
+    {
+      "commandKind": "bulk",
+      "name": "lint",
+      "summary": "Run lint scripts for the selected projects.",
+      "description": "Runs each selected project's lint script from its own project folder.",
+      "safeForSimultaneousRushProcesses": true,
+      "shellCommand": "npm run lint --if-present",
+      "enableParallelism": false,
+      "ignoreDependencyOrder": true,
+      "ignoreMissingScript": true,
+      "allowWarningsInSuccessfulBuild": true,
+      "incremental": false,
+      "watchForChanges": false,
+      "disableBuildCache": true
+    },
+    {
+      "commandKind": "bulk",
+      "name": "test",
+      "summary": "Run test scripts for the selected projects.",
+      "description": "Runs each selected project's test script from its own project folder.",
+      "safeForSimultaneousRushProcesses": true,
+      "shellCommand": "npm run test --if-present",
+      "enableParallelism": true,
+      "ignoreDependencyOrder": true,
+      "ignoreMissingScript": true,
+      "allowWarningsInSuccessfulBuild": true,
+      "incremental": false,
+      "watchForChanges": false,
+      "disableBuildCache": true
+    },
+    {
+      "commandKind": "bulk",
+      "name": "verify",
+      "summary": "Run verification scripts for the selected projects.",
+      "description": "Runs each selected project's verify script from its own project folder when one is present.",
+      "safeForSimultaneousRushProcesses": true,
+      "shellCommand": "npm run verify --if-present",
+      "enableParallelism": true,
+      "ignoreDependencyOrder": true,
+      "ignoreMissingScript": true,
+      "allowWarningsInSuccessfulBuild": true,
+      "incremental": false,
+      "watchForChanges": false,
+      "disableBuildCache": true
+    }
+  ],
+  "parameters": []
+}

@@ -1,0 +1,22 @@
+{
+  "name": "@labkit/eslint-config",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.mjs"
+  },
+  "scripts": {
+    "build": "node --input-type=module -e \"await import('./src/index.mjs')\"",
+    "lint": "eslint ."
+  },
+  "dependencies": {
+    "@eslint/js": "^10.0.1",
+    "eslint-config-prettier": "^10.1.8",
+    "globals": "^17.5.0",
+    "typescript-eslint": "^8.59.0"
+  },
+  "devDependencies": {
+    "eslint": "^10.3.0"
+  }
+}
