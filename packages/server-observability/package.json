@@ -1,5 +1,5 @@
 {
-  "name": "@labkit/server-observability",
+  "name": "@omgjs/labkit-server-observability",
   "version": "0.0.1",
   "description": "Server observability helpers for structured logs and safe error serialization.",
   "license": "MIT",
@@ -35,10 +35,10 @@
     "verify": "npm run test"
   },
   "dependencies": {
-    "@labkit/runtime-config": "0.0.1"
+    "@omgjs/labkit-runtime-config": "0.0.1"
   },
   "devDependencies": {
-    "@labkit/eslint-config": "0.0.1",
+    "@omgjs/labkit-eslint-config": "0.0.1",
     "@types/node": "^25.6.0",
     "eslint": "^10.3.0",
     "typescript": "^6.0.3"

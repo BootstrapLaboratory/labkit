@@ -1,12 +1,12 @@
-# @labkit/server-auth
+# @omgjs/labkit-server-auth
 
-`@labkit/server-auth` contains server-side auth framework helpers. It owns the
+`@omgjs/labkit-server-auth` contains server-side auth framework helpers. It owns the
 reusable auth concepts, while applications still own product API shape and
 security-sensitive adapters.
 
 The package is auth-system oriented rather than persistence-provider oriented:
 it exposes storage interfaces and orchestration, then adapter packages such as
-`@labkit/server-auth-typeorm` provide concrete repositories.
+`@omgjs/labkit-server-auth-typeorm` provide concrete repositories.
 
 ## Owns
 
@@ -39,8 +39,8 @@ import {
   createIdentityProviderRegistryConfigProvider,
   createServerAuthLocalIdentityProviderProvider,
   createServerAuthRefreshTokenTransportProvider,
-} from "@labkit/server-auth";
-import { ServerAuthTypeormModule } from "@labkit/server-auth-typeorm";
+} from "@omgjs/labkit-server-auth";
+import { ServerAuthTypeormModule } from "@omgjs/labkit-server-auth-typeorm";
 
 @Module({
   imports: [ServerAuthTypeormModule],

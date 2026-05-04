@@ -2,13 +2,13 @@ import {
   isAuthRequiredErrorCode,
   type AuthPayload,
   type Principal,
-} from "@labkit/auth-contract";
+} from "@omgjs/labkit-auth-contract";
 import {
   createExternalStore,
   type ExternalStoreUnsubscribe,
-} from "@labkit/webapp-external-store";
+} from "@omgjs/labkit-webapp-external-store";
 
-export type { AuthPayload, Principal } from "@labkit/auth-contract";
+export type { AuthPayload, Principal } from "@omgjs/labkit-auth-contract";
 
 export type AuthSession = {
   accessToken: string;

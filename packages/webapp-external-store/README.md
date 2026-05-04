@@ -1,6 +1,6 @@
-# @labkit/webapp-external-store
+# @omgjs/labkit-webapp-external-store
 
-`@labkit/webapp-external-store` is a tiny browser-safe subscription store
+`@omgjs/labkit-webapp-external-store` is a tiny browser-safe subscription store
 primitive.
 
 It exists so auth, realtime, and theme state can share one tested store shape
@@ -24,7 +24,7 @@ without pulling in React directly.
 ## Usage
 
 ```ts
-import { createExternalStore } from "@labkit/webapp-external-store";
+import { createExternalStore } from "@omgjs/labkit-webapp-external-store";
 
 const store = createExternalStore({ count: 0 });
 

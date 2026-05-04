@@ -1,6 +1,6 @@
 import { dirname } from "node:path";
 import { fileURLToPath } from "node:url";
-import { createUniversalTypeScriptConfig } from "@labkit/eslint-config";
+import { createUniversalTypeScriptConfig } from "@omgjs/labkit-eslint-config";
 
 const tsconfigRootDir = dirname(fileURLToPath(import.meta.url));
 

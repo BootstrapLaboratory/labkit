@@ -4,7 +4,7 @@ import {
   readConfigString,
   readRawConfigString,
   type ConfigReader,
-} from "@labkit/server-config";
+} from "@omgjs/labkit-server-config";
 
 export const DEFAULT_POSTGRES_PORT = 5432;
 

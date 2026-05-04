@@ -1,6 +1,6 @@
-# @labkit/webapp-graphql-relay
+# @omgjs/labkit-webapp-graphql-relay
 
-`@labkit/webapp-graphql-relay` contains Relay runtime helpers for auth-aware
+`@omgjs/labkit-webapp-graphql-relay` contains Relay runtime helpers for auth-aware
 GraphQL HTTP requests, GraphQL WS subscriptions, route preloading, and Relay
 store maintenance.
 
@@ -26,7 +26,7 @@ store maintenance.
 ## Usage
 
 ```ts
-import { createWebappRelayEnvironment } from "@labkit/webapp-graphql-relay";
+import { createWebappRelayEnvironment } from "@omgjs/labkit-webapp-graphql-relay";
 
 export function createRelayEnvironment() {
   return createWebappRelayEnvironment({
@@ -41,7 +41,7 @@ export function createRelayEnvironment() {
 For TanStack Router loaders:
 
 ```ts
-import { loadRouteQuery } from "@labkit/webapp-graphql-relay";
+import { loadRouteQuery } from "@omgjs/labkit-webapp-graphql-relay";
 
 loader: ({ abortController, context }) => ({
   queryRef: loadRouteQuery({

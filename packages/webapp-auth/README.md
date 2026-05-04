@@ -1,6 +1,6 @@
-# @labkit/webapp-auth
+# @omgjs/labkit-webapp-auth
 
-`@labkit/webapp-auth` contains browser auth runtime helpers for applications
+`@omgjs/labkit-webapp-auth` contains browser auth runtime helpers for applications
 that use short-lived access tokens and refresh-token transport handled outside
 normal JavaScript-accessible storage.
 
@@ -35,7 +35,7 @@ import {
   cookieRefreshTokenTransport,
   createWebappAuthGraphqlApi,
   createWebappAuthSession,
-} from "@labkit/webapp-auth";
+} from "@omgjs/labkit-webapp-auth";
 
 export const authSession = createWebappAuthSession({
   refreshTokenTransport: cookieRefreshTokenTransport,

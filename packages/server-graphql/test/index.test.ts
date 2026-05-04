@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { createEnvironmentConfigReader } from "@labkit/server-config";
-import type { StructuredLogger } from "@labkit/server-observability";
+import { createEnvironmentConfigReader } from "@omgjs/labkit-server-config";
+import type { StructuredLogger } from "@omgjs/labkit-server-observability";
 import { GraphQLModule } from "@nestjs/graphql";
 import { buildSchema, graphql, Kind, parse, type GraphQLSchema } from "graphql";
 import {

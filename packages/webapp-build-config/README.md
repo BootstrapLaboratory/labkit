@@ -1,6 +1,6 @@
-# @labkit/webapp-build-config
+# @omgjs/labkit-webapp-build-config
 
-`@labkit/webapp-build-config` contains small, tested helpers for Vite-style
+`@omgjs/labkit-webapp-build-config` contains small, tested helpers for Vite-style
 webapp build configuration.
 
 The package is intentionally narrow. It exists to centralize build constraints
@@ -29,7 +29,7 @@ plugin selection and output policy in the app.
 import {
   createPackageModuleChunkGroups,
   requireProductionBuildEnv,
-} from "@labkit/webapp-build-config";
+} from "@omgjs/labkit-webapp-build-config";
 
 const vendorGroups = createPackageModuleChunkGroups([
   {

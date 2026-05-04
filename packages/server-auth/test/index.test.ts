@@ -5,7 +5,7 @@ import {
   REFRESH_TOKEN_TRANSPORT_COOKIE,
   REFRESH_TOKEN_TRANSPORT_RESPONSE_BODY,
   type Principal,
-} from "@labkit/auth-contract";
+} from "@omgjs/labkit-auth-contract";
 import {
   BadRequestException,
   ForbiddenException,

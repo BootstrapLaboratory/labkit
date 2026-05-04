@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { createEnvironmentConfigReader } from "@labkit/server-config";
+import { createEnvironmentConfigReader } from "@omgjs/labkit-server-config";
 import {
   assertDatabaseMigrationSafety,
   composeServerDatabaseManifests,

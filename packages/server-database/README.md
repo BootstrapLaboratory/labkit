@@ -1,6 +1,6 @@
-# @labkit/server-database
+# @omgjs/labkit-server-database
 
-`@labkit/server-database` contains PostgreSQL and TypeORM configuration helpers
+`@omgjs/labkit-server-database` contains PostgreSQL and TypeORM configuration helpers
 that keep database setup explicit and migration-safe.
 
 ## Owns
@@ -29,8 +29,8 @@ import {
   assertDatabaseMigrationSafety,
   composeServerDatabaseManifests,
   readPostgresConnectionUrl,
-} from "@labkit/server-database";
-import { serverAuthTypeormDatabaseManifest } from "@labkit/server-auth-typeorm";
+} from "@omgjs/labkit-server-database";
+import { serverAuthTypeormDatabaseManifest } from "@omgjs/labkit-server-auth-typeorm";
 
 const manifest = composeServerDatabaseManifests([
   serverAuthTypeormDatabaseManifest,

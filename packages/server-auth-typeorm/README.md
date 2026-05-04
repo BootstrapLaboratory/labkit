@@ -1,13 +1,13 @@
-# @labkit/server-auth-typeorm
+# @omgjs/labkit-server-auth-typeorm
 
-`@labkit/server-auth-typeorm` is the optional TypeORM/PostgreSQL persistence
-adapter boundary for `@labkit/server-auth`.
+`@omgjs/labkit-server-auth-typeorm` is the optional TypeORM/PostgreSQL persistence
+adapter boundary for `@omgjs/labkit-server-auth`.
 
 ## Owns
 
 - Default Labkit auth TypeORM entities.
 - The checked-in identity-table migration.
-- Repository adapters for `@labkit/server-auth` storage interfaces.
+- Repository adapters for `@omgjs/labkit-server-auth` storage interfaces.
 - A transaction runner adapter.
 - Nest provider factories for those adapters.
 - `ServerAuthTypeormModule` for standard Nest provider registration.
@@ -26,7 +26,7 @@ adapter boundary for `@labkit/server-auth`.
 ## Usage
 
 ```ts
-import { ServerAuthTypeormModule } from "@labkit/server-auth-typeorm";
+import { ServerAuthTypeormModule } from "@omgjs/labkit-server-auth-typeorm";
 
 @Module({
   imports: [ServerAuthTypeormModule],
@@ -37,8 +37,8 @@ export class IdentityModule {}
 Compose the database manifest into the app-owned TypeORM configuration:
 
 ```ts
-import { composeServerDatabaseManifests } from "@labkit/server-database";
-import { serverAuthTypeormDatabaseManifest } from "@labkit/server-auth-typeorm";
+import { composeServerDatabaseManifests } from "@omgjs/labkit-server-database";
+import { serverAuthTypeormDatabaseManifest } from "@omgjs/labkit-server-auth-typeorm";
 
 const manifest = composeServerDatabaseManifests([
   serverAuthTypeormDatabaseManifest,

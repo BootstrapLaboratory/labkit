@@ -1,6 +1,6 @@
-# @labkit/server-observability
+# @omgjs/labkit-server-observability
 
-`@labkit/server-observability` contains server-side logging helpers that keep
+`@omgjs/labkit-server-observability` contains server-side logging helpers that keep
 structured logs consistent and safe to emit.
 
 ## Owns
@@ -20,7 +20,7 @@ structured logs consistent and safe to emit.
 ## Usage
 
 ```ts
-import { logStructuredEvent } from "@labkit/server-observability";
+import { logStructuredEvent } from "@omgjs/labkit-server-observability";
 
 logStructuredEvent(logger, "log", {
   event: "database_config_ready",

@@ -6,91 +6,91 @@
   "projectFolderMaxDepth": 2,
   "projects": [
     {
-      "packageName": "@labkit/auth-contract",
+      "packageName": "@omgjs/labkit-auth-contract",
       "projectFolder": "packages/auth-contract",
       "reviewCategory": "libraries",
       "versionPolicyName": "labkit"
     },
     {
-      "packageName": "@labkit/runtime-config",
+      "packageName": "@omgjs/labkit-runtime-config",
       "projectFolder": "packages/runtime-config",
       "reviewCategory": "libraries",
       "versionPolicyName": "labkit"
     },
     {
-      "packageName": "@labkit/webapp-external-store",
+      "packageName": "@omgjs/labkit-webapp-external-store",
       "projectFolder": "packages/webapp-external-store",
       "reviewCategory": "libraries",
       "versionPolicyName": "labkit"
     },
     {
-      "packageName": "@labkit/webapp-auth",
+      "packageName": "@omgjs/labkit-webapp-auth",
       "projectFolder": "packages/webapp-auth",
       "reviewCategory": "libraries",
       "versionPolicyName": "labkit"
     },
     {
-      "packageName": "@labkit/webapp-realtime",
+      "packageName": "@omgjs/labkit-webapp-realtime",
       "projectFolder": "packages/webapp-realtime",
       "reviewCategory": "libraries",
       "versionPolicyName": "labkit"
     },
     {
-      "packageName": "@labkit/webapp-graphql-relay",
+      "packageName": "@omgjs/labkit-webapp-graphql-relay",
       "projectFolder": "packages/webapp-graphql-relay",
       "reviewCategory": "libraries",
       "versionPolicyName": "labkit"
     },
     {
-      "packageName": "@labkit/webapp-build-config",
+      "packageName": "@omgjs/labkit-webapp-build-config",
       "projectFolder": "packages/webapp-build-config",
       "reviewCategory": "libraries",
       "versionPolicyName": "labkit"
     },
     {
-      "packageName": "@labkit/webapp-ui",
+      "packageName": "@omgjs/labkit-webapp-ui",
       "projectFolder": "packages/webapp-ui",
       "reviewCategory": "libraries",
       "versionPolicyName": "labkit"
     },
     {
-      "packageName": "@labkit/server-config",
+      "packageName": "@omgjs/labkit-server-config",
       "projectFolder": "packages/server-config",
       "reviewCategory": "libraries",
       "versionPolicyName": "labkit"
     },
     {
-      "packageName": "@labkit/server-database",
+      "packageName": "@omgjs/labkit-server-database",
       "projectFolder": "packages/server-database",
       "reviewCategory": "libraries",
       "versionPolicyName": "labkit"
     },
     {
-      "packageName": "@labkit/server-graphql",
+      "packageName": "@omgjs/labkit-server-graphql",
       "projectFolder": "packages/server-graphql",
       "reviewCategory": "libraries",
       "versionPolicyName": "labkit"
     },
     {
-      "packageName": "@labkit/server-auth",
+      "packageName": "@omgjs/labkit-server-auth",
       "projectFolder": "packages/server-auth",
       "reviewCategory": "libraries",
       "versionPolicyName": "labkit"
     },
     {
-      "packageName": "@labkit/server-auth-typeorm",
+      "packageName": "@omgjs/labkit-server-auth-typeorm",
       "projectFolder": "packages/server-auth-typeorm",
       "reviewCategory": "libraries",
       "versionPolicyName": "labkit"
     },
     {
-      "packageName": "@labkit/server-observability",
+      "packageName": "@omgjs/labkit-server-observability",
       "projectFolder": "packages/server-observability",
       "reviewCategory": "libraries",
       "versionPolicyName": "labkit"
     },
     {
-      "packageName": "@labkit/eslint-config",
+      "packageName": "@omgjs/labkit-eslint-config",
       "projectFolder": "tools/eslint-config",
       "reviewCategory": "tools",
       "versionPolicyName": "labkit"

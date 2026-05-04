@@ -7,9 +7,9 @@ import {
   type ModuleMetadata,
 } from "@nestjs/common";
 import { GraphQLModule } from "@nestjs/graphql";
-import { extractGraphqlWsAuthorization } from "@labkit/auth-contract";
-import type { ConfigReader } from "@labkit/server-config";
-import type { StructuredLogger } from "@labkit/server-observability";
+import { extractGraphqlWsAuthorization } from "@omgjs/labkit-auth-contract";
+import type { ConfigReader } from "@omgjs/labkit-server-config";
+import type { StructuredLogger } from "@omgjs/labkit-server-observability";
 import {
   createGraphqlWsConnectionId,
   getGraphqlContextParts,

@@ -23,13 +23,13 @@ import {
   REFRESH_TOKEN_TRANSPORT_RESPONSE_BODY,
   type Principal,
   type RefreshTokenTransport,
-} from "@labkit/auth-contract";
+} from "@omgjs/labkit-auth-contract";
 import type {
   CreateServerGraphqlOptionsInput,
   GraphqlSubscriptionPrincipalLike,
   MaybePromise,
   ServerGraphqlContext,
-} from "@labkit/server-graphql";
+} from "@omgjs/labkit-server-graphql";
 
 const requireServerAuth = createRequire(__filename);
 
@@ -90,7 +90,7 @@ export const SERVER_AUTH_EVENT_SESSIONS_REVOKED =
 export const SERVER_AUTH_EVENT_SESSIONS_REVOKE_FAILED =
   "server-auth.sessions.revoke-failed";
 
-export { type Principal } from "@labkit/auth-contract";
+export { type Principal } from "@omgjs/labkit-auth-contract";
 
 export enum IdentityProviderCapability {
   Login = "login",
@@ -1544,11 +1544,11 @@ export function createServerAuthGraphqlIntegration<
   };
 }
 
-function getCreateServerGraphqlModule(): typeof import("@labkit/server-graphql").createServerGraphqlModule {
+function getCreateServerGraphqlModule(): typeof import("@omgjs/labkit-server-graphql").createServerGraphqlModule {
   return (
     requireServerAuth(
-      "@labkit/server-graphql",
-    ) as typeof import("@labkit/server-graphql")
+      "@omgjs/labkit-server-graphql",
+    ) as typeof import("@omgjs/labkit-server-graphql")
   ).createServerGraphqlModule;
 }
 

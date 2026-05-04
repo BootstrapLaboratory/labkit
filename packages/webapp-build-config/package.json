@@ -1,5 +1,5 @@
 {
-  "name": "@labkit/webapp-build-config",
+  "name": "@omgjs/labkit-webapp-build-config",
   "version": "0.0.1",
   "description": "Vite build configuration helpers for Labkit webapps.",
   "license": "MIT",
@@ -38,7 +38,7 @@
     "verify": "npm run test"
   },
   "devDependencies": {
-    "@labkit/eslint-config": "0.0.1",
+    "@omgjs/labkit-eslint-config": "0.0.1",
     "@types/node": "^25.6.0",
     "eslint": "^10.3.0",
     "typescript": "^6.0.3"

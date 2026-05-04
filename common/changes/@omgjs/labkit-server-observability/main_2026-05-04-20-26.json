@@ -3,9 +3,9 @@
     {
       "comment": "Prepare the first public Labkit release.",
       "type": "minor",
-      "packageName": "@labkit/auth-contract"
+      "packageName": "@omgjs/labkit-server-observability"
     }
   ],
-  "packageName": "@labkit/auth-contract",
+  "packageName": "@omgjs/labkit-server-observability",
   "email": "rush-delivery@users.noreply.github.com"
 }

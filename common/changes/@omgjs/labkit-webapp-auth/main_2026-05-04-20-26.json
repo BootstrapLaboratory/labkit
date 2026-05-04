@@ -3,9 +3,9 @@
     {
       "comment": "Prepare the first public Labkit release.",
       "type": "minor",
-      "packageName": "@labkit/server-auth"
+      "packageName": "@omgjs/labkit-webapp-auth"
     }
   ],
-  "packageName": "@labkit/server-auth",
+  "packageName": "@omgjs/labkit-webapp-auth",
   "email": "rush-delivery@users.noreply.github.com"
 }

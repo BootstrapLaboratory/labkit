@@ -34,51 +34,51 @@ importers:
       '@nestjs/typeorm':
         specifier: ^11.0.1
         version: 11.0.1(@nestjs/common@11.1.19(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.19(@nestjs/common@11.1.19(reflect-metadata@0.2.2)(rxjs@7.8.2))(reflect-metadata@0.2.2)(rxjs@7.8.2))(reflect-metadata@0.2.2)(rxjs@7.8.2)(typeorm@0.3.28)
-      '@rush-temp/auth-contract':
-        specifier: file:./projects/auth-contract.tgz
-        version: file:projects/auth-contract.tgz
-      '@rush-temp/eslint-config':
-        specifier: file:./projects/eslint-config.tgz
-        version: file:projects/eslint-config.tgz(typescript@6.0.3)
-      '@rush-temp/runtime-config':
-        specifier: file:./projects/runtime-config.tgz
-        version: file:projects/runtime-config.tgz
-      '@rush-temp/server-auth':
-        specifier: file:./projects/server-auth.tgz
-        version: file:projects/server-auth.tgz
-      '@rush-temp/server-auth-typeorm':
-        specifier: file:./projects/server-auth-typeorm.tgz
-        version: file:projects/server-auth-typeorm.tgz(@nestjs/core@11.1.19(@nestjs/common@11.1.19(reflect-metadata@0.2.2)(rxjs@7.8.2))(reflect-metadata@0.2.2)(rxjs@7.8.2))
-      '@rush-temp/server-config':
-        specifier: file:./projects/server-config.tgz
-        version: file:projects/server-config.tgz
-      '@rush-temp/server-database':
-        specifier: file:./projects/server-database.tgz
-        version: file:projects/server-database.tgz
-      '@rush-temp/server-graphql':
-        specifier: file:./projects/server-graphql.tgz
-        version: file:projects/server-graphql.tgz
-      '@rush-temp/server-observability':
-        specifier: file:./projects/server-observability.tgz
-        version: file:projects/server-observability.tgz
-      '@rush-temp/webapp-auth':
-        specifier: file:./projects/webapp-auth.tgz
-        version: file:projects/webapp-auth.tgz
-      '@rush-temp/webapp-build-config':
-        specifier: file:./projects/webapp-build-config.tgz
-        version: file:projects/webapp-build-config.tgz
-      '@rush-temp/webapp-external-store':
-        specifier: file:./projects/webapp-external-store.tgz
-        version: file:projects/webapp-external-store.tgz
-      '@rush-temp/webapp-graphql-relay':
-        specifier: file:./projects/webapp-graphql-relay.tgz
-        version: file:projects/webapp-graphql-relay.tgz(graphql@16.13.2)(ws@8.20.0)
-      '@rush-temp/webapp-realtime':
-        specifier: file:./projects/webapp-realtime.tgz
-        version: file:projects/webapp-realtime.tgz(graphql@16.13.2)(ws@8.20.0)
-      '@rush-temp/webapp-ui':
-        specifier: file:./projects/webapp-ui.tgz
-        version: file:projects/webapp-ui.tgz
+      '@rush-temp/labkit-auth-contract':
+        specifier: file:./projects/labkit-auth-contract.tgz
+        version: file:projects/labkit-auth-contract.tgz
+      '@rush-temp/labkit-eslint-config':
+        specifier: file:./projects/labkit-eslint-config.tgz
+        version: file:projects/labkit-eslint-config.tgz(typescript@6.0.3)
+      '@rush-temp/labkit-runtime-config':
+        specifier: file:./projects/labkit-runtime-config.tgz
+        version: file:projects/labkit-runtime-config.tgz
+      '@rush-temp/labkit-server-auth':
+        specifier: file:./projects/labkit-server-auth.tgz
+        version: file:projects/labkit-server-auth.tgz
+      '@rush-temp/labkit-server-auth-typeorm':
+        specifier: file:./projects/labkit-server-auth-typeorm.tgz
+        version: file:projects/labkit-server-auth-typeorm.tgz(@nestjs/core@11.1.19(@nestjs/common@11.1.19(reflect-metadata@0.2.2)(rxjs@7.8.2))(reflect-metadata@0.2.2)(rxjs@7.8.2))
+      '@rush-temp/labkit-server-config':
+        specifier: file:./projects/labkit-server-config.tgz
+        version: file:projects/labkit-server-config.tgz
+      '@rush-temp/labkit-server-database':
+        specifier: file:./projects/labkit-server-database.tgz
+        version: file:projects/labkit-server-database.tgz
+      '@rush-temp/labkit-server-graphql':
+        specifier: file:./projects/labkit-server-graphql.tgz
+        version: file:projects/labkit-server-graphql.tgz
+      '@rush-temp/labkit-server-observability':
+        specifier: file:./projects/labkit-server-observability.tgz
+        version: file:projects/labkit-server-observability.tgz
+      '@rush-temp/labkit-webapp-auth':
+        specifier: file:./projects/labkit-webapp-auth.tgz
+        version: file:projects/labkit-webapp-auth.tgz
+      '@rush-temp/labkit-webapp-build-config':
+        specifier: file:./projects/labkit-webapp-build-config.tgz
+        version: file:projects/labkit-webapp-build-config.tgz
+      '@rush-temp/labkit-webapp-external-store':
+        specifier: file:./projects/labkit-webapp-external-store.tgz
+        version: file:projects/labkit-webapp-external-store.tgz
+      '@rush-temp/labkit-webapp-graphql-relay':
+        specifier: file:./projects/labkit-webapp-graphql-relay.tgz
+        version: file:projects/labkit-webapp-graphql-relay.tgz(graphql@16.13.2)(ws@8.20.0)
+      '@rush-temp/labkit-webapp-realtime':
+        specifier: file:./projects/labkit-webapp-realtime.tgz
+        version: file:projects/labkit-webapp-realtime.tgz(graphql@16.13.2)(ws@8.20.0)
+      '@rush-temp/labkit-webapp-ui':
+        specifier: file:./projects/labkit-webapp-ui.tgz
+        version: file:projects/labkit-webapp-ui.tgz
       '@types/node':
         specifier: ^25.6.0
         version: 25.6.0
@@ -470,64 +470,64 @@ packages:
   '@protobufjs/utf8@1.1.1':
     resolution: {integrity: sha512-oOAWABowe8EAbMyWKM0tYDKi8Yaox52D+HWZhAIJqQXbqe0xI/GV7FhLWqlEKreMkfDjshR5FKgi3mnle0h6Eg==}
 
-  '@rush-temp/auth-contract@file:projects/auth-contract.tgz':
-    resolution: {integrity: sha512-+DNI77okwpOV4ariKe74x12LK89S8W2o5louZW0w8hG1JstvE59zExmOEz7xM3JqpNZkEgRM5jtg/e3i0ENcGg==, tarball: file:projects/auth-contract.tgz}
+  '@rush-temp/labkit-auth-contract@file:projects/labkit-auth-contract.tgz':
+    resolution: {integrity: sha512-uF3DlCtr73ioMCOe12BTzwAJkEyi3yc8s3OjLpONKZZ9+mJMUdYCUwa8W524tcuq2MERVmzc8gfsyEthd+hphg==, tarball: file:projects/labkit-auth-contract.tgz}
     version: 0.0.0
 
-  '@rush-temp/eslint-config@file:projects/eslint-config.tgz':
-    resolution: {integrity: sha512-gF0aFEka+6SHamkFPFlImQkDfmZrnkqtzrDu1Vuc+dTvCAHkNA21+bBU7r+io8qjKO6yJQWWhDjBsqcSrQyBaw==, tarball: file:projects/eslint-config.tgz}
+  '@rush-temp/labkit-eslint-config@file:projects/labkit-eslint-config.tgz':
+    resolution: {integrity: sha512-mUlqxxn2xOKw8OlWjCaaH+4xCr2J3CT904Rsa9EVu6Dd3LePDYwdsGCFHlMCODiCnQjmYFrJi5PWTBljhHv6gQ==, tarball: file:projects/labkit-eslint-config.tgz}
     version: 0.0.0
 
-  '@rush-temp/runtime-config@file:projects/runtime-config.tgz':
-    resolution: {integrity: sha512-K1BUO/eSLgGp7zN2jiJPnBnbFc4OxVdrBgsnOhBRbZ17opzQDhfPHUtuC2g+QHQeTkJSInUIwNPnwePiQ39Bjg==, tarball: file:projects/runtime-config.tgz}
+  '@rush-temp/labkit-runtime-config@file:projects/labkit-runtime-config.tgz':
+    resolution: {integrity: sha512-DxP/c6CCqJyJdB3NgveDP44cpijobTWbZoKkAkndIFcIYEC7Teu7iRL+ZDXNKD6wBgvwoCZJ2o3Qoh12TqT5TA==, tarball: file:projects/labkit-runtime-config.tgz}
     version: 0.0.0
 
-  '@rush-temp/server-auth-typeorm@file:projects/server-auth-typeorm.tgz':
-    resolution: {integrity: sha512-BOI9pIcSw9dIsmjWlxkQdXapHiIVQmeIJaM67W1Bhr/SzdrFvA4mITBIKc/8D9lDU7hBlGM+fljIHQP6HSb/0w==, tarball: file:projects/server-auth-typeorm.tgz}
+  '@rush-temp/labkit-server-auth-typeorm@file:projects/labkit-server-auth-typeorm.tgz':
+    resolution: {integrity: sha512-4NaDs8sVnGHPv5dbEIBTn8FaWom5dZ5niXdO97SnACeoSiUjqvP7IZ0UtErPzOZcfT0+dSahdB2iF8PhsW2caA==, tarball: file:projects/labkit-server-auth-typeorm.tgz}
     version: 0.0.0
 
-  '@rush-temp/server-auth@file:projects/server-auth.tgz':
-    resolution: {integrity: sha512-D7EobP1AF9eKSuYmIqNcW8KzdhN2Ecs8Ps/uvhNBPdNYHsAe9SgMkWOjUkqdr8ni3OfxlVHWyGs6MP83uavEAw==, tarball: file:projects/server-auth.tgz}
+  '@rush-temp/labkit-server-auth@file:projects/labkit-server-auth.tgz':
+    resolution: {integrity: sha512-JgXnuUlDqrzIHkXvgyKVWfA6gkalWESHdlQnipDwZ9JKiw9GjxXDBYxYn/fFUlD1lg9TfvBHlODsNC5ylqYgSg==, tarball: file:projects/labkit-server-auth.tgz}
     version: 0.0.0
 
-  '@rush-temp/server-config@file:projects/server-config.tgz':
-    resolution: {integrity: sha512-GEz7fXHbPMURuT9/d2sTZ85f+D4YBxmfbXTeZik87Hv3kDSgOZc5WSlvl1acFSs362+Ry9O8VLDAL9pxE1pOxg==, tarball: file:projects/server-config.tgz}
+  '@rush-temp/labkit-server-config@file:projects/labkit-server-config.tgz':
+    resolution: {integrity: sha512-tKHk4Rvg40ts2gD4Kc14Wlda+P/b4eFijHzRwjFh8Reyg09G/QiErRg/yM8p3i7RfIBGmeJvKiUjYptsDZmBjA==, tarball: file:projects/labkit-server-config.tgz}
     version: 0.0.0
 
-  '@rush-temp/server-database@file:projects/server-database.tgz':
-    resolution: {integrity: sha512-xEQ05EdGUES6RgtGFxwLxlTnEkisdlYysMtGp6nAuzWUIuBt6DrSJhT+CVoxjnKc+CfceMbbppjim7RXkG7sQw==, tarball: file:projects/server-database.tgz}
+  '@rush-temp/labkit-server-database@file:projects/labkit-server-database.tgz':
+    resolution: {integrity: sha512-6/t3+ClX4HpTqNUP2bKblM21k9o5uRAox7O7VdAMZHUwn6Z0iI7nQL56GLvzsW8M5qplGIlHDNFDpXQGrHgFJA==, tarball: file:projects/labkit-server-database.tgz}
     version: 0.0.0
 
-  '@rush-temp/server-graphql@file:projects/server-graphql.tgz':
-    resolution: {integrity: sha512-Uv4qkmAuNsUKIjQAGgu0GBj4d5eXuSFes0y0Jr5+yZJxzyK5e0DTSPSr+PKd9PChlm7mpN6WikbTiVrbqXYP9w==, tarball: file:projects/server-graphql.tgz}
+  '@rush-temp/labkit-server-graphql@file:projects/labkit-server-graphql.tgz':
+    resolution: {integrity: sha512-rfIgB2Av623XFXrgit46QKphR/NAth/0oVNpTSMXMiZ+PxGNHijxO/ZvUjV14ocP1yikMUOdqgg5DtJRnQEwWQ==, tarball: file:projects/labkit-server-graphql.tgz}
     version: 0.0.0
 
-  '@rush-temp/server-observability@file:projects/server-observability.tgz':
-    resolution: {integrity: sha512-lMBMXJ+Z5HO3Ap7y5Klqy/Zv9c5YUiGUAgAGWexfWB5m2CrEZZWtTA7ziw7VdElOcN8kHrw1rUryVzW3ym6oNg==, tarball: file:projects/server-observability.tgz}
+  '@rush-temp/labkit-server-observability@file:projects/labkit-server-observability.tgz':
+    resolution: {integrity: sha512-gz1efPzL23OfaQypdgS/vC06iukDnvanTRzQ9xA+LnuL6if3YyrskuPizCo2qMHR+5Te4GpyYEO/a0OAclswxQ==, tarball: file:projects/labkit-server-observability.tgz}
     version: 0.0.0
 
-  '@rush-temp/webapp-auth@file:projects/webapp-auth.tgz':
-    resolution: {integrity: sha512-PUgklEZeo67Jgpka9JcOwnKuPUyqJqD01ROWxxSM5deb+Nzz+zfxuA88c2CMZqmsr6GWDVtd5Ai19jhoPdw1cQ==, tarball: file:projects/webapp-auth.tgz}
+  '@rush-temp/labkit-webapp-auth@file:projects/labkit-webapp-auth.tgz':
+    resolution: {integrity: sha512-6fOc0U2lxgZyoRvG2gf51iW+LXZFXHE07yQdvhExlUFsvstFVKN559kALQtxiO5DgAJDk4VLVycxUPjcepVirQ==, tarball: file:projects/labkit-webapp-auth.tgz}
     version: 0.0.0
 
-  '@rush-temp/webapp-build-config@file:projects/webapp-build-config.tgz':
-    resolution: {integrity: sha512-CaFUPeREHGR/kSG/7mjuPf3dWCDqpuANYlIifaIPbPAWFgP49TfbOf/aO71MHvSfoZZQ1+Byu0l2A7rpAXZ0JA==, tarball: file:projects/webapp-build-config.tgz}
+  '@rush-temp/labkit-webapp-build-config@file:projects/labkit-webapp-build-config.tgz':
+    resolution: {integrity: sha512-0I0D0+v6XV+B2A/0ZMclwJW4DoFlspYfAEUTI/4tm9oBRZxO7Z+oTG49BwH+CC/Fn2iGvlNYkbe6QUK05ksMPg==, tarball: file:projects/labkit-webapp-build-config.tgz}
     version: 0.0.0
 
-  '@rush-temp/webapp-external-store@file:projects/webapp-external-store.tgz':
-    resolution: {integrity: sha512-MxVrFCAi5OvbeaiOg6K0Hm5UHcU1MqO2MiIukSsN6PpkdQVHosXhEVilXg3WVNUemwYtSx8Ylyz5NyZJeG9Dog==, tarball: file:projects/webapp-external-store.tgz}
+  '@rush-temp/labkit-webapp-external-store@file:projects/labkit-webapp-external-store.tgz':
+    resolution: {integrity: sha512-sqwY6QE50IM+sM0+oB50FygFvsUwz+UUSdPcTpbo71ds5XJN73xhz0JLfhgBDEvWXBFb3cgHnVYBRBuwJCCLHw==, tarball: file:projects/labkit-webapp-external-store.tgz}
     version: 0.0.0
 
-  '@rush-temp/webapp-graphql-relay@file:projects/webapp-graphql-relay.tgz':
-    resolution: {integrity: sha512-2n3g8CikdoKX2zDMXyGakQ9fwZdGwX62JMWxaTOU9SA/pMzXqn/wUzFKZJ8K9re7hshXvYBT58Bmu+bQnoRPYw==, tarball: file:projects/webapp-graphql-relay.tgz}
+  '@rush-temp/labkit-webapp-graphql-relay@file:projects/labkit-webapp-graphql-relay.tgz':
+    resolution: {integrity: sha512-8pTBubZ05hrGuoeC7Txo0BxdiTR3yiAXGwWQcnYj8u3HKFmfPEELPIVpKXRPjKEqbx7lZHjXjTyMHBm2q51NLA==, tarball: file:projects/labkit-webapp-graphql-relay.tgz}
     version: 0.0.0
 
-  '@rush-temp/webapp-realtime@file:projects/webapp-realtime.tgz':
-    resolution: {integrity: sha512-WydkKsJrrS5X59SUx1ViIXh8a66Ow+J3kUIVsVDvKrlDCKmWigvVzQPor5cU8ZkJeSKFODK5PCFzd0gytkqmvw==, tarball: file:projects/webapp-realtime.tgz}
+  '@rush-temp/labkit-webapp-realtime@file:projects/labkit-webapp-realtime.tgz':
+    resolution: {integrity: sha512-zTcyrN59DhKIkrbJA+/XLuxxtPEncBgYBL2LjoWwyML6zMbtUOVxTPuVVYSQ28ZX9lxPpA6fwLNk4eFLLTHLsA==, tarball: file:projects/labkit-webapp-realtime.tgz}
     version: 0.0.0
 
-  '@rush-temp/webapp-ui@file:projects/webapp-ui.tgz':
-    resolution: {integrity: sha512-z2IHJKK01SkQh73IjgR1Rhc2LI1otD6f4AkFVn8Z0Mq1/SEgnWEvOkwQiAwQR3LggQtT+YT2YaE0wtb5uSesdg==, tarball: file:projects/webapp-ui.tgz}
+  '@rush-temp/labkit-webapp-ui@file:projects/labkit-webapp-ui.tgz':
+    resolution: {integrity: sha512-rMs4u+3LopPu/Ee4oyyhVSxKSGPGI7MQlRr/9lr4vYCliusBXGAOltnSZWywuLCNezob6pZWEOmOofUsAQigsQ==, tarball: file:projects/labkit-webapp-ui.tgz}
     version: 0.0.0
 
   '@sqltools/formatter@1.2.5':
@@ -1987,7 +1987,7 @@ snapshots:
 
   '@protobufjs/utf8@1.1.1': {}
 
-  '@rush-temp/auth-contract@file:projects/auth-contract.tgz':
+  '@rush-temp/labkit-auth-contract@file:projects/labkit-auth-contract.tgz':
     dependencies:
       '@types/node': 25.6.0
       eslint: 10.3.0
@@ -1996,7 +1996,7 @@ snapshots:
       - jiti
       - supports-color
 
-  '@rush-temp/eslint-config@file:projects/eslint-config.tgz(typescript@6.0.3)':
+  '@rush-temp/labkit-eslint-config@file:projects/labkit-eslint-config.tgz(typescript@6.0.3)':
     dependencies:
       '@eslint/js': 10.0.1(eslint@10.3.0)
       eslint: 10.3.0
@@ -2008,7 +2008,7 @@ snapshots:
       - supports-color
       - typescript
 
-  '@rush-temp/runtime-config@file:projects/runtime-config.tgz':
+  '@rush-temp/labkit-runtime-config@file:projects/labkit-runtime-config.tgz':
     dependencies:
       '@types/node': 25.6.0
       eslint: 10.3.0
@@ -2017,7 +2017,7 @@ snapshots:
       - jiti
       - supports-color
 
-  '@rush-temp/server-auth-typeorm@file:projects/server-auth-typeorm.tgz(@nestjs/core@11.1.19(@nestjs/common@11.1.19(reflect-metadata@0.2.2)(rxjs@7.8.2))(reflect-metadata@0.2.2)(rxjs@7.8.2))':
+  '@rush-temp/labkit-server-auth-typeorm@file:projects/labkit-server-auth-typeorm.tgz(@nestjs/core@11.1.19(@nestjs/common@11.1.19(reflect-metadata@0.2.2)(rxjs@7.8.2))(reflect-metadata@0.2.2)(rxjs@7.8.2))':
     dependencies:
       '@nestjs/common': 11.1.19(reflect-metadata@0.2.2)(rxjs@7.8.2)
       '@nestjs/typeorm': 11.0.1(@nestjs/common@11.1.19(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.19(@nestjs/common@11.1.19(reflect-metadata@0.2.2)(rxjs@7.8.2))(reflect-metadata@0.2.2)(rxjs@7.8.2))(reflect-metadata@0.2.2)(rxjs@7.8.2)(typeorm@0.3.28)
@@ -2051,7 +2051,7 @@ snapshots:
       - ts-node
       - typeorm-aurora-data-api-driver
 
-  '@rush-temp/server-auth@file:projects/server-auth.tgz':
+  '@rush-temp/labkit-server-auth@file:projects/labkit-server-auth.tgz':
     dependencies:
       '@nestjs/common': 11.1.19(reflect-metadata@0.2.2)(rxjs@7.8.2)
       '@nestjs/core': 11.1.19(@nestjs/common@11.1.19(reflect-metadata@0.2.2)(rxjs@7.8.2))(reflect-metadata@0.2.2)(rxjs@7.8.2)
@@ -2077,7 +2077,7 @@ snapshots:
       - ts-morph
       - utf-8-validate
 
-  '@rush-temp/server-config@file:projects/server-config.tgz':
+  '@rush-temp/labkit-server-config@file:projects/labkit-server-config.tgz':
     dependencies:
       '@types/node': 25.6.0
       eslint: 10.3.0
@@ -2086,7 +2086,7 @@ snapshots:
       - jiti
       - supports-color
 
-  '@rush-temp/server-database@file:projects/server-database.tgz':
+  '@rush-temp/labkit-server-database@file:projects/labkit-server-database.tgz':
     dependencies:
       '@types/node': 25.6.0
       eslint: 10.3.0
@@ -2095,7 +2095,7 @@ snapshots:
       - jiti
       - supports-color
 
-  '@rush-temp/server-graphql@file:projects/server-graphql.tgz':
+  '@rush-temp/labkit-server-graphql@file:projects/labkit-server-graphql.tgz':
     dependencies:
       '@apollo/server': 5.5.0(graphql@16.13.2)
       '@graphql-tools/utils': 11.1.0(graphql@16.13.2)
@@ -2128,7 +2128,7 @@ snapshots:
       - ts-morph
       - utf-8-validate
 
-  '@rush-temp/server-observability@file:projects/server-observability.tgz':
+  '@rush-temp/labkit-server-observability@file:projects/labkit-server-observability.tgz':
     dependencies:
       '@types/node': 25.6.0
       eslint: 10.3.0
@@ -2137,7 +2137,7 @@ snapshots:
       - jiti
       - supports-color
 
-  '@rush-temp/webapp-auth@file:projects/webapp-auth.tgz':
+  '@rush-temp/labkit-webapp-auth@file:projects/labkit-webapp-auth.tgz':
     dependencies:
       '@types/node': 25.6.0
       eslint: 10.3.0
@@ -2146,7 +2146,7 @@ snapshots:
       - jiti
       - supports-color
 
-  '@rush-temp/webapp-build-config@file:projects/webapp-build-config.tgz':
+  '@rush-temp/labkit-webapp-build-config@file:projects/labkit-webapp-build-config.tgz':
     dependencies:
       '@types/node': 25.6.0
       eslint: 10.3.0
@@ -2155,7 +2155,7 @@ snapshots:
       - jiti
       - supports-color
 
-  '@rush-temp/webapp-external-store@file:projects/webapp-external-store.tgz':
+  '@rush-temp/labkit-webapp-external-store@file:projects/labkit-webapp-external-store.tgz':
     dependencies:
       '@types/node': 25.6.0
       eslint: 10.3.0
@@ -2164,7 +2164,7 @@ snapshots:
       - jiti
       - supports-color
 
-  '@rush-temp/webapp-graphql-relay@file:projects/webapp-graphql-relay.tgz(graphql@16.13.2)(ws@8.20.0)':
+  '@rush-temp/labkit-webapp-graphql-relay@file:projects/labkit-webapp-graphql-relay.tgz(graphql@16.13.2)(ws@8.20.0)':
     dependencies:
       '@types/node': 25.6.0
       '@types/react-relay': 18.2.1
@@ -2184,7 +2184,7 @@ snapshots:
       - supports-color
       - ws
 
-  '@rush-temp/webapp-realtime@file:projects/webapp-realtime.tgz(graphql@16.13.2)(ws@8.20.0)':
+  '@rush-temp/labkit-webapp-realtime@file:projects/labkit-webapp-realtime.tgz(graphql@16.13.2)(ws@8.20.0)':
     dependencies:
       '@types/node': 25.6.0
       eslint: 10.3.0
@@ -2198,7 +2198,7 @@ snapshots:
       - supports-color
       - ws
 
-  '@rush-temp/webapp-ui@file:projects/webapp-ui.tgz':
+  '@rush-temp/labkit-webapp-ui@file:projects/labkit-webapp-ui.tgz':
     dependencies:
       '@types/node': 25.6.0
       eslint: 10.3.0

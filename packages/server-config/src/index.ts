@@ -2,10 +2,10 @@ import {
   REFRESH_TOKEN_TRANSPORT_COOKIE,
   REFRESH_TOKEN_TRANSPORT_RESPONSE_BODY,
   type RefreshTokenTransport,
-} from "@labkit/auth-contract";
-import { parseBoolean, parseList, parseNumber } from "@labkit/runtime-config";
+} from "@omgjs/labkit-auth-contract";
+import { parseBoolean, parseList, parseNumber } from "@omgjs/labkit-runtime-config";
 
-export type { RefreshTokenTransport } from "@labkit/auth-contract";
+export type { RefreshTokenTransport } from "@omgjs/labkit-auth-contract";
 
 export type ConfigReader = {
   get<T = string>(key: string): T | undefined;

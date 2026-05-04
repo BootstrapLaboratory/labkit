@@ -1,6 +1,6 @@
-# @labkit/webapp-realtime
+# @omgjs/labkit-webapp-realtime
 
-`@labkit/webapp-realtime` contains browser GraphQL WS connection policy and
+`@omgjs/labkit-webapp-realtime` contains browser GraphQL WS connection policy and
 connection-state helpers.
 
 ## Owns
@@ -28,7 +28,7 @@ connection-state helpers.
 import {
   createWebappRealtimeConnection,
   parseRealtimeReconnectWatchdogMs,
-} from "@labkit/webapp-realtime";
+} from "@omgjs/labkit-webapp-realtime";
 
 const realtime = createWebappRealtimeConnection({
   logReconnects: import.meta.env.VITE_GRAPHQL_LOG_RECONNECTS === "true",

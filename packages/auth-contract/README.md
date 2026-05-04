@@ -1,6 +1,6 @@
-# @labkit/auth-contract
+# @omgjs/labkit-auth-contract
 
-`@labkit/auth-contract` contains auth vocabulary that must be shared by server
+`@omgjs/labkit-auth-contract` contains auth vocabulary that must be shared by server
 and browser code without importing framework-specific dependencies.
 
 It is safe to use from NestJS code, Vite/browser code, tests, and other shared
@@ -32,7 +32,7 @@ import {
   formatBearerToken,
   isAuthRequiredErrorCode,
   type Principal,
-} from "@labkit/auth-contract";
+} from "@omgjs/labkit-auth-contract";
 
 const authorization = formatBearerToken(accessToken);
 const token = extractBearerToken(authorization);

@@ -5,8 +5,8 @@ import {
   SERVER_AUTH_REFRESH_SESSION_REPOSITORY,
   SERVER_AUTH_ROLE_REPOSITORY,
   SERVER_AUTH_TRANSACTION_RUNNER,
-} from "@labkit/server-auth";
-import { composeServerDatabaseManifests } from "@labkit/server-database";
+} from "@omgjs/labkit-server-auth";
+import { composeServerDatabaseManifests } from "@omgjs/labkit-server-database";
 import type { QueryRunner, Table } from "typeorm";
 import "reflect-metadata";
 import {
@@ -57,7 +57,7 @@ function createQueryRunnerMock(): QueryRunnerMock & {
 }
 
 test("exports the package identity", () => {
-  assert.equal(SERVER_AUTH_TYPEORM_PACKAGE_NAME, "@labkit/server-auth-typeorm");
+  assert.equal(SERVER_AUTH_TYPEORM_PACKAGE_NAME, "@omgjs/labkit-server-auth-typeorm");
 });
 
 test("exports the auth database manifest", () => {

@@ -18,8 +18,8 @@ import {
   type ServerAuthRotateRefreshSessionInput,
   type ServerAuthTransactionRunner,
   type ServerAuthUserRecord,
-} from "@labkit/server-auth";
-import type { ServerDatabaseFeatureManifest } from "@labkit/server-database";
+} from "@omgjs/labkit-server-auth";
+import type { ServerDatabaseFeatureManifest } from "@omgjs/labkit-server-database";
 import { DataSource, EntityManager, IsNull, Repository } from "typeorm";
 import { IdentityAccountEntity } from "./entities/identity-account.entity";
 import { IdentityRefreshSessionEntity } from "./entities/identity-refresh-session.entity";
@@ -27,7 +27,7 @@ import { IdentityUserRoleEntity } from "./entities/identity-user-role.entity";
 import { IdentityUserEntity } from "./entities/identity-user.entity";
 import { CreateIdentityTables20260429143000 } from "./migrations/20260429143000-CreateIdentityTables";
 
-export const SERVER_AUTH_TYPEORM_PACKAGE_NAME = "@labkit/server-auth-typeorm";
+export const SERVER_AUTH_TYPEORM_PACKAGE_NAME = "@omgjs/labkit-server-auth-typeorm";
 
 export {
   CreateIdentityTables20260429143000,

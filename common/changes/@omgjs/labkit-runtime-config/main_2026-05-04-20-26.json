@@ -3,9 +3,9 @@
     {
       "comment": "Prepare the first public Labkit release.",
       "type": "minor",
-      "packageName": "@labkit/webapp-build-config"
+      "packageName": "@omgjs/labkit-runtime-config"
     }
   ],
-  "packageName": "@labkit/webapp-build-config",
+  "packageName": "@omgjs/labkit-runtime-config",
   "email": "rush-delivery@users.noreply.github.com"
 }

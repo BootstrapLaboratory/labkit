@@ -1,5 +1,5 @@
 {
-  "name": "@labkit/server-auth-typeorm",
+  "name": "@omgjs/labkit-server-auth-typeorm",
   "version": "0.0.1",
   "description": "TypeORM persistence adapter for Labkit server auth users, accounts, roles, and refresh sessions.",
   "license": "MIT",
@@ -35,8 +35,8 @@
     "verify": "npm run test"
   },
   "dependencies": {
-    "@labkit/server-auth": "0.0.1",
-    "@labkit/server-database": "0.0.1",
+    "@omgjs/labkit-server-auth": "0.0.1",
+    "@omgjs/labkit-server-database": "0.0.1",
     "@nestjs/common": "^11.1.19",
     "@nestjs/typeorm": "^11.0.1",
     "reflect-metadata": "^0.2.2",
@@ -44,7 +44,7 @@
     "typeorm": "^0.3.28"
   },
   "devDependencies": {
-    "@labkit/eslint-config": "0.0.1",
+    "@omgjs/labkit-eslint-config": "0.0.1",
     "@types/node": "^25.6.0",
     "eslint": "^10.3.0",
     "typescript": "^6.0.3"

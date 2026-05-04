@@ -1,6 +1,6 @@
-# @labkit/runtime-config
+# @omgjs/labkit-runtime-config
 
-`@labkit/runtime-config` contains small, framework-free parsing helpers for
+`@omgjs/labkit-runtime-config` contains small, framework-free parsing helpers for
 runtime configuration values.
 
 The package deliberately parses values that are passed into it. It does not
@@ -28,7 +28,7 @@ import {
   parseBoolean,
   parseFiniteNumber,
   parseList,
-} from "@labkit/runtime-config";
+} from "@omgjs/labkit-runtime-config";
 
 const logReconnects = parseBoolean(env.VITE_GRAPHQL_LOG_RECONNECTS, false);
 const watchdogMs = parseFiniteNumber(env.VITE_GRAPHQL_RECONNECT_WATCHDOG_MS, {

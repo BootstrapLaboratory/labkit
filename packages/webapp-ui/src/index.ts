@@ -1,7 +1,7 @@
 import {
   createExternalStore,
   type ExternalStoreUnsubscribe,
-} from "@labkit/webapp-external-store";
+} from "@omgjs/labkit-webapp-external-store";
 
 export function cx(
   ...classes: Array<string | false | null | undefined>

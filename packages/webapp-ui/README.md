@@ -1,6 +1,6 @@
-# @labkit/webapp-ui
+# @omgjs/labkit-webapp-ui
 
-`@labkit/webapp-ui` owns browser UI framework helpers and contracts.
+`@omgjs/labkit-webapp-ui` owns browser UI framework helpers and contracts.
 
 It intentionally does not own concrete product components or visual design.
 Current boundaries:
@@ -44,7 +44,7 @@ import {
   createWebappThemeController,
   defineWebappThemes,
   type WebappThemeValuesFor,
-} from "@labkit/webapp-ui";
+} from "@omgjs/labkit-webapp-ui";
 import { vars } from "./tokens.css";
 
 type ThemeValues = WebappThemeValuesFor<typeof vars>;

@@ -4,6 +4,9 @@ Labkit is the project-local application framework extracted from the server
 and webapp. It is a set of small Rush packages under `packages/*`, not one
 large shared library.
 
+Labkit packages are published under the `@omgjs` npm scope with
+`@omgjs/labkit-*` package names.
+
 Each child folder is its own package with its own dependency boundary, build,
 tests, and public API. Applications compose the packages they need.
 
@@ -11,33 +14,33 @@ tests, and public API. Applications compose the packages they need.
 
 | Package                                                            | Runtime | Purpose                                                                                                                |
 | ------------------------------------------------------------------ | ------- | ---------------------------------------------------------------------------------------------------------------------- |
-| [`@labkit/auth-contract`](packages/auth-contract/README.md)                 | Shared  | Auth shapes and protocol constants that are safe for server and browser code.                                          |
-| [`@labkit/runtime-config`](packages/runtime-config/README.md)               | Shared  | Small parsing helpers for environment and runtime configuration values.                                                |
-| [`@labkit/server-observability`](packages/server-observability/README.md)   | Server  | Structured logging helpers and safe error serialization.                                                               |
-| [`@labkit/server-config`](packages/server-config/README.md)                 | Server  | Config-reader helpers, env-file selection, CORS, runtime, and auth transport config.                                   |
-| [`@labkit/server-database`](packages/server-database/README.md)             | Server  | PostgreSQL and TypeORM option helpers, migration safety, and database manifests.                                       |
-| [`@labkit/server-graphql`](packages/server-graphql/README.md)               | Server  | Nest GraphQL module setup, HTTP/WS context helpers, scalars, directives, and plugins.                                  |
-| [`@labkit/server-auth`](packages/server-auth/README.md)                     | Server  | Auth providers, guards, lifecycle events, access-token helpers, refresh-session orchestration, and transport services. |
-| [`@labkit/server-auth-typeorm`](packages/server-auth-typeorm/README.md)     | Server  | TypeORM/PostgreSQL adapter for Labkit server auth persistence.                                                         |
-| [`@labkit/webapp-external-store`](packages/webapp-external-store/README.md) | Browser | Tiny subscription store primitive used by browser runtimes.                                                            |
-| [`@labkit/webapp-auth`](packages/webapp-auth/README.md)                     | Browser | Memory access-token session runtime, refresh/logout API helpers, auth errors, and boot orchestration.                  |
-| [`@labkit/webapp-realtime`](packages/webapp-realtime/README.md)             | Browser | GraphQL WS reconnect policy, heartbeat/watchdog handling, and connection state.                                        |
-| [`@labkit/webapp-graphql-relay`](packages/webapp-graphql-relay/README.md)   | Browser | Relay environment, auth-aware fetch, subscription integration, route preloading, and store helpers.                    |
-| [`@labkit/webapp-ui`](packages/webapp-ui/README.md)                         | Browser | UI framework helpers and contracts; concrete product components stay app-owned.                                        |
-| [`@labkit/webapp-build-config`](packages/webapp-build-config/README.md)     | Tooling | Vite build helpers for production env validation and package chunk grouping.                                           |
+| [`@omgjs/labkit-auth-contract`](packages/auth-contract/README.md)                 | Shared  | Auth shapes and protocol constants that are safe for server and browser code.                                          |
+| [`@omgjs/labkit-runtime-config`](packages/runtime-config/README.md)               | Shared  | Small parsing helpers for environment and runtime configuration values.                                                |
+| [`@omgjs/labkit-server-observability`](packages/server-observability/README.md)   | Server  | Structured logging helpers and safe error serialization.                                                               |
+| [`@omgjs/labkit-server-config`](packages/server-config/README.md)                 | Server  | Config-reader helpers, env-file selection, CORS, runtime, and auth transport config.                                   |
+| [`@omgjs/labkit-server-database`](packages/server-database/README.md)             | Server  | PostgreSQL and TypeORM option helpers, migration safety, and database manifests.                                       |
+| [`@omgjs/labkit-server-graphql`](packages/server-graphql/README.md)               | Server  | Nest GraphQL module setup, HTTP/WS context helpers, scalars, directives, and plugins.                                  |
+| [`@omgjs/labkit-server-auth`](packages/server-auth/README.md)                     | Server  | Auth providers, guards, lifecycle events, access-token helpers, refresh-session orchestration, and transport services. |
+| [`@omgjs/labkit-server-auth-typeorm`](packages/server-auth-typeorm/README.md)     | Server  | TypeORM/PostgreSQL adapter for Labkit server auth persistence.                                                         |
+| [`@omgjs/labkit-webapp-external-store`](packages/webapp-external-store/README.md) | Browser | Tiny subscription store primitive used by browser runtimes.                                                            |
+| [`@omgjs/labkit-webapp-auth`](packages/webapp-auth/README.md)                     | Browser | Memory access-token session runtime, refresh/logout API helpers, auth errors, and boot orchestration.                  |
+| [`@omgjs/labkit-webapp-realtime`](packages/webapp-realtime/README.md)             | Browser | GraphQL WS reconnect policy, heartbeat/watchdog handling, and connection state.                                        |
+| [`@omgjs/labkit-webapp-graphql-relay`](packages/webapp-graphql-relay/README.md)   | Browser | Relay environment, auth-aware fetch, subscription integration, route preloading, and store helpers.                    |
+| [`@omgjs/labkit-webapp-ui`](packages/webapp-ui/README.md)                         | Browser | UI framework helpers and contracts; concrete product components stay app-owned.                                        |
+| [`@omgjs/labkit-webapp-build-config`](packages/webapp-build-config/README.md)     | Tooling | Vite build helpers for production env validation and package chunk grouping.                                           |
 
 ## Dependency Direction
 
 Shared packages sit at the bottom:
 
 ```text
-@labkit/runtime-config
-@labkit/auth-contract
+@omgjs/labkit-runtime-config
+@omgjs/labkit-auth-contract
         ^
         |
         +-------------------+
         |                   |
-@labkit/server-*      @labkit/webapp-*
+@omgjs/labkit-server-*      @omgjs/labkit-webapp-*
         |                   |
 apps/server           apps/webapp
 ```
@@ -58,10 +61,10 @@ Rules:
 A server app usually composes the packages in layers:
 
 ```ts
-import { createServerAuthAccessTokenGraphqlModule } from "@labkit/server-auth";
-import { getEnvFilePaths } from "@labkit/server-config";
-import { composeServerDatabaseManifests } from "@labkit/server-database";
-import { serverAuthTypeormDatabaseManifest } from "@labkit/server-auth-typeorm";
+import { createServerAuthAccessTokenGraphqlModule } from "@omgjs/labkit-server-auth";
+import { getEnvFilePaths } from "@omgjs/labkit-server-config";
+import { composeServerDatabaseManifests } from "@omgjs/labkit-server-database";
+import { serverAuthTypeormDatabaseManifest } from "@omgjs/labkit-server-auth-typeorm";
 ```
 
 Typical ownership:
@@ -80,10 +83,10 @@ A webapp usually keeps app-local adapter files that supply product choices to
 Labkit helpers:
 
 ```ts
-import { createWebappAuthSession } from "@labkit/webapp-auth";
-import { createWebappRelayEnvironment } from "@labkit/webapp-graphql-relay";
-import { createWebappRealtimeConnection } from "@labkit/webapp-realtime";
-import { createWebappThemeController } from "@labkit/webapp-ui";
+import { createWebappAuthSession } from "@omgjs/labkit-webapp-auth";
+import { createWebappRelayEnvironment } from "@omgjs/labkit-webapp-graphql-relay";
+import { createWebappRealtimeConnection } from "@omgjs/labkit-webapp-realtime";
+import { createWebappThemeController } from "@omgjs/labkit-webapp-ui";
 ```
 
 Typical ownership:
@@ -136,8 +139,8 @@ support lands:
    unless provider metadata is added intentionally.
 
 The first live release is expected to consume the committed Rush change files
-and publish the public Labkit packages as `0.1.0`. `@labkit/eslint-config`
-stays private repository tooling.
+and publish the public Labkit packages as `0.1.0`. The private
+`@omgjs/labkit-eslint-config` package stays repository tooling.
 
 ## Documentation Policy
 

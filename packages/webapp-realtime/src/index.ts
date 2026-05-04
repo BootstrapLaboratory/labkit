@@ -3,11 +3,11 @@ import {
   type Client,
   type ClientOptions,
 } from "graphql-ws";
-import { parseFiniteNumber } from "@labkit/runtime-config";
+import { parseFiniteNumber } from "@omgjs/labkit-runtime-config";
 import {
   createExternalStore,
   type ExternalStoreUnsubscribe,
-} from "@labkit/webapp-external-store";
+} from "@omgjs/labkit-webapp-external-store";
 
 export type GraphqlWsConnectionStatus =
   | "idle"

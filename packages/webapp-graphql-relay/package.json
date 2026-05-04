@@ -1,5 +1,5 @@
 {
-  "name": "@labkit/webapp-graphql-relay",
+  "name": "@omgjs/labkit-webapp-graphql-relay",
   "version": "0.0.1",
   "description": "Relay environment, network, route preloading, and store helpers for Labkit webapps.",
   "license": "MIT",
@@ -38,13 +38,13 @@
     "verify": "npm run test"
   },
   "dependencies": {
-    "@labkit/auth-contract": "0.0.1",
+    "@omgjs/labkit-auth-contract": "0.0.1",
     "graphql-ws": "^6.0.8",
     "react-relay": "^20.1.1",
     "relay-runtime": "^20.1.1"
   },
   "devDependencies": {
-    "@labkit/eslint-config": "0.0.1",
+    "@omgjs/labkit-eslint-config": "0.0.1",
     "@types/node": "^25.6.0",
     "@types/react-relay": "^18.2.1",
     "@types/relay-runtime": "^20.1.1",

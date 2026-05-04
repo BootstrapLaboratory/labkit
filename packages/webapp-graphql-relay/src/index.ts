@@ -25,7 +25,7 @@ import type { Client, FormattedExecutionResult, Sink } from "graphql-ws";
 import {
   formatBearerToken,
   GRAPHQL_WS_AUTHORIZATION_PARAM,
-} from "@labkit/auth-contract";
+} from "@omgjs/labkit-auth-contract";
 
 export type GraphqlRelayRequestCredentials = "include" | "omit" | "same-origin";
 

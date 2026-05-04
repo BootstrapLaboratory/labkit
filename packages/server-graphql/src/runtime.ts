@@ -1,12 +1,12 @@
 import { randomUUID } from "node:crypto";
 import type { IncomingHttpHeaders } from "node:http";
-import { readConfigString, type ConfigReader } from "@labkit/server-config";
+import { readConfigString, type ConfigReader } from "@omgjs/labkit-server-config";
 import {
   isGraphqlSubscriptionLoggingEnabled,
   logStructuredEvent,
   type StructuredLogDetails,
   type StructuredLogger,
-} from "@labkit/server-observability";
+} from "@omgjs/labkit-server-observability";
 
 export type GraphqlWsExtra<TPrincipal = unknown> = {
   connectionId?: string;

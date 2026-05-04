@@ -1,5 +1,5 @@
 {
-  "name": "@labkit/webapp-external-store",
+  "name": "@omgjs/labkit-webapp-external-store",
   "version": "0.0.1",
   "description": "Tiny browser external-store primitive for Labkit webapp runtimes.",
   "license": "MIT",
@@ -38,7 +38,7 @@
     "verify": "npm run test"
   },
   "devDependencies": {
-    "@labkit/eslint-config": "0.0.1",
+    "@omgjs/labkit-eslint-config": "0.0.1",
     "@types/node": "^25.6.0",
     "eslint": "^10.3.0",
     "typescript": "^6.0.3"

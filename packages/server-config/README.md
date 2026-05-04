@@ -1,7 +1,7 @@
-# @labkit/server-config
+# @omgjs/labkit-server-config
 
-`@labkit/server-config` contains server-side configuration helpers and typed
-readers. It adapts generic parsing from `@labkit/runtime-config` to server
+`@omgjs/labkit-server-config` contains server-side configuration helpers and typed
+readers. It adapts generic parsing from `@omgjs/labkit-runtime-config` to server
 configuration sources.
 
 ## Owns
@@ -28,7 +28,7 @@ import {
   getEnvFilePaths,
   readRequiredConfigString,
   readServerCorsOptions,
-} from "@labkit/server-config";
+} from "@omgjs/labkit-server-config";
 
 ConfigModule.forRoot({
   isGlobal: true,

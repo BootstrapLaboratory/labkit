@@ -1,6 +1,6 @@
-# @labkit/server-graphql
+# @omgjs/labkit-server-graphql
 
-`@labkit/server-graphql` contains Nest GraphQL setup helpers and reusable
+`@omgjs/labkit-server-graphql` contains Nest GraphQL setup helpers and reusable
 GraphQL runtime constraints.
 
 ## Owns
@@ -24,11 +24,11 @@ GraphQL runtime constraints.
 
 ## Usage
 
-Most apps consume this package through `@labkit/server-auth`, which layers auth
+Most apps consume this package through `@omgjs/labkit-server-auth`, which layers auth
 integration on top:
 
 ```ts
-import { createServerAuthAccessTokenGraphqlModule } from "@labkit/server-auth";
+import { createServerAuthAccessTokenGraphqlModule } from "@omgjs/labkit-server-auth";
 
 createServerAuthAccessTokenGraphqlModule({
   imports: [IdentityModule],

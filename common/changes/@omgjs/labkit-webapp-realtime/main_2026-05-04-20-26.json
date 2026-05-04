@@ -3,9 +3,9 @@
     {
       "comment": "Prepare the first public Labkit release.",
       "type": "minor",
-      "packageName": "@labkit/server-graphql"
+      "packageName": "@omgjs/labkit-webapp-realtime"
     }
   ],
-  "packageName": "@labkit/server-graphql",
+  "packageName": "@omgjs/labkit-webapp-realtime",
   "email": "rush-delivery@users.noreply.github.com"
 }

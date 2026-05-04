@@ -3,9 +3,9 @@
     {
       "comment": "Prepare the first public Labkit release.",
       "type": "minor",
-      "packageName": "@labkit/server-database"
+      "packageName": "@omgjs/labkit-webapp-external-store"
     }
   ],
-  "packageName": "@labkit/server-database",
+  "packageName": "@omgjs/labkit-webapp-external-store",
   "email": "rush-delivery@users.noreply.github.com"
 }

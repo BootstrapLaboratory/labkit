@@ -1,4 +1,4 @@
-import { parseBoolean } from "@labkit/runtime-config";
+import { parseBoolean } from "@omgjs/labkit-runtime-config";
 
 export type StructuredLogLevel = "log" | "warn" | "error";
 export type StructuredLogDetails = Record<string, unknown>;
