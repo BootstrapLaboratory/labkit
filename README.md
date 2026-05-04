@@ -123,7 +123,7 @@ Pull requests run direct Rush validation in
 - `rush verify`
 
 Package release is configured in `.github/workflows/package-release.yaml`.
-It uses `BootstrapLaboratory/rush-delivery@v0.6.3` with the
+It uses `BootstrapLaboratory/rush-delivery@v0.6.4` with the
 `release-packages` entrypoint, `.dagger/release/npm.yaml`, and
 `common/config/rush/.npmrc-publish`.
 
