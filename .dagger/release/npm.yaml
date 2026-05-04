@@ -1,4 +1,4 @@
-# yaml-language-server: $schema=https://bootstraplaboratory.github.io/rush-delivery/schemas/v0.6.2/npm-release.schema.json
+# yaml-language-server: $schema=https://bootstraplaboratory.github.io/rush-delivery/schemas/v0.6.3/npm-release.schema.json
 
 kind: npm
 
