@@ -1,6 +1,6 @@
 {
   "name": "@omgjs/labkit-server-database",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Server database helpers for TypeORM options, migration safety, and database manifest composition.",
   "license": "MIT",
   "repository": {
@@ -35,7 +35,7 @@
     "verify": "npm run test"
   },
   "dependencies": {
-    "@omgjs/labkit-server-config": "0.1.0"
+    "@omgjs/labkit-server-config": "0.1.1"
   },
   "devDependencies": {
     "@omgjs/labkit-eslint-config": "0.0.1",

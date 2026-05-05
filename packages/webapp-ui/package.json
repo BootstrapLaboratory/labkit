@@ -1,6 +1,6 @@
 {
   "name": "@omgjs/labkit-webapp-ui",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "UI framework helpers and contracts for Labkit webapps without concrete product components.",
   "license": "MIT",
   "repository": {
@@ -38,7 +38,7 @@
     "verify": "npm run test"
   },
   "dependencies": {
-    "@omgjs/labkit-webapp-external-store": "0.1.0"
+    "@omgjs/labkit-webapp-external-store": "0.1.1"
   },
   "devDependencies": {
     "@omgjs/labkit-eslint-config": "0.0.1",

@@ -2,6 +2,18 @@
   "name": "@omgjs/labkit-webapp-external-store",
   "entries": [
     {
+      "version": "0.1.1",
+      "tag": "@omgjs/labkit-webapp-external-store_v0.1.1",
+      "date": "Tue, 05 May 2026 00:57:28 GMT",
+      "comments": {
+        "patch": [
+          {
+            "comment": "Document the Labkit release channel for npm consumers."
+          }
+        ]
+      }
+    },
+    {
       "version": "0.1.0",
       "tag": "@omgjs/labkit-webapp-external-store_v0.1.0",
       "date": "Tue, 05 May 2026 00:11:51 GMT",

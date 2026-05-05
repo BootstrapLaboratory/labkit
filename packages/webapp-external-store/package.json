@@ -1,6 +1,6 @@
 {
   "name": "@omgjs/labkit-webapp-external-store",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Tiny browser external-store primitive for Labkit webapp runtimes.",
   "license": "MIT",
   "repository": {

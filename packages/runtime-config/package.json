@@ -1,6 +1,6 @@
 {
   "name": "@omgjs/labkit-runtime-config",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Small runtime configuration parsing helpers for Labkit packages and applications.",
   "license": "MIT",
   "repository": {
