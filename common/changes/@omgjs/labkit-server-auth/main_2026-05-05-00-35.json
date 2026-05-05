@@ -1,0 +1,11 @@
+{
+  "changes": [
+    {
+      "comment": "Document the Labkit release channel for npm consumers.",
+      "type": "patch",
+      "packageName": "@omgjs/labkit-server-auth"
+    }
+  ],
+  "packageName": "@omgjs/labkit-server-auth",
+  "email": "rush-delivery@users.noreply.github.com"
+}

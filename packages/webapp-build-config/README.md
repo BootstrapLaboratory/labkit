@@ -62,6 +62,12 @@ Current review outcome:
 - No server build-tools package is needed until schema or migration scripts are
   reused by another app or become complex enough to test independently.
 
+## Release Channel
+
+This package is published on npm as part of the Labkit release train. Patch
+releases may include documentation-only clarifications, so consumers can update
+within the same minor line without expecting runtime API changes.
+
 ## Package Format
 
 This package publishes both CommonJS and ESM entry points. Vite should use the

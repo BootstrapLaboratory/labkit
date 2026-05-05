@@ -56,6 +56,12 @@ loader: ({ abortController, context }) => ({
 Endpoint resolution intentionally remains app-owned until another browser app
 needs the same Vite URL policy.
 
+## Release Channel
+
+This package is published on npm as part of the Labkit release train. Patch
+releases may include documentation-only clarifications, so consumers can update
+within the same minor line without expecting runtime API changes.
+
 ## Package Format
 
 This package publishes both CommonJS and ESM entry points. Browser bundlers

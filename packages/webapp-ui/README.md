@@ -73,6 +73,12 @@ all visual implementation in the app. When using vanilla-extract, keep
 serializable, then use a normal `.ts` app adapter to create the persisted theme
 controller.
 
+## Release Channel
+
+This package is published on npm as part of the Labkit release train. Patch
+releases may include documentation-only clarifications, so consumers can update
+within the same minor line without expecting runtime API changes.
+
 ## Package Format
 
 This package publishes both CommonJS and ESM entry points. Browser bundlers

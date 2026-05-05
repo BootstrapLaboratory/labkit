@@ -41,6 +41,12 @@ const token = extractBearerToken(authorization);
 Server packages use the same constants as browser packages, so websocket auth
 params, bearer token handling, and auth-required error checks do not drift.
 
+## Release Channel
+
+This package is published on npm as part of the Labkit release train. Patch
+releases may include documentation-only clarifications, so consumers can update
+within the same minor line without expecting runtime API changes.
+
 ## Package Format
 
 This package publishes both CommonJS and ESM entry points. Use the package root

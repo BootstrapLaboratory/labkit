@@ -53,6 +53,12 @@ App-owned adapter files usually export stable names such as `getAccessToken`,
 `setAuthSession`, `refreshStoredAuthSession`, and React hooks. Labkit provides
 the store and policy; the app decides how routes and components use it.
 
+## Release Channel
+
+This package is published on npm as part of the Labkit release train. Patch
+releases may include documentation-only clarifications, so consumers can update
+within the same minor line without expecting runtime API changes.
+
 ## Package Format
 
 This package publishes both CommonJS and ESM entry points. Browser bundlers

@@ -41,6 +41,12 @@ Use `createServerGraphqlModule` directly when a server app wants to provide its
 own principal resolution and GraphQL auth integration without the server-auth
 adapter.
 
+## Release Channel
+
+This package is published on npm as part of the Labkit release train. Patch
+releases may include documentation-only clarifications, so consumers can update
+within the same minor line without expecting runtime API changes.
+
 ## Package Format
 
 This is a server-only CommonJS package.

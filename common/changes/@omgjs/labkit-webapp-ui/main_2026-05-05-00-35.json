@@ -1,0 +1,11 @@
+{
+  "changes": [
+    {
+      "comment": "Document the Labkit release channel for npm consumers.",
+      "type": "patch",
+      "packageName": "@omgjs/labkit-webapp-ui"
+    }
+  ],
+  "packageName": "@omgjs/labkit-webapp-ui",
+  "email": "rush-delivery@users.noreply.github.com"
+}

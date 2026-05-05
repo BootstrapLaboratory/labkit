@@ -41,6 +41,12 @@ const allowedOrigins = parseList(env.CORS_ORIGIN);
 Server packages usually wrap these helpers with a config reader. Browser
 packages usually pass Vite values from app-owned adapter files.
 
+## Release Channel
+
+This package is published on npm as part of the Labkit release train. Patch
+releases may include documentation-only clarifications, so consumers can update
+within the same minor line without expecting runtime API changes.
+
 ## Package Format
 
 This package publishes both CommonJS and ESM entry points. Use the package root
