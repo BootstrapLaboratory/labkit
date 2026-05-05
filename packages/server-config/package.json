@@ -1,6 +1,6 @@
 {
   "name": "@omgjs/labkit-server-config",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Server runtime configuration helpers for CORS, env files, auth transport, and app options.",
   "license": "MIT",
   "repository": {
@@ -35,8 +35,8 @@
     "verify": "npm run test"
   },
   "dependencies": {
-    "@omgjs/labkit-auth-contract": "0.0.1",
-    "@omgjs/labkit-runtime-config": "0.0.1"
+    "@omgjs/labkit-auth-contract": "0.1.0",
+    "@omgjs/labkit-runtime-config": "0.1.0"
   },
   "devDependencies": {
     "@omgjs/labkit-eslint-config": "0.0.1",

@@ -1,6 +1,6 @@
 {
   "name": "@omgjs/labkit-server-graphql",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Nest GraphQL setup helpers, context integration, scalars, directives, plugins, and runtime options.",
   "license": "MIT",
   "repository": {
@@ -37,9 +37,9 @@
   "dependencies": {
     "@apollo/server": "^5.5.0",
     "@graphql-tools/utils": "~11.1.0",
-    "@omgjs/labkit-auth-contract": "0.0.1",
-    "@omgjs/labkit-server-config": "0.0.1",
-    "@omgjs/labkit-server-observability": "0.0.1",
+    "@omgjs/labkit-auth-contract": "0.1.0",
+    "@omgjs/labkit-server-config": "0.1.0",
+    "@omgjs/labkit-server-observability": "0.1.0",
     "@nestjs/apollo": "^13.3.0",
     "@nestjs/common": "^11.1.19",
     "@nestjs/core": "^11.1.19",
