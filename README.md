@@ -123,9 +123,14 @@ Pull requests run direct Rush validation in
 - `rush verify`
 
 Package release is configured in `.github/workflows/package-release.yaml`.
-It uses `BootstrapLaboratory/rush-delivery@v0.6.4` with the
+It uses `BootstrapLaboratory/rush-delivery@v0.6.5` with the
 `release-packages` entrypoint, `.dagger/release/npm.yaml`, and
 `common/config/rush/.npmrc-publish`.
+
+The npm release metadata sets provenance to `false` explicitly because this
+workflow currently publishes with an npm token from inside Rush Delivery's
+release runtime. Provenance should be enabled later when Rush Delivery supports
+the npm/GitHub Actions OIDC path end to end.
 
 Before running a live release, add the GitHub Actions secret `NPM_TOKEN`.
 Keep `toolchain-image-provider` and `rush-cache-provider` set to `off` unless

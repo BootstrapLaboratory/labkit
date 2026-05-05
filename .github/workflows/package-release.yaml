@@ -22,7 +22,7 @@ jobs:
       packages: write
     steps:
       - name: Run Rush Delivery package release
-        uses: BootstrapLaboratory/rush-delivery@v0.6.4
+        uses: BootstrapLaboratory/rush-delivery@v0.6.5
         with:
           entrypoint: release-packages
           dry-run: "false"

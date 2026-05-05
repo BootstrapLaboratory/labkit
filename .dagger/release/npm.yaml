@@ -1,4 +1,4 @@
-# yaml-language-server: $schema=https://bootstraplaboratory.github.io/rush-delivery/schemas/v0.6.4/npm-release.schema.json
+# yaml-language-server: $schema=https://bootstraplaboratory.github.io/rush-delivery/schemas/v0.6.5/npm-release.schema.json
 
 kind: npm
 
@@ -14,4 +14,4 @@ publish:
   registry: https://registry.npmjs.org/
   tag: latest
   access: public
-  provenance: true
+  provenance: false
