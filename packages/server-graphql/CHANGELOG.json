@@ -1,0 +1,28 @@
+{
+  "name": "@omgjs/labkit-server-graphql",
+  "entries": [
+    {
+      "version": "0.1.0",
+      "tag": "@omgjs/labkit-server-graphql_v0.1.0",
+      "date": "Tue, 05 May 2026 00:11:51 GMT",
+      "comments": {
+        "minor": [
+          {
+            "comment": "Prepare the first public Labkit release."
+          }
+        ],
+        "dependency": [
+          {
+            "comment": "Updating dependency \"@omgjs/labkit-auth-contract\" from `0.0.1` to `0.1.0`"
+          },
+          {
+            "comment": "Updating dependency \"@omgjs/labkit-server-config\" from `0.0.1` to `0.1.0`"
+          },
+          {
+            "comment": "Updating dependency \"@omgjs/labkit-server-observability\" from `0.0.1` to `0.1.0`"
+          }
+        ]
+      }
+    }
+  ]
+}

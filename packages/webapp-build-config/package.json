@@ -1,6 +1,6 @@
 {
   "name": "@omgjs/labkit-webapp-build-config",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Vite build configuration helpers for Labkit webapps.",
   "license": "MIT",
   "repository": {
