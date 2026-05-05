@@ -1,0 +1,13 @@
+services:
+  devcontainer:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    user: root
+    volumes:
+      - ..:/workspace:rw,Z
+    security_opt:
+      - label=disable
+    environment:
+      DOCKER_HOST: unix:///run/host-user-runtime/podman/podman.sock
+    command: sleep infinity

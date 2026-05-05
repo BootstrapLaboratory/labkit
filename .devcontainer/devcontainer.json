@@ -1,0 +1,26 @@
+{
+  "name": "labkit.lib.bootstraplaboratory",
+  "dockerComposeFile": "docker-compose.devcontainer.yml",
+  "service": "devcontainer",
+  "workspaceFolder": "/workspace",
+  "remoteUser": "root",
+  "containerUser": "root",
+  "remoteEnv": {
+    "DOCKER_HOST": "unix:///run/host-user-runtime/podman/podman.sock"
+  },
+  "mounts": [
+    "source=home,target=/root,type=volume",
+    "source=${localEnv:XDG_RUNTIME_DIR},target=/run/host-user-runtime,type=bind"
+  ],
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "redhat.vscode-yaml",
+        "eamodio.gitlens",
+        "openai.chatgpt",
+        "trunk.io"
+      ]
+    }
+  },
+  "postCreateCommand": "bash -lc 'bash /workspace/.devcontainer/postCreate.sh'"
+}
