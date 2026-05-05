@@ -1,0 +1,49 @@
+{
+  "name": "rush-delivery-docusaurus",
+  "private": true,
+  "scripts": {
+    "sync-docs": "node scripts/sync-docs.mjs",
+    "sync-versioned-docs": "node scripts/sync-versioned-docs.mjs",
+    "sync-versioned-inputs": "node scripts/sync-versioned-inputs.mjs",
+    "sync-static": "node scripts/sync-static.mjs",
+    "start": "npm run sync-docs && npm run sync-versioned-inputs && npm run sync-static && docusaurus start --host 0.0.0.0",
+    "build": "npm run sync-docs && npm run sync-versioned-inputs && npm run sync-static && docusaurus build",
+    "serve": "docusaurus serve --host 0.0.0.0",
+    "clear": "docusaurus clear",
+    "typecheck": "tsc --noEmit",
+    "check": "npm run sync-docs && npm run sync-versioned-inputs && npm run sync-static && npm run typecheck && docusaurus build"
+  },
+  "dependencies": {
+    "@docusaurus/core": "3.10.0",
+    "@docusaurus/preset-classic": "3.10.0",
+    "@mdx-js/react": "3.1.1",
+    "clsx": "2.1.1",
+    "prism-react-renderer": "2.4.1",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "yaml": "2.8.3"
+  },
+  "devDependencies": {
+    "@docusaurus/faster": "3.10.0",
+    "@docusaurus/module-type-aliases": "3.10.0",
+    "@docusaurus/tsconfig": "3.10.0",
+    "@docusaurus/types": "3.10.0",
+    "typescript": "5.9.3"
+  },
+  "overrides": {
+    "serialize-javascript": "7.0.5",
+    "uuid": "14.0.0"
+  },
+  "browserslist": {
+    "production": [
+      ">0.5%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 3 chrome version",
+      "last 3 firefox version",
+      "last 5 safari version"
+    ]
+  }
+}

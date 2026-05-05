@@ -14,6 +14,12 @@
     "rush:test": "node common/scripts/install-run-rush.js test",
     "rush:verify": "node common/scripts/install-run-rush.js verify",
     "rush:version": "node common/scripts/install-run-rush.js version",
-    "rush:publish": "node common/scripts/install-run-rush.js publish"
+    "rush:publish": "node common/scripts/install-run-rush.js publish",
+    "site:docusaurus:build": "npm --prefix website-docusaurus run build",
+    "site:docusaurus:check": "npm --prefix website-docusaurus run check",
+    "site:docusaurus:sync-docs": "npm --prefix website-docusaurus run sync-docs",
+    "site:docusaurus:sync-static": "npm --prefix website-docusaurus run sync-static",
+    "site:docusaurus:sync-versioned-docs": "npm --prefix website-docusaurus run sync-versioned-docs",
+    "site:docusaurus:sync-versioned-inputs": "npm --prefix website-docusaurus run sync-versioned-inputs"
   }
 }

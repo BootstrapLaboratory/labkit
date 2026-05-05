@@ -1,0 +1,87 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="88 58 784 514" role="img" aria-labelledby="title desc">
+  <title id="title">Rush Delivery release framework diagram</title>
+  <desc id="desc">Rush and project metadata connect vertically to Rush Delivery, which connects vertically to planned deploys, PR checks, releases, and versioning.</desc>
+  <defs>
+    <linearGradient id="nodeStroke" x1="120" y1="76" x2="840" y2="544" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#93c5fd"/>
+      <stop offset="0.56" stop-color="#2dd4bf"/>
+      <stop offset="1" stop-color="#64748b"/>
+    </linearGradient>
+    <linearGradient id="nodeFill" x1="120" y1="76" x2="840" y2="544" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#162033" stop-opacity="0.92"/>
+      <stop offset="0.52" stop-color="#0f172a" stop-opacity="0.96"/>
+      <stop offset="1" stop-color="#102725" stop-opacity="0.9"/>
+    </linearGradient>
+    <linearGradient id="connectorStroke" x1="480" y1="176" x2="480" y2="470" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#93c5fd"/>
+      <stop offset="1" stop-color="#2dd4bf"/>
+    </linearGradient>
+    <style>
+      .title {
+        fill: #f8fafc;
+        font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        font-size: 24px;
+        font-weight: 850;
+        letter-spacing: 0;
+      }
+      .small-title {
+        fill: #e5e7eb;
+        font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        font-size: 16px;
+        font-weight: 850;
+        letter-spacing: 0;
+      }
+      .shell {
+        fill: url(#nodeFill);
+        stroke: url(#nodeStroke);
+        stroke-width: 1.35;
+      }
+      .connector {
+        fill: none;
+        stroke: url(#connectorStroke);
+        stroke-width: 2.2;
+        stroke-linecap: round;
+      }
+    </style>
+  </defs>
+
+  <g opacity="0.92">
+    <path class="connector" d="M480 184V250"/>
+    <path class="connector" d="M201 380V480"/>
+    <path class="connector" d="M387 380V480"/>
+    <path class="connector" d="M573 380V480"/>
+    <path class="connector" d="M759 380V480"/>
+  </g>
+
+  <g>
+    <g>
+      <path class="shell" d="M148 76h664l28 28v54l-28 28H148l-28-28v-54z"/>
+      <text x="480" y="141" text-anchor="middle" class="title">Rush + Project Metadata</text>
+    </g>
+
+    <g>
+      <path class="shell" d="M152 250h656l32 32v66l-32 32H152l-32-32v-66z"/>
+      <text x="480" y="323" text-anchor="middle" class="title">Rush Delivery</text>
+    </g>
+
+    <g>
+      <path class="shell" d="M136 480h130l16 14v36l-16 14H136l-16-14v-36z"/>
+      <text x="201" y="518" text-anchor="middle" class="small-title">Planned Deploy</text>
+    </g>
+
+    <g>
+      <path class="shell" d="M322 480h130l16 14v36l-16 14H322l-16-14v-36z"/>
+      <text x="387" y="518" text-anchor="middle" class="small-title">PR Checks</text>
+    </g>
+
+    <g>
+      <path class="shell" d="M508 480h130l16 14v36l-16 14H508l-16-14v-36z"/>
+      <text x="573" y="518" text-anchor="middle" class="small-title">Release</text>
+    </g>
+
+    <g>
+      <path class="shell" d="M694 480h130l16 14v36l-16 14H694l-16-14v-36z"/>
+      <text x="759" y="518" text-anchor="middle" class="small-title">Versioning</text>
+    </g>
+  </g>
+</svg>

@@ -1,0 +1,12 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="630" fill="#F9FAFB"/>
+  <rect x="88" y="96" width="1024" height="438" rx="28" fill="white" stroke="#D0D5DD" stroke-width="2"/>
+  <text x="130" y="210" fill="#101828" font-family="Arial, sans-serif" font-size="86" font-weight="800">Rush Delivery</text>
+  <text x="136" y="282" fill="#475467" font-family="Arial, sans-serif" font-size="34">Dagger-powered CI delivery for Rush monorepos</text>
+  <rect x="136" y="360" width="928" height="74" rx="18" fill="#EFF4FF"/>
+  <circle cx="190" cy="397" r="16" fill="#155EEF"/>
+  <rect x="234" y="388" width="240" height="18" rx="9" fill="#155EEF" opacity="0.55"/>
+  <circle cx="540" cy="397" r="16" fill="#F79009"/>
+  <rect x="584" y="388" width="240" height="18" rx="9" fill="#F79009" opacity="0.55"/>
+  <circle cx="890" cy="397" r="16" fill="#155EEF"/>
+</svg>

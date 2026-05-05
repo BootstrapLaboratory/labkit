@@ -1,0 +1,169 @@
+items:
+  - title: Introduction
+    source: ../docs/README.md
+    id: introduction
+    description: What Labkit is for and how the package family fits together.
+  - title: Architecture
+    source: ../docs/architecture.md
+    id: architecture
+    description: Server, browser, shared, and GraphQL contract boundaries.
+  - title: Package Groups
+    source: ../docs/package-groups.md
+    id: package-groups
+    description: Package map, dependency direction, runtime groups, and install sets.
+  - title: Original Project
+    source: ../docs/original-project.md
+    id: original-project
+    description: How the reference app uses Labkit concepts.
+  - title: GraphQL Contract
+    source: ../docs/graphql-contract.md
+    id: graphql-contract
+    description: Server-owned schema and browser-owned Relay operations.
+  - title: Auth And Sessions
+    source: ../docs/auth-and-sessions.md
+    id: auth-and-sessions
+    description: Shared auth contract, server auth flow, and browser sessions.
+  - title: Realtime
+    source: ../docs/realtime.md
+    id: realtime
+    description: GraphQL websocket auth, reconnects, and pub/sub boundaries.
+  - title: Server Composition
+    source: ../docs/server-composition.md
+    id: server-composition
+    description: Nest module, bootstrap, config, GraphQL, and auth composition.
+  - title: Webapp Composition
+    source: ../docs/webapp-composition.md
+    id: webapp-composition
+    description: React/Vite adapter files over Labkit browser packages.
+  - title: Database And Migrations
+    source: ../docs/database-and-migrations.md
+    id: database-and-migrations
+    description: TypeORM manifests, PostgreSQL options, and migration safety.
+  - title: Configuration
+    source: ../docs/configuration.md
+    id: configuration
+    description: Runtime config readers, server keys, and browser build values.
+  - title: Documentation Versioning
+    source: ../docs/documentation-versioning.md
+    id: documentation-versioning
+    description: Docusaurus source docs, version snapshots, and build flow.
+  - title: Packages
+    children:
+      - title: Auth Contract
+        source: ../docs/packages/auth-contract.md
+        id: packages/auth-contract
+      - title: Runtime Config
+        source: ../docs/packages/runtime-config.md
+        id: packages/runtime-config
+      - title: Server Observability
+        source: ../docs/packages/server-observability.md
+        id: packages/server-observability
+      - title: Server Config
+        source: ../docs/packages/server-config.md
+        id: packages/server-config
+      - title: Server Database
+        source: ../docs/packages/server-database.md
+        id: packages/server-database
+      - title: Server GraphQL
+        source: ../docs/packages/server-graphql.md
+        id: packages/server-graphql
+      - title: Server Auth
+        source: ../docs/packages/server-auth.md
+        id: packages/server-auth
+      - title: Server Auth TypeORM
+        source: ../docs/packages/server-auth-typeorm.md
+        id: packages/server-auth-typeorm
+      - title: Webapp External Store
+        source: ../docs/packages/webapp-external-store.md
+        id: packages/webapp-external-store
+      - title: Webapp Auth
+        source: ../docs/packages/webapp-auth.md
+        id: packages/webapp-auth
+      - title: Webapp Realtime
+        source: ../docs/packages/webapp-realtime.md
+        id: packages/webapp-realtime
+      - title: Webapp GraphQL Relay
+        source: ../docs/packages/webapp-graphql-relay.md
+        id: packages/webapp-graphql-relay
+      - title: Webapp UI
+        source: ../docs/packages/webapp-ui.md
+        id: packages/webapp-ui
+      - title: Webapp Build Config
+        source: ../docs/packages/webapp-build-config.md
+        id: packages/webapp-build-config
+
+quickStartItems:
+  - title: Start Here
+    source: ../docs/quick-start/README.md
+    id: quick-start
+    description: Plain Nest/Vite setup and install map.
+  - title: Server
+    source: ../docs/quick-start/server.md
+    id: quick-start/server
+    description: Minimal Nest GraphQL server with Labkit config.
+  - title: Database
+    source: ../docs/quick-start/database.md
+    id: quick-start/database
+    description: TypeORM options and feature manifests.
+  - title: Auth
+    source: ../docs/quick-start/auth.md
+    id: quick-start/auth
+    description: Server auth adapters and TypeORM persistence.
+  - title: Webapp
+    source: ../docs/quick-start/webapp.md
+    id: quick-start/webapp
+    description: React/Vite auth, endpoints, and Relay environment adapters.
+  - title: Realtime
+    source: ../docs/quick-start/realtime.md
+    id: quick-start/realtime
+    description: Browser GraphQL websocket connection state.
+  - title: Theme
+    source: ../docs/quick-start/theme.md
+    id: quick-start/theme
+    description: Minimal persisted theme controller.
+  - title: Build And Check
+    source: ../docs/quick-start/build-and-check.md
+    id: quick-start/build-and-check
+    description: Local checks and production build env validation.
+
+tutorialItems:
+  - title: Tutorial
+    source: ../docs/tutorial/README.md
+    id: tutorial
+    description: Guided architecture build-out.
+  - title: System Overview
+    source: ../docs/tutorial/01-system-overview.md
+    id: tutorial/system-overview
+  - title: Project Foundation
+    source: ../docs/tutorial/02-project-foundation.md
+    id: tutorial/project-foundation
+  - title: GraphQL Contract
+    source: ../docs/tutorial/03-graphql-contract.md
+    id: tutorial/graphql-contract
+  - title: Server Runtime
+    source: ../docs/tutorial/04-server-runtime.md
+    id: tutorial/server-runtime
+  - title: Database And Feature Manifests
+    source: ../docs/tutorial/05-database-and-feature-manifests.md
+    id: tutorial/database-and-feature-manifests
+  - title: Auth Server
+    source: ../docs/tutorial/06-auth-server.md
+    id: tutorial/auth-server
+  - title: Webapp Runtime
+    source: ../docs/tutorial/07-webapp-runtime.md
+    id: tutorial/webapp-runtime
+  - title: Browser Auth Security
+    source: ../docs/tutorial/08-browser-auth-security.md
+    id: tutorial/browser-auth-security
+  - title: Realtime Subscriptions
+    source: ../docs/tutorial/09-realtime-subscriptions.md
+    id: tutorial/realtime-subscriptions
+  - title: UI And Theme Boundaries
+    source: ../docs/tutorial/10-ui-and-theme-boundaries.md
+    id: tutorial/ui-and-theme-boundaries
+  - title: Runtime Readiness
+    source: ../docs/tutorial/11-runtime-readiness.md
+    id: tutorial/runtime-readiness
+  - title: Evolving An App
+    source: ../docs/tutorial/12-evolving-an-app.md
+    id: tutorial/evolving-an-app

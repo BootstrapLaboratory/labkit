@@ -4,3 +4,10 @@ node_modules/
 **/dist/
 **/rush-logs/
 coverage/
+/website-docusaurus/.docusaurus/
+/website-docusaurus/build/
+/website-docusaurus/docs/
+/website-docusaurus/static/schemas/
+/website-docusaurus/versioned_docs/
+/website-docusaurus/versioned_sidebars/
+/website-docusaurus/versions.json
