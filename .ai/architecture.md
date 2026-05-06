@@ -8,6 +8,25 @@ consuming applications.
 This document is self-contained. It uses plain repository paths, not Markdown
 links, so agents can copy paths without assuming a rendered document.
 
+## Project Philosophy
+
+Labkit is moving toward a cohesive GraphQL application framework for the
+TypeScript ecosystem. The inspiration is the role Spring plays in the Java
+world: not Spring's APIs or architecture directly, but the idea that application
+teams should get a well-designed foundation instead of assembling every
+technical concern by hand.
+
+Current Labkit packages build on NestJS, Relay, GraphQL, and TypeScript. Those
+tools are powerful, but they are still low-level and technical. Labkit should
+turn recurring architecture for serious GraphQL client/server applications into
+reusable packages, defaults, contracts, and conventions.
+
+When changing Labkit, prefer APIs that let consuming applications describe
+intent declaratively while Labkit owns reusable mechanics. A good package shape
+usually has production-ready defaults for normal users and explicit extension
+interfaces for teams that need to replace one policy without forking the whole
+runtime.
+
 ## Repository Map
 
 - `rush.json`: Rush project graph, package names, project folders, review

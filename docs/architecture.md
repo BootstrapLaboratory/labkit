@@ -19,6 +19,23 @@ server packages       browser packages
 The consuming application owns the product. Labkit owns the reusable runtime
 constraints that make the product safe to build.
 
+## Framework Direction
+
+Labkit is not only a bag of helper packages. It is moving toward a cohesive
+GraphQL application framework for TypeScript client/server systems.
+
+The useful comparison is Spring in the Java world: not as an API to copy, but
+as a model for giving application teams a stable foundation, strong defaults,
+and clear extension points. NestJS, Relay, GraphQL, and TypeScript already
+provide powerful building blocks, but they remain technical and low-level.
+Labkit's job is to make recurring application architecture reusable and more
+declarative.
+
+That direction matters when designing APIs. Labkit should hide reusable system
+mechanics behind production defaults, expose state and hooks where products
+need visibility, and keep enough interfaces available that advanced teams can
+replace one policy without leaving the framework path.
+
 ## Runtime Philosophy
 
 Labkit APIs are designed in two layers:

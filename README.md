@@ -10,6 +10,21 @@ Labkit packages are published under the `@omgjs` npm scope with
 Each child folder is its own package with its own dependency boundary, build,
 tests, and public API. Applications compose the packages they need.
 
+## Project Philosophy
+
+Labkit is moving toward a cohesive GraphQL application framework for the
+TypeScript ecosystem.
+
+The inspiration is the role Spring plays in the Java world: not its APIs or
+architecture directly, but the idea that teams should get a well-designed
+foundation instead of assembling every technical concern by hand. Labkit builds
+on NestJS, Relay, GraphQL, and TypeScript, then lifts recurring application
+architecture into reusable libraries, defaults, contracts, and conventions.
+
+The goal is to let teams build serious GraphQL client/server web applications
+more declaratively, with production-ready defaults for common flows and clear
+extension points when an application needs to own a policy itself.
+
 ## Package Map
 
 | Package                                                            | Runtime | Purpose                                                                                                                |
