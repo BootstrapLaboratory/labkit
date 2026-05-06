@@ -38,12 +38,12 @@
     "verify": "npm run test"
   },
   "dependencies": {
-    "@omgjs/labkit-runtime-config": "0.1.1",
-    "@omgjs/labkit-webapp-external-store": "0.1.1",
+    "@omgjs/labkit-runtime-config": "workspace:*",
+    "@omgjs/labkit-webapp-external-store": "workspace:*",
     "graphql-ws": "^6.0.8"
   },
   "devDependencies": {
-    "@omgjs/labkit-eslint-config": "0.0.1",
+    "@omgjs/labkit-eslint-config": "workspace:*",
     "@types/node": "^25.6.0",
     "eslint": "^10.3.0",
     "typescript": "^6.0.3"

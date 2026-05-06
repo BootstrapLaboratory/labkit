@@ -1,11 +1,12 @@
 # Realtime
 
 Labkit realtime support is centered on GraphQL subscriptions over
-`graphql-ws`.
+`graphql-ws`, with browser recovery handled by
+`@omgjs/labkit-webapp-realtime`.
 
 The important constraint is that websocket auth is established when the socket
-connects. A token update in memory does not change the already-open
-connection. The client must reconnect.
+connects. A token update in memory does not change the already-open connection.
+The client must reconnect.
 
 ## Server Responsibilities
 
@@ -26,39 +27,75 @@ pub/sub can be enough. For multiple server instances, use a shared backend such
 as Redis so events published by one instance can reach subscriptions connected
 to another instance.
 
-## Browser Responsibilities
+## Browser Runtime
 
-`@omgjs/labkit-webapp-realtime` creates a tracked `graphql-ws` client:
+`DefaultWebappRealtimeConnection` is the recommended browser runtime. It owns
+the low-level websocket lifecycle and exposes a stable GraphQL WS compatible
+client through `getClient()`.
+
+Relay and application code keep the same outer client object. Internally Labkit
+can replace the concrete `graphql-ws` client when terminate-only recovery is not
+enough, then resubscribe active operations.
+
+The default runtime handles:
 
 - connection states: `idle`, `connecting`, `connected`, `retrying`,
   `disconnected`;
 - heartbeat interval and timeout;
-- reconnect watchdog;
+- reconnect watchdog escalation from `terminate()` to inner client recreation;
 - fatal close-code handling;
-- browser online/offline tracking;
+- browser online/offline and visible/resume recovery;
+- active subscription resubscription after internal client recreation;
 - user-facing connection messages.
 
-`@omgjs/labkit-webapp-graphql-relay` connects that client to Relay and
-terminates it when the access token changes.
+## State Monitoring
 
-## Connection Params
-
-Relay websocket connection params are created from the current access token:
+Applications observe connection state; they do not own recovery decisions.
 
 ```ts
-import { createRelayGraphqlWsConnectionParams } from "@omgjs/labkit-webapp-graphql-relay";
+import { DefaultWebappRealtimeConnection } from "@omgjs/labkit-webapp-realtime";
 
-const connectionParams = () =>
-  createRelayGraphqlWsConnectionParams(() => authSession.getAccessToken());
+export const realtime = new DefaultWebappRealtimeConnection({
+  wsEndpoint: WS_ENDPOINT,
+  connectionParams: () =>
+    createRelayGraphqlWsConnectionParams(() => auth.getAccessToken()),
+});
+
+const client = realtime.getClient();
+const state = realtime.getConnectionState();
+const unsubscribe = realtime.subscribeToConnectionState((nextState) => {
+  console.log(nextState.status, nextState.detail);
+});
 ```
 
-The server reads the same parameter names through
-`@omgjs/labkit-auth-contract`, so browser and server code do not drift.
+Product UI can use `getRealtimeConnectionMessage` for a first status banner,
+or render richer state from `getConnectionState()`.
+
+## Relay Integration
+
+`@omgjs/labkit-webapp-graphql-relay` accepts an already-created realtime
+instance. This is the preferred shape when UI also monitors the same runtime:
+
+```ts
+const realtime = new DefaultWebappRealtimeConnection({
+  wsEndpoint: WS_ENDPOINT,
+  connectionParams: () =>
+    createRelayGraphqlWsConnectionParams(() => auth.getAccessToken()),
+});
+
+const environment = createWebappRelayEnvironment({
+  httpEndpoint: HTTP_ENDPOINT,
+  auth,
+  realtime,
+});
+```
+
+For smaller apps, `createWebappRelayEnvironment` can also create the default
+realtime runtime from `wsEndpoint` and `realtimeOptions`.
 
 ## Runtime Notes
 
-Show connection state in product UI when realtime matters. Labkit supplies
-state and default messages; the app decides where and how to render them.
-
 Tune heartbeat, timeout, and reconnect settings only after observing real
-network behavior. The defaults are conservative enough for a first app.
+network behavior. The defaults are meant to cover normal browser sleep,
+deployment reconnects, and transient network loss without application code
+knowing how to repair the transport.

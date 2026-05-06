@@ -1,0 +1,10 @@
+{
+  "changes": [
+    {
+      "packageName": "@omgjs/labkit-runtime-config",
+      "comment": "Use workspace protocol for local Labkit dependencies.",
+      "type": "none"
+    }
+  ],
+  "packageName": "@omgjs/labkit-runtime-config"
+}

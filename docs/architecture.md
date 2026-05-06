@@ -19,6 +19,25 @@ server packages       browser packages
 The consuming application owns the product. Labkit owns the reusable runtime
 constraints that make the product safe to build.
 
+## Runtime Philosophy
+
+Labkit APIs are designed in two layers:
+
+- production defaults that work for normal applications without exposing every
+  transport, auth, or lifecycle edge case;
+- explicit extension interfaces for teams that need to replace one policy
+  without forking the whole runtime.
+
+Applications should decide product behavior, endpoint values, route structure,
+GraphQL operations, UI placement, and visual tone. Labkit should absorb
+reusable system mechanics such as auth-session storage discipline, GraphQL
+transport recovery, websocket heartbeat/watchdog policy, route preload cleanup,
+and shared browser/server protocol constants.
+
+Defaults should still be observable. For example, the realtime browser runtime
+owns websocket recovery, but exposes connection state so product UI and logs can
+show what is happening.
+
 ## Server Boundary
 
 The server owns the executable GraphQL schema, resolvers, server-side auth
@@ -52,9 +71,11 @@ user-facing behavior. Labkit helps the browser wire the runtime:
 - `@omgjs/labkit-webapp-graphql-relay` creates an auth-aware Relay environment,
   retries one non-auth GraphQL operation after refresh, wires GraphQL
   subscriptions, and disposes route preloads when navigation aborts.
-- `@omgjs/labkit-webapp-realtime` tracks websocket connection status,
-  reconnects, heartbeat timeouts, browser online/offline state, and fatal close
-  codes.
+- `@omgjs/labkit-webapp-realtime` provides a self-healing websocket runtime
+  with a stable GraphQL WS client facade, connection-state monitoring,
+  heartbeat/watchdog policy, browser online/resume recovery, fatal close-code
+  handling, and active subscription resubscription after internal client
+  recreation.
 - `@omgjs/labkit-webapp-ui` owns small UI mechanics such as theme selection and
   class application, while concrete components remain app-owned.
 

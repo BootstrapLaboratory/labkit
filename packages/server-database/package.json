@@ -35,10 +35,10 @@
     "verify": "npm run test"
   },
   "dependencies": {
-    "@omgjs/labkit-server-config": "0.1.1"
+    "@omgjs/labkit-server-config": "workspace:*"
   },
   "devDependencies": {
-    "@omgjs/labkit-eslint-config": "0.0.1",
+    "@omgjs/labkit-eslint-config": "workspace:*",
     "@types/node": "^25.6.0",
     "eslint": "^10.3.0",
     "typescript": "^6.0.3"

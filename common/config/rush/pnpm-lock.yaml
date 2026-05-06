@@ -8,20 +8,40 @@ pnpmfileChecksum: sha256-E1T7OJ3DLTjpDqf4RdJzK9VDtAxgm4gDEQCLYdHD8nI=
 
 importers:
 
-  .:
+  .: {}
+
+  ../../packages/auth-contract:
+    devDependencies:
+      '@omgjs/labkit-eslint-config':
+        specifier: workspace:*
+        version: link:../../tools/eslint-config
+      '@types/node':
+        specifier: ^25.6.0
+        version: 25.6.0
+      eslint:
+        specifier: ^10.3.0
+        version: 10.3.0
+      typescript:
+        specifier: ^6.0.3
+        version: 6.0.3
+
+  ../../packages/runtime-config:
+    devDependencies:
+      '@omgjs/labkit-eslint-config':
+        specifier: workspace:*
+        version: link:../../tools/eslint-config
+      '@types/node':
+        specifier: ^25.6.0
+        version: 25.6.0
+      eslint:
+        specifier: ^10.3.0
+        version: 10.3.0
+      typescript:
+        specifier: ^6.0.3
+        version: 6.0.3
+
+  ../../packages/server-auth:
     dependencies:
-      '@apollo/server':
-        specifier: ^5.5.0
-        version: 5.5.0(graphql@16.13.2)
-      '@eslint/js':
-        specifier: ^10.0.1
-        version: 10.0.1(eslint@10.3.0)
-      '@graphql-tools/utils':
-        specifier: ~11.1.0
-        version: 11.1.0(graphql@16.13.2)
-      '@nestjs/apollo':
-        specifier: ^13.3.0
-        version: 13.4.0(@apollo/server@5.5.0(graphql@16.13.2))(@nestjs/common@11.1.19(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.19(@nestjs/common@11.1.19(reflect-metadata@0.2.2)(rxjs@7.8.2))(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/graphql@13.4.0(@nestjs/common@11.1.19(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.19(@nestjs/common@11.1.19(reflect-metadata@0.2.2)(rxjs@7.8.2))(reflect-metadata@0.2.2)(rxjs@7.8.2))(graphql@16.13.2)(reflect-metadata@0.2.2))(graphql@16.13.2)
       '@nestjs/common':
         specifier: ^11.1.19
         version: 11.1.19(reflect-metadata@0.2.2)(rxjs@7.8.2)
@@ -30,55 +50,261 @@ importers:
         version: 11.1.19(@nestjs/common@11.1.19(reflect-metadata@0.2.2)(rxjs@7.8.2))(reflect-metadata@0.2.2)(rxjs@7.8.2)
       '@nestjs/graphql':
         specifier: ^13.3.0
-        version: 13.4.0(@nestjs/common@11.1.19(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.19(@nestjs/common@11.1.19(reflect-metadata@0.2.2)(rxjs@7.8.2))(reflect-metadata@0.2.2)(rxjs@7.8.2))(graphql@16.13.2)(reflect-metadata@0.2.2)
+        version: 13.4.0(@nestjs/common@11.1.19(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.19(@nestjs/common@11.1.19(reflect-metadata@0.2.2)(rxjs@7.8.2))(reflect-metadata@0.2.2)(rxjs@7.8.2))(graphql@16.14.0)(reflect-metadata@0.2.2)
+      '@omgjs/labkit-auth-contract':
+        specifier: workspace:*
+        version: link:../auth-contract
+      '@omgjs/labkit-server-graphql':
+        specifier: workspace:*
+        version: link:../server-graphql
+      graphql:
+        specifier: ^16.13.2
+        version: 16.14.0
+      reflect-metadata:
+        specifier: ^0.2.2
+        version: 0.2.2
+      rxjs:
+        specifier: ^7.8.2
+        version: 7.8.2
+    devDependencies:
+      '@omgjs/labkit-eslint-config':
+        specifier: workspace:*
+        version: link:../../tools/eslint-config
+      '@types/node':
+        specifier: ^25.6.0
+        version: 25.6.0
+      eslint:
+        specifier: ^10.3.0
+        version: 10.3.0
+      typescript:
+        specifier: ^6.0.3
+        version: 6.0.3
+
+  ../../packages/server-auth-typeorm:
+    dependencies:
+      '@nestjs/common':
+        specifier: ^11.1.19
+        version: 11.1.19(reflect-metadata@0.2.2)(rxjs@7.8.2)
       '@nestjs/typeorm':
         specifier: ^11.0.1
         version: 11.0.1(@nestjs/common@11.1.19(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.19(@nestjs/common@11.1.19(reflect-metadata@0.2.2)(rxjs@7.8.2))(reflect-metadata@0.2.2)(rxjs@7.8.2))(reflect-metadata@0.2.2)(rxjs@7.8.2)(typeorm@0.3.28)
-      '@rush-temp/labkit-auth-contract':
-        specifier: file:./projects/labkit-auth-contract.tgz
-        version: file:projects/labkit-auth-contract.tgz
-      '@rush-temp/labkit-eslint-config':
-        specifier: file:./projects/labkit-eslint-config.tgz
-        version: file:projects/labkit-eslint-config.tgz(typescript@6.0.3)
-      '@rush-temp/labkit-runtime-config':
-        specifier: file:./projects/labkit-runtime-config.tgz
-        version: file:projects/labkit-runtime-config.tgz
-      '@rush-temp/labkit-server-auth':
-        specifier: file:./projects/labkit-server-auth.tgz
-        version: file:projects/labkit-server-auth.tgz
-      '@rush-temp/labkit-server-auth-typeorm':
-        specifier: file:./projects/labkit-server-auth-typeorm.tgz
-        version: file:projects/labkit-server-auth-typeorm.tgz(@nestjs/core@11.1.19(@nestjs/common@11.1.19(reflect-metadata@0.2.2)(rxjs@7.8.2))(reflect-metadata@0.2.2)(rxjs@7.8.2))
-      '@rush-temp/labkit-server-config':
-        specifier: file:./projects/labkit-server-config.tgz
-        version: file:projects/labkit-server-config.tgz
-      '@rush-temp/labkit-server-database':
-        specifier: file:./projects/labkit-server-database.tgz
-        version: file:projects/labkit-server-database.tgz
-      '@rush-temp/labkit-server-graphql':
-        specifier: file:./projects/labkit-server-graphql.tgz
-        version: file:projects/labkit-server-graphql.tgz
-      '@rush-temp/labkit-server-observability':
-        specifier: file:./projects/labkit-server-observability.tgz
-        version: file:projects/labkit-server-observability.tgz
-      '@rush-temp/labkit-webapp-auth':
-        specifier: file:./projects/labkit-webapp-auth.tgz
-        version: file:projects/labkit-webapp-auth.tgz
-      '@rush-temp/labkit-webapp-build-config':
-        specifier: file:./projects/labkit-webapp-build-config.tgz
-        version: file:projects/labkit-webapp-build-config.tgz
-      '@rush-temp/labkit-webapp-external-store':
-        specifier: file:./projects/labkit-webapp-external-store.tgz
-        version: file:projects/labkit-webapp-external-store.tgz
-      '@rush-temp/labkit-webapp-graphql-relay':
-        specifier: file:./projects/labkit-webapp-graphql-relay.tgz
-        version: file:projects/labkit-webapp-graphql-relay.tgz(graphql@16.13.2)(ws@8.20.0)
-      '@rush-temp/labkit-webapp-realtime':
-        specifier: file:./projects/labkit-webapp-realtime.tgz
-        version: file:projects/labkit-webapp-realtime.tgz(graphql@16.13.2)(ws@8.20.0)
-      '@rush-temp/labkit-webapp-ui':
-        specifier: file:./projects/labkit-webapp-ui.tgz
-        version: file:projects/labkit-webapp-ui.tgz
+      '@omgjs/labkit-server-auth':
+        specifier: workspace:*
+        version: link:../server-auth
+      '@omgjs/labkit-server-database':
+        specifier: workspace:*
+        version: link:../server-database
+      reflect-metadata:
+        specifier: ^0.2.2
+        version: 0.2.2
+      rxjs:
+        specifier: ^7.8.2
+        version: 7.8.2
+      typeorm:
+        specifier: ^0.3.28
+        version: 0.3.28
+    devDependencies:
+      '@omgjs/labkit-eslint-config':
+        specifier: workspace:*
+        version: link:../../tools/eslint-config
+      '@types/node':
+        specifier: ^25.6.0
+        version: 25.6.0
+      eslint:
+        specifier: ^10.3.0
+        version: 10.3.0
+      typescript:
+        specifier: ^6.0.3
+        version: 6.0.3
+
+  ../../packages/server-config:
+    dependencies:
+      '@omgjs/labkit-auth-contract':
+        specifier: workspace:*
+        version: link:../auth-contract
+      '@omgjs/labkit-runtime-config':
+        specifier: workspace:*
+        version: link:../runtime-config
+    devDependencies:
+      '@omgjs/labkit-eslint-config':
+        specifier: workspace:*
+        version: link:../../tools/eslint-config
+      '@types/node':
+        specifier: ^25.6.0
+        version: 25.6.0
+      eslint:
+        specifier: ^10.3.0
+        version: 10.3.0
+      typescript:
+        specifier: ^6.0.3
+        version: 6.0.3
+
+  ../../packages/server-database:
+    dependencies:
+      '@omgjs/labkit-server-config':
+        specifier: workspace:*
+        version: link:../server-config
+    devDependencies:
+      '@omgjs/labkit-eslint-config':
+        specifier: workspace:*
+        version: link:../../tools/eslint-config
+      '@types/node':
+        specifier: ^25.6.0
+        version: 25.6.0
+      eslint:
+        specifier: ^10.3.0
+        version: 10.3.0
+      typescript:
+        specifier: ^6.0.3
+        version: 6.0.3
+
+  ../../packages/server-graphql:
+    dependencies:
+      '@apollo/server':
+        specifier: ^5.5.0
+        version: 5.5.1(graphql@16.14.0)
+      '@graphql-tools/utils':
+        specifier: ~11.1.0
+        version: 11.1.0(graphql@16.14.0)
+      '@nestjs/apollo':
+        specifier: ^13.3.0
+        version: 13.4.0(@apollo/server@5.5.1(graphql@16.14.0))(@nestjs/common@11.1.19(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.19(@nestjs/common@11.1.19(reflect-metadata@0.2.2)(rxjs@7.8.2))(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/graphql@13.4.0(@nestjs/common@11.1.19(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.19(@nestjs/common@11.1.19(reflect-metadata@0.2.2)(rxjs@7.8.2))(reflect-metadata@0.2.2)(rxjs@7.8.2))(graphql@16.14.0)(reflect-metadata@0.2.2))(graphql@16.14.0)
+      '@nestjs/common':
+        specifier: ^11.1.19
+        version: 11.1.19(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@nestjs/core':
+        specifier: ^11.1.19
+        version: 11.1.19(@nestjs/common@11.1.19(reflect-metadata@0.2.2)(rxjs@7.8.2))(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@nestjs/graphql':
+        specifier: ^13.3.0
+        version: 13.4.0(@nestjs/common@11.1.19(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.19(@nestjs/common@11.1.19(reflect-metadata@0.2.2)(rxjs@7.8.2))(reflect-metadata@0.2.2)(rxjs@7.8.2))(graphql@16.14.0)(reflect-metadata@0.2.2)
+      '@omgjs/labkit-auth-contract':
+        specifier: workspace:*
+        version: link:../auth-contract
+      '@omgjs/labkit-server-config':
+        specifier: workspace:*
+        version: link:../server-config
+      '@omgjs/labkit-server-observability':
+        specifier: workspace:*
+        version: link:../server-observability
+      graphql:
+        specifier: ^16.13.2
+        version: 16.14.0
+      graphql-query-complexity:
+        specifier: ^1.1.0
+        version: 1.1.0(graphql@16.14.0)
+      reflect-metadata:
+        specifier: ^0.2.2
+        version: 0.2.2
+      rxjs:
+        specifier: ^7.8.2
+        version: 7.8.2
+    devDependencies:
+      '@omgjs/labkit-eslint-config':
+        specifier: workspace:*
+        version: link:../../tools/eslint-config
+      '@types/node':
+        specifier: ^25.6.0
+        version: 25.6.0
+      eslint:
+        specifier: ^10.3.0
+        version: 10.3.0
+      typescript:
+        specifier: ^6.0.3
+        version: 6.0.3
+
+  ../../packages/server-observability:
+    dependencies:
+      '@omgjs/labkit-runtime-config':
+        specifier: workspace:*
+        version: link:../runtime-config
+    devDependencies:
+      '@omgjs/labkit-eslint-config':
+        specifier: workspace:*
+        version: link:../../tools/eslint-config
+      '@types/node':
+        specifier: ^25.6.0
+        version: 25.6.0
+      eslint:
+        specifier: ^10.3.0
+        version: 10.3.0
+      typescript:
+        specifier: ^6.0.3
+        version: 6.0.3
+
+  ../../packages/webapp-auth:
+    dependencies:
+      '@omgjs/labkit-auth-contract':
+        specifier: workspace:*
+        version: link:../auth-contract
+      '@omgjs/labkit-webapp-external-store':
+        specifier: workspace:*
+        version: link:../webapp-external-store
+    devDependencies:
+      '@omgjs/labkit-eslint-config':
+        specifier: workspace:*
+        version: link:../../tools/eslint-config
+      '@types/node':
+        specifier: ^25.6.0
+        version: 25.6.0
+      eslint:
+        specifier: ^10.3.0
+        version: 10.3.0
+      typescript:
+        specifier: ^6.0.3
+        version: 6.0.3
+
+  ../../packages/webapp-build-config:
+    devDependencies:
+      '@omgjs/labkit-eslint-config':
+        specifier: workspace:*
+        version: link:../../tools/eslint-config
+      '@types/node':
+        specifier: ^25.6.0
+        version: 25.6.0
+      eslint:
+        specifier: ^10.3.0
+        version: 10.3.0
+      typescript:
+        specifier: ^6.0.3
+        version: 6.0.3
+
+  ../../packages/webapp-external-store:
+    devDependencies:
+      '@omgjs/labkit-eslint-config':
+        specifier: workspace:*
+        version: link:../../tools/eslint-config
+      '@types/node':
+        specifier: ^25.6.0
+        version: 25.6.0
+      eslint:
+        specifier: ^10.3.0
+        version: 10.3.0
+      typescript:
+        specifier: ^6.0.3
+        version: 6.0.3
+
+  ../../packages/webapp-graphql-relay:
+    dependencies:
+      '@omgjs/labkit-auth-contract':
+        specifier: workspace:*
+        version: link:../auth-contract
+      '@omgjs/labkit-webapp-realtime':
+        specifier: workspace:*
+        version: link:../webapp-realtime
+      graphql-ws:
+        specifier: ^6.0.8
+        version: 6.0.8(graphql@16.14.0)(ws@8.20.0)
+      react-relay:
+        specifier: ^20.1.1
+        version: 20.1.1(react@19.2.6)
+      relay-runtime:
+        specifier: ^20.1.1
+        version: 20.1.1
+    devDependencies:
+      '@omgjs/labkit-eslint-config':
+        specifier: workspace:*
+        version: link:../../tools/eslint-config
       '@types/node':
         specifier: ^25.6.0
         version: 25.6.0
@@ -91,45 +317,75 @@ importers:
       eslint:
         specifier: ^10.3.0
         version: 10.3.0
+      react:
+        specifier: ^19.2.5
+        version: 19.2.6
+      typescript:
+        specifier: ^6.0.3
+        version: 6.0.3
+
+  ../../packages/webapp-realtime:
+    dependencies:
+      '@omgjs/labkit-runtime-config':
+        specifier: workspace:*
+        version: link:../runtime-config
+      '@omgjs/labkit-webapp-external-store':
+        specifier: workspace:*
+        version: link:../webapp-external-store
+      graphql-ws:
+        specifier: ^6.0.8
+        version: 6.0.8(graphql@16.14.0)(ws@8.20.0)
+    devDependencies:
+      '@omgjs/labkit-eslint-config':
+        specifier: workspace:*
+        version: link:../../tools/eslint-config
+      '@types/node':
+        specifier: ^25.6.0
+        version: 25.6.0
+      eslint:
+        specifier: ^10.3.0
+        version: 10.3.0
+      typescript:
+        specifier: ^6.0.3
+        version: 6.0.3
+
+  ../../packages/webapp-ui:
+    dependencies:
+      '@omgjs/labkit-webapp-external-store':
+        specifier: workspace:*
+        version: link:../webapp-external-store
+    devDependencies:
+      '@omgjs/labkit-eslint-config':
+        specifier: workspace:*
+        version: link:../../tools/eslint-config
+      '@types/node':
+        specifier: ^25.6.0
+        version: 25.6.0
+      eslint:
+        specifier: ^10.3.0
+        version: 10.3.0
+      typescript:
+        specifier: ^6.0.3
+        version: 6.0.3
+
+  ../../tools/eslint-config:
+    dependencies:
+      '@eslint/js':
+        specifier: ^10.0.1
+        version: 10.0.1(eslint@10.3.0)
       eslint-config-prettier:
         specifier: ^10.1.8
         version: 10.1.8(eslint@10.3.0)
       globals:
         specifier: ^17.5.0
         version: 17.6.0
-      graphql:
-        specifier: ^16.13.2
-        version: 16.13.2
-      graphql-query-complexity:
-        specifier: ^1.1.0
-        version: 1.1.0(graphql@16.13.2)
-      graphql-ws:
-        specifier: ^6.0.8
-        version: 6.0.8(graphql@16.13.2)(ws@8.20.0)
-      react:
-        specifier: ^19.2.5
-        version: 19.2.5
-      react-relay:
-        specifier: ^20.1.1
-        version: 20.1.1(react@19.2.5)
-      reflect-metadata:
-        specifier: ^0.2.2
-        version: 0.2.2
-      relay-runtime:
-        specifier: ^20.1.1
-        version: 20.1.1
-      rxjs:
-        specifier: ^7.8.2
-        version: 7.8.2
-      typeorm:
-        specifier: ^0.3.28
-        version: 0.3.28
-      typescript:
-        specifier: ^6.0.3
-        version: 6.0.3
       typescript-eslint:
         specifier: ^8.59.0
         version: 8.59.2(eslint@10.3.0)(typescript@6.0.3)
+    devDependencies:
+      eslint:
+        specifier: ^10.3.0
+        version: 10.3.0
 
 packages:
 
@@ -154,8 +410,8 @@ packages:
     peerDependencies:
       '@apollo/server': ^4.0.0
 
-  '@apollo/server@5.5.0':
-    resolution: {integrity: sha512-vWtodBOK/SZwBTJzItECOmLfL8E8pn/IdvP7pnxN5g2tny9iW4+9sxdajE798wV1H2+PYp/rRcl/soSHIBKMPw==}
+  '@apollo/server@5.5.1':
+    resolution: {integrity: sha512-Rn3g5TJQsMSUY23CWZTghWdBWyjX7dP1eaEBPkvmM2RHi82cDcpgTIkSCbGvtTUEGjwopLv1AAooU/n7iIZ20A==}
     engines: {node: '>=20'}
     peerDependencies:
       graphql: ^16.11.0
@@ -470,66 +726,6 @@ packages:
   '@protobufjs/utf8@1.1.1':
     resolution: {integrity: sha512-oOAWABowe8EAbMyWKM0tYDKi8Yaox52D+HWZhAIJqQXbqe0xI/GV7FhLWqlEKreMkfDjshR5FKgi3mnle0h6Eg==}
 
-  '@rush-temp/labkit-auth-contract@file:projects/labkit-auth-contract.tgz':
-    resolution: {integrity: sha512-uF3DlCtr73ioMCOe12BTzwAJkEyi3yc8s3OjLpONKZZ9+mJMUdYCUwa8W524tcuq2MERVmzc8gfsyEthd+hphg==, tarball: file:projects/labkit-auth-contract.tgz}
-    version: 0.0.0
-
-  '@rush-temp/labkit-eslint-config@file:projects/labkit-eslint-config.tgz':
-    resolution: {integrity: sha512-mUlqxxn2xOKw8OlWjCaaH+4xCr2J3CT904Rsa9EVu6Dd3LePDYwdsGCFHlMCODiCnQjmYFrJi5PWTBljhHv6gQ==, tarball: file:projects/labkit-eslint-config.tgz}
-    version: 0.0.0
-
-  '@rush-temp/labkit-runtime-config@file:projects/labkit-runtime-config.tgz':
-    resolution: {integrity: sha512-DxP/c6CCqJyJdB3NgveDP44cpijobTWbZoKkAkndIFcIYEC7Teu7iRL+ZDXNKD6wBgvwoCZJ2o3Qoh12TqT5TA==, tarball: file:projects/labkit-runtime-config.tgz}
-    version: 0.0.0
-
-  '@rush-temp/labkit-server-auth-typeorm@file:projects/labkit-server-auth-typeorm.tgz':
-    resolution: {integrity: sha512-4NaDs8sVnGHPv5dbEIBTn8FaWom5dZ5niXdO97SnACeoSiUjqvP7IZ0UtErPzOZcfT0+dSahdB2iF8PhsW2caA==, tarball: file:projects/labkit-server-auth-typeorm.tgz}
-    version: 0.0.0
-
-  '@rush-temp/labkit-server-auth@file:projects/labkit-server-auth.tgz':
-    resolution: {integrity: sha512-JgXnuUlDqrzIHkXvgyKVWfA6gkalWESHdlQnipDwZ9JKiw9GjxXDBYxYn/fFUlD1lg9TfvBHlODsNC5ylqYgSg==, tarball: file:projects/labkit-server-auth.tgz}
-    version: 0.0.0
-
-  '@rush-temp/labkit-server-config@file:projects/labkit-server-config.tgz':
-    resolution: {integrity: sha512-tKHk4Rvg40ts2gD4Kc14Wlda+P/b4eFijHzRwjFh8Reyg09G/QiErRg/yM8p3i7RfIBGmeJvKiUjYptsDZmBjA==, tarball: file:projects/labkit-server-config.tgz}
-    version: 0.0.0
-
-  '@rush-temp/labkit-server-database@file:projects/labkit-server-database.tgz':
-    resolution: {integrity: sha512-6/t3+ClX4HpTqNUP2bKblM21k9o5uRAox7O7VdAMZHUwn6Z0iI7nQL56GLvzsW8M5qplGIlHDNFDpXQGrHgFJA==, tarball: file:projects/labkit-server-database.tgz}
-    version: 0.0.0
-
-  '@rush-temp/labkit-server-graphql@file:projects/labkit-server-graphql.tgz':
-    resolution: {integrity: sha512-rfIgB2Av623XFXrgit46QKphR/NAth/0oVNpTSMXMiZ+PxGNHijxO/ZvUjV14ocP1yikMUOdqgg5DtJRnQEwWQ==, tarball: file:projects/labkit-server-graphql.tgz}
-    version: 0.0.0
-
-  '@rush-temp/labkit-server-observability@file:projects/labkit-server-observability.tgz':
-    resolution: {integrity: sha512-gz1efPzL23OfaQypdgS/vC06iukDnvanTRzQ9xA+LnuL6if3YyrskuPizCo2qMHR+5Te4GpyYEO/a0OAclswxQ==, tarball: file:projects/labkit-server-observability.tgz}
-    version: 0.0.0
-
-  '@rush-temp/labkit-webapp-auth@file:projects/labkit-webapp-auth.tgz':
-    resolution: {integrity: sha512-6fOc0U2lxgZyoRvG2gf51iW+LXZFXHE07yQdvhExlUFsvstFVKN559kALQtxiO5DgAJDk4VLVycxUPjcepVirQ==, tarball: file:projects/labkit-webapp-auth.tgz}
-    version: 0.0.0
-
-  '@rush-temp/labkit-webapp-build-config@file:projects/labkit-webapp-build-config.tgz':
-    resolution: {integrity: sha512-0I0D0+v6XV+B2A/0ZMclwJW4DoFlspYfAEUTI/4tm9oBRZxO7Z+oTG49BwH+CC/Fn2iGvlNYkbe6QUK05ksMPg==, tarball: file:projects/labkit-webapp-build-config.tgz}
-    version: 0.0.0
-
-  '@rush-temp/labkit-webapp-external-store@file:projects/labkit-webapp-external-store.tgz':
-    resolution: {integrity: sha512-sqwY6QE50IM+sM0+oB50FygFvsUwz+UUSdPcTpbo71ds5XJN73xhz0JLfhgBDEvWXBFb3cgHnVYBRBuwJCCLHw==, tarball: file:projects/labkit-webapp-external-store.tgz}
-    version: 0.0.0
-
-  '@rush-temp/labkit-webapp-graphql-relay@file:projects/labkit-webapp-graphql-relay.tgz':
-    resolution: {integrity: sha512-8pTBubZ05hrGuoeC7Txo0BxdiTR3yiAXGwWQcnYj8u3HKFmfPEELPIVpKXRPjKEqbx7lZHjXjTyMHBm2q51NLA==, tarball: file:projects/labkit-webapp-graphql-relay.tgz}
-    version: 0.0.0
-
-  '@rush-temp/labkit-webapp-realtime@file:projects/labkit-webapp-realtime.tgz':
-    resolution: {integrity: sha512-zTcyrN59DhKIkrbJA+/XLuxxtPEncBgYBL2LjoWwyML6zMbtUOVxTPuVVYSQ28ZX9lxPpA6fwLNk4eFLLTHLsA==, tarball: file:projects/labkit-webapp-realtime.tgz}
-    version: 0.0.0
-
-  '@rush-temp/labkit-webapp-ui@file:projects/labkit-webapp-ui.tgz':
-    resolution: {integrity: sha512-rMs4u+3LopPu/Ee4oyyhVSxKSGPGI7MQlRr/9lr4vYCliusBXGAOltnSZWywuLCNezob6pZWEOmOofUsAQigsQ==, tarball: file:projects/labkit-webapp-ui.tgz}
-    version: 0.0.0
-
   '@sqltools/formatter@1.2.5':
     resolution: {integrity: sha512-Uy0+khmZqUrUGm5dmMqVlnvufZRSK0FbYzVgp0UMstm+F5+W2/jnEEQyc9vo1ZR/E5ZI/B1WjjoTqBqwJL6Krw==}
 
@@ -543,8 +739,8 @@ packages:
   '@types/esrecurse@4.3.1':
     resolution: {integrity: sha512-xJBAbDifo5hpffDBuHl0Y8ywswbiAp/Wi7Y/GtAgSlZyIABppyurxVueOPE8LUQOxdlgi6Zqce7uoEpqNTeiUw==}
 
-  '@types/estree@1.0.8':
-    resolution: {integrity: sha512-dWHzHa2WqEXI/O1E9OjrocMTKJl2mSrEolh1Iomrv6U+JuNwaHXsXx9bLu5gG7BUWFIN0skIQJQ/L1rIex4X6w==}
+  '@types/estree@1.0.9':
+    resolution: {integrity: sha512-GhdPgy1el4/ImP05X05Uw4cw2/M93BCUmnEvWZNStlCzEKME4Fkk+YpoA5OiHNQmoS7Cafb8Xa3Pya8m1Qrzeg==}
 
   '@types/json-schema@7.0.15':
     resolution: {integrity: sha512-5+fP8P8MFNC+AyZCDxrB2pkZFPGzqQWUzpSeuuVLvm8VMcorNYavBqoFcxK8bQz4Qsbn4oUEEem4wDLfcysGHA==}
@@ -1029,8 +1225,8 @@ packages:
       ws:
         optional: true
 
-  graphql@16.13.2:
-    resolution: {integrity: sha512-5bJ+nf/UCpAjHM8i06fl7eLyVC9iuNAjm9qzkiu2ZGhM0VscSvS6WDPfAwkdkBuoXGM9FJSbKl6wylMwP9Ktig==}
+  graphql@16.14.0:
+    resolution: {integrity: sha512-BBvQ/406p+4CZbTpCbVPSxfzrZrbnuWSP1ELYgyS6B+hNeKzgrdB4JczCa5VZUBQrDa9hUngm0KnexY6pJRN5Q==}
     engines: {node: ^12.22.0 || ^14.16.0 || ^16.0.0 || >=17.0.0}
 
   has-property-descriptors@1.0.2:
@@ -1322,8 +1518,8 @@ packages:
     peerDependencies:
       react: ^16.9.0 || ^17 || ^18 || ^19
 
-  react@19.2.5:
-    resolution: {integrity: sha512-llUJLzz1zTUBrskt2pwZgLq59AemifIftw4aB7JxOqf1HY2FDaGDxgwpAPVzHU1kdWabH7FauP4i1oEeer2WCA==}
+  react@19.2.6:
+    resolution: {integrity: sha512-sfWGGfavi0xr8Pg0sVsyHMAOziVYKgPLNrS7ig+ivMNb3wbCBw3KxtflsGBAwD3gYQlE/AEZsTLgToRrSCjb0Q==}
     engines: {node: '>=0.10.0'}
 
   readdirp@4.1.2:
@@ -1665,9 +1861,9 @@ packages:
 
 snapshots:
 
-  '@apollo/cache-control-types@1.0.3(graphql@16.13.2)':
+  '@apollo/cache-control-types@1.0.3(graphql@16.14.0)':
     dependencies:
-      graphql: 16.13.2
+      graphql: 16.14.0
 
   '@apollo/protobufjs@1.2.8':
     dependencies:
@@ -1684,42 +1880,41 @@ snapshots:
       '@types/long': 4.0.2
       long: 4.0.0
 
-  '@apollo/server-gateway-interface@2.0.0(graphql@16.13.2)':
+  '@apollo/server-gateway-interface@2.0.0(graphql@16.14.0)':
     dependencies:
       '@apollo/usage-reporting-protobuf': 4.1.2
       '@apollo/utils.fetcher': 3.1.0
       '@apollo/utils.keyvaluecache': 4.0.0
       '@apollo/utils.logger': 3.0.0
-      graphql: 16.13.2
+      graphql: 16.14.0
 
-  '@apollo/server-plugin-landing-page-graphql-playground@4.0.1(@apollo/server@5.5.0(graphql@16.13.2))':
+  '@apollo/server-plugin-landing-page-graphql-playground@4.0.1(@apollo/server@5.5.1(graphql@16.14.0))':
     dependencies:
-      '@apollo/server': 5.5.0(graphql@16.13.2)
+      '@apollo/server': 5.5.1(graphql@16.14.0)
       '@apollographql/graphql-playground-html': 1.6.29
 
-  '@apollo/server@5.5.0(graphql@16.13.2)':
+  '@apollo/server@5.5.1(graphql@16.14.0)':
     dependencies:
-      '@apollo/cache-control-types': 1.0.3(graphql@16.13.2)
-      '@apollo/server-gateway-interface': 2.0.0(graphql@16.13.2)
+      '@apollo/cache-control-types': 1.0.3(graphql@16.14.0)
+      '@apollo/server-gateway-interface': 2.0.0(graphql@16.14.0)
       '@apollo/usage-reporting-protobuf': 4.1.2
       '@apollo/utils.createhash': 3.0.1
       '@apollo/utils.fetcher': 3.1.0
       '@apollo/utils.isnodelike': 3.0.0
       '@apollo/utils.keyvaluecache': 4.0.0
       '@apollo/utils.logger': 3.0.0
-      '@apollo/utils.usagereporting': 2.1.0(graphql@16.13.2)
+      '@apollo/utils.usagereporting': 2.1.0(graphql@16.14.0)
       '@apollo/utils.withrequired': 3.0.0
-      '@graphql-tools/schema': 10.0.33(graphql@16.13.2)
+      '@graphql-tools/schema': 10.0.33(graphql@16.14.0)
       async-retry: 1.3.3
       body-parser: 2.2.2
       content-type: 1.0.5
       cors: 2.8.6
       finalhandler: 2.1.1
-      graphql: 16.13.2
+      graphql: 16.14.0
       loglevel: 1.9.2
       lru-cache: 11.3.6
       negotiator: 1.0.0
-      uuid: 11.1.1
       whatwg-mimetype: 4.0.0
     transitivePeerDependencies:
       - supports-color
@@ -1733,9 +1928,9 @@ snapshots:
       '@apollo/utils.isnodelike': 3.0.0
       sha.js: 2.4.12
 
-  '@apollo/utils.dropunuseddefinitions@2.0.1(graphql@16.13.2)':
+  '@apollo/utils.dropunuseddefinitions@2.0.1(graphql@16.14.0)':
     dependencies:
-      graphql: 16.13.2
+      graphql: 16.14.0
 
   '@apollo/utils.fetcher@3.1.0': {}
 
@@ -1748,32 +1943,32 @@ snapshots:
 
   '@apollo/utils.logger@3.0.0': {}
 
-  '@apollo/utils.printwithreducedwhitespace@2.0.1(graphql@16.13.2)':
+  '@apollo/utils.printwithreducedwhitespace@2.0.1(graphql@16.14.0)':
     dependencies:
-      graphql: 16.13.2
+      graphql: 16.14.0
 
-  '@apollo/utils.removealiases@2.0.1(graphql@16.13.2)':
+  '@apollo/utils.removealiases@2.0.1(graphql@16.14.0)':
     dependencies:
-      graphql: 16.13.2
+      graphql: 16.14.0
 
-  '@apollo/utils.sortast@2.0.1(graphql@16.13.2)':
+  '@apollo/utils.sortast@2.0.1(graphql@16.14.0)':
     dependencies:
-      graphql: 16.13.2
+      graphql: 16.14.0
       lodash.sortby: 4.7.0
 
-  '@apollo/utils.stripsensitiveliterals@2.0.1(graphql@16.13.2)':
+  '@apollo/utils.stripsensitiveliterals@2.0.1(graphql@16.14.0)':
     dependencies:
-      graphql: 16.13.2
+      graphql: 16.14.0
 
-  '@apollo/utils.usagereporting@2.1.0(graphql@16.13.2)':
+  '@apollo/utils.usagereporting@2.1.0(graphql@16.14.0)':
     dependencies:
       '@apollo/usage-reporting-protobuf': 4.1.2
-      '@apollo/utils.dropunuseddefinitions': 2.0.1(graphql@16.13.2)
-      '@apollo/utils.printwithreducedwhitespace': 2.0.1(graphql@16.13.2)
-      '@apollo/utils.removealiases': 2.0.1(graphql@16.13.2)
-      '@apollo/utils.sortast': 2.0.1(graphql@16.13.2)
-      '@apollo/utils.stripsensitiveliterals': 2.0.1(graphql@16.13.2)
-      graphql: 16.13.2
+      '@apollo/utils.dropunuseddefinitions': 2.0.1(graphql@16.14.0)
+      '@apollo/utils.printwithreducedwhitespace': 2.0.1(graphql@16.14.0)
+      '@apollo/utils.removealiases': 2.0.1(graphql@16.14.0)
+      '@apollo/utils.sortast': 2.0.1(graphql@16.14.0)
+      '@apollo/utils.stripsensitiveliterals': 2.0.1(graphql@16.14.0)
+      graphql: 16.14.0
 
   '@apollo/utils.withrequired@3.0.0': {}
 
@@ -1819,30 +2014,30 @@ snapshots:
       '@eslint/core': 1.2.1
       levn: 0.4.1
 
-  '@graphql-tools/merge@9.1.9(graphql@16.13.2)':
+  '@graphql-tools/merge@9.1.9(graphql@16.14.0)':
     dependencies:
-      '@graphql-tools/utils': 11.1.0(graphql@16.13.2)
-      graphql: 16.13.2
+      '@graphql-tools/utils': 11.1.0(graphql@16.14.0)
+      graphql: 16.14.0
       tslib: 2.8.1
 
-  '@graphql-tools/schema@10.0.33(graphql@16.13.2)':
+  '@graphql-tools/schema@10.0.33(graphql@16.14.0)':
     dependencies:
-      '@graphql-tools/merge': 9.1.9(graphql@16.13.2)
-      '@graphql-tools/utils': 11.1.0(graphql@16.13.2)
-      graphql: 16.13.2
+      '@graphql-tools/merge': 9.1.9(graphql@16.14.0)
+      '@graphql-tools/utils': 11.1.0(graphql@16.14.0)
+      graphql: 16.14.0
       tslib: 2.8.1
 
-  '@graphql-tools/utils@11.1.0(graphql@16.13.2)':
+  '@graphql-tools/utils@11.1.0(graphql@16.14.0)':
     dependencies:
-      '@graphql-typed-document-node/core': 3.2.0(graphql@16.13.2)
+      '@graphql-typed-document-node/core': 3.2.0(graphql@16.14.0)
       '@whatwg-node/promise-helpers': 1.3.2
       cross-inspect: 1.0.1
-      graphql: 16.13.2
+      graphql: 16.14.0
       tslib: 2.8.1
 
-  '@graphql-typed-document-node/core@3.2.0(graphql@16.13.2)':
+  '@graphql-typed-document-node/core@3.2.0(graphql@16.14.0)':
     dependencies:
-      graphql: 16.13.2
+      graphql: 16.14.0
 
   '@humanfs/core@0.19.2':
     dependencies:
@@ -1871,14 +2066,14 @@ snapshots:
 
   '@lukeed/csprng@1.1.0': {}
 
-  '@nestjs/apollo@13.4.0(@apollo/server@5.5.0(graphql@16.13.2))(@nestjs/common@11.1.19(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.19(@nestjs/common@11.1.19(reflect-metadata@0.2.2)(rxjs@7.8.2))(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/graphql@13.4.0(@nestjs/common@11.1.19(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.19(@nestjs/common@11.1.19(reflect-metadata@0.2.2)(rxjs@7.8.2))(reflect-metadata@0.2.2)(rxjs@7.8.2))(graphql@16.13.2)(reflect-metadata@0.2.2))(graphql@16.13.2)':
+  '@nestjs/apollo@13.4.0(@apollo/server@5.5.1(graphql@16.14.0))(@nestjs/common@11.1.19(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.19(@nestjs/common@11.1.19(reflect-metadata@0.2.2)(rxjs@7.8.2))(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/graphql@13.4.0(@nestjs/common@11.1.19(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.19(@nestjs/common@11.1.19(reflect-metadata@0.2.2)(rxjs@7.8.2))(reflect-metadata@0.2.2)(rxjs@7.8.2))(graphql@16.14.0)(reflect-metadata@0.2.2))(graphql@16.14.0)':
     dependencies:
-      '@apollo/server': 5.5.0(graphql@16.13.2)
-      '@apollo/server-plugin-landing-page-graphql-playground': 4.0.1(@apollo/server@5.5.0(graphql@16.13.2))
+      '@apollo/server': 5.5.1(graphql@16.14.0)
+      '@apollo/server-plugin-landing-page-graphql-playground': 4.0.1(@apollo/server@5.5.1(graphql@16.14.0))
       '@nestjs/common': 11.1.19(reflect-metadata@0.2.2)(rxjs@7.8.2)
       '@nestjs/core': 11.1.19(@nestjs/common@11.1.19(reflect-metadata@0.2.2)(rxjs@7.8.2))(reflect-metadata@0.2.2)(rxjs@7.8.2)
-      '@nestjs/graphql': 13.4.0(@nestjs/common@11.1.19(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.19(@nestjs/common@11.1.19(reflect-metadata@0.2.2)(rxjs@7.8.2))(reflect-metadata@0.2.2)(rxjs@7.8.2))(graphql@16.13.2)(reflect-metadata@0.2.2)
-      graphql: 16.13.2
+      '@nestjs/graphql': 13.4.0(@nestjs/common@11.1.19(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.19(@nestjs/common@11.1.19(reflect-metadata@0.2.2)(rxjs@7.8.2))(reflect-metadata@0.2.2)(rxjs@7.8.2))(graphql@16.14.0)(reflect-metadata@0.2.2)
+      graphql: 16.14.0
       iterall: 1.3.0
       lodash.omit: 4.18.0
       tslib: 2.8.1
@@ -1907,23 +2102,23 @@ snapshots:
       tslib: 2.8.1
       uid: 2.0.2
 
-  '@nestjs/graphql@13.4.0(@nestjs/common@11.1.19(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.19(@nestjs/common@11.1.19(reflect-metadata@0.2.2)(rxjs@7.8.2))(reflect-metadata@0.2.2)(rxjs@7.8.2))(graphql@16.13.2)(reflect-metadata@0.2.2)':
+  '@nestjs/graphql@13.4.0(@nestjs/common@11.1.19(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.19(@nestjs/common@11.1.19(reflect-metadata@0.2.2)(rxjs@7.8.2))(reflect-metadata@0.2.2)(rxjs@7.8.2))(graphql@16.14.0)(reflect-metadata@0.2.2)':
     dependencies:
-      '@graphql-tools/merge': 9.1.9(graphql@16.13.2)
-      '@graphql-tools/schema': 10.0.33(graphql@16.13.2)
-      '@graphql-tools/utils': 11.1.0(graphql@16.13.2)
+      '@graphql-tools/merge': 9.1.9(graphql@16.14.0)
+      '@graphql-tools/schema': 10.0.33(graphql@16.14.0)
+      '@graphql-tools/utils': 11.1.0(graphql@16.14.0)
       '@nestjs/common': 11.1.19(reflect-metadata@0.2.2)(rxjs@7.8.2)
       '@nestjs/core': 11.1.19(@nestjs/common@11.1.19(reflect-metadata@0.2.2)(rxjs@7.8.2))(reflect-metadata@0.2.2)(rxjs@7.8.2)
       '@nestjs/mapped-types': 2.1.1(@nestjs/common@11.1.19(reflect-metadata@0.2.2)(rxjs@7.8.2))(reflect-metadata@0.2.2)
       chokidar: 4.0.3
       fast-glob: 3.3.3
-      graphql: 16.13.2
-      graphql-tag: 2.12.6(graphql@16.13.2)
-      graphql-ws: 6.0.8(graphql@16.13.2)(ws@8.20.0)
+      graphql: 16.14.0
+      graphql-tag: 2.12.6(graphql@16.14.0)
+      graphql-ws: 6.0.8(graphql@16.14.0)(ws@8.20.0)
       lodash: 4.18.1
       normalize-path: 3.0.0
       reflect-metadata: 0.2.2
-      subscriptions-transport-ws: 0.11.0(graphql@16.13.2)
+      subscriptions-transport-ws: 0.11.0(graphql@16.14.0)
       tslib: 2.8.1
       ws: 8.20.0
     transitivePeerDependencies:
@@ -1987,226 +2182,6 @@ snapshots:
 
   '@protobufjs/utf8@1.1.1': {}
 
-  '@rush-temp/labkit-auth-contract@file:projects/labkit-auth-contract.tgz':
-    dependencies:
-      '@types/node': 25.6.0
-      eslint: 10.3.0
-      typescript: 6.0.3
-    transitivePeerDependencies:
-      - jiti
-      - supports-color
-
-  '@rush-temp/labkit-eslint-config@file:projects/labkit-eslint-config.tgz(typescript@6.0.3)':
-    dependencies:
-      '@eslint/js': 10.0.1(eslint@10.3.0)
-      eslint: 10.3.0
-      eslint-config-prettier: 10.1.8(eslint@10.3.0)
-      globals: 17.6.0
-      typescript-eslint: 8.59.2(eslint@10.3.0)(typescript@6.0.3)
-    transitivePeerDependencies:
-      - jiti
-      - supports-color
-      - typescript
-
-  '@rush-temp/labkit-runtime-config@file:projects/labkit-runtime-config.tgz':
-    dependencies:
-      '@types/node': 25.6.0
-      eslint: 10.3.0
-      typescript: 6.0.3
-    transitivePeerDependencies:
-      - jiti
-      - supports-color
-
-  '@rush-temp/labkit-server-auth-typeorm@file:projects/labkit-server-auth-typeorm.tgz(@nestjs/core@11.1.19(@nestjs/common@11.1.19(reflect-metadata@0.2.2)(rxjs@7.8.2))(reflect-metadata@0.2.2)(rxjs@7.8.2))':
-    dependencies:
-      '@nestjs/common': 11.1.19(reflect-metadata@0.2.2)(rxjs@7.8.2)
-      '@nestjs/typeorm': 11.0.1(@nestjs/common@11.1.19(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.19(@nestjs/common@11.1.19(reflect-metadata@0.2.2)(rxjs@7.8.2))(reflect-metadata@0.2.2)(rxjs@7.8.2))(reflect-metadata@0.2.2)(rxjs@7.8.2)(typeorm@0.3.28)
-      '@types/node': 25.6.0
-      eslint: 10.3.0
-      reflect-metadata: 0.2.2
-      rxjs: 7.8.2
-      typeorm: 0.3.28
-      typescript: 6.0.3
-    transitivePeerDependencies:
-      - '@google-cloud/spanner'
-      - '@nestjs/core'
-      - '@sap/hana-client'
-      - babel-plugin-macros
-      - better-sqlite3
-      - class-transformer
-      - class-validator
-      - ioredis
-      - jiti
-      - mongodb
-      - mssql
-      - mysql2
-      - oracledb
-      - pg
-      - pg-native
-      - pg-query-stream
-      - redis
-      - sql.js
-      - sqlite3
-      - supports-color
-      - ts-node
-      - typeorm-aurora-data-api-driver
-
-  '@rush-temp/labkit-server-auth@file:projects/labkit-server-auth.tgz':
-    dependencies:
-      '@nestjs/common': 11.1.19(reflect-metadata@0.2.2)(rxjs@7.8.2)
-      '@nestjs/core': 11.1.19(@nestjs/common@11.1.19(reflect-metadata@0.2.2)(rxjs@7.8.2))(reflect-metadata@0.2.2)(rxjs@7.8.2)
-      '@nestjs/graphql': 13.4.0(@nestjs/common@11.1.19(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.19(@nestjs/common@11.1.19(reflect-metadata@0.2.2)(rxjs@7.8.2))(reflect-metadata@0.2.2)(rxjs@7.8.2))(graphql@16.13.2)(reflect-metadata@0.2.2)
-      '@types/node': 25.6.0
-      eslint: 10.3.0
-      graphql: 16.13.2
-      reflect-metadata: 0.2.2
-      rxjs: 7.8.2
-      typescript: 6.0.3
-    transitivePeerDependencies:
-      - '@apollo/subgraph'
-      - '@fastify/websocket'
-      - '@nestjs/microservices'
-      - '@nestjs/platform-express'
-      - '@nestjs/websockets'
-      - bufferutil
-      - class-transformer
-      - class-validator
-      - crossws
-      - jiti
-      - supports-color
-      - ts-morph
-      - utf-8-validate
-
-  '@rush-temp/labkit-server-config@file:projects/labkit-server-config.tgz':
-    dependencies:
-      '@types/node': 25.6.0
-      eslint: 10.3.0
-      typescript: 6.0.3
-    transitivePeerDependencies:
-      - jiti
-      - supports-color
-
-  '@rush-temp/labkit-server-database@file:projects/labkit-server-database.tgz':
-    dependencies:
-      '@types/node': 25.6.0
-      eslint: 10.3.0
-      typescript: 6.0.3
-    transitivePeerDependencies:
-      - jiti
-      - supports-color
-
-  '@rush-temp/labkit-server-graphql@file:projects/labkit-server-graphql.tgz':
-    dependencies:
-      '@apollo/server': 5.5.0(graphql@16.13.2)
-      '@graphql-tools/utils': 11.1.0(graphql@16.13.2)
-      '@nestjs/apollo': 13.4.0(@apollo/server@5.5.0(graphql@16.13.2))(@nestjs/common@11.1.19(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.19(@nestjs/common@11.1.19(reflect-metadata@0.2.2)(rxjs@7.8.2))(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/graphql@13.4.0(@nestjs/common@11.1.19(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.19(@nestjs/common@11.1.19(reflect-metadata@0.2.2)(rxjs@7.8.2))(reflect-metadata@0.2.2)(rxjs@7.8.2))(graphql@16.13.2)(reflect-metadata@0.2.2))(graphql@16.13.2)
-      '@nestjs/common': 11.1.19(reflect-metadata@0.2.2)(rxjs@7.8.2)
-      '@nestjs/core': 11.1.19(@nestjs/common@11.1.19(reflect-metadata@0.2.2)(rxjs@7.8.2))(reflect-metadata@0.2.2)(rxjs@7.8.2)
-      '@nestjs/graphql': 13.4.0(@nestjs/common@11.1.19(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.19(@nestjs/common@11.1.19(reflect-metadata@0.2.2)(rxjs@7.8.2))(reflect-metadata@0.2.2)(rxjs@7.8.2))(graphql@16.13.2)(reflect-metadata@0.2.2)
-      '@types/node': 25.6.0
-      eslint: 10.3.0
-      graphql: 16.13.2
-      graphql-query-complexity: 1.1.0(graphql@16.13.2)
-      reflect-metadata: 0.2.2
-      rxjs: 7.8.2
-      typescript: 6.0.3
-    transitivePeerDependencies:
-      - '@apollo/gateway'
-      - '@apollo/subgraph'
-      - '@as-integrations/express5'
-      - '@as-integrations/fastify'
-      - '@fastify/websocket'
-      - '@nestjs/microservices'
-      - '@nestjs/platform-express'
-      - '@nestjs/websockets'
-      - bufferutil
-      - class-transformer
-      - class-validator
-      - crossws
-      - jiti
-      - supports-color
-      - ts-morph
-      - utf-8-validate
-
-  '@rush-temp/labkit-server-observability@file:projects/labkit-server-observability.tgz':
-    dependencies:
-      '@types/node': 25.6.0
-      eslint: 10.3.0
-      typescript: 6.0.3
-    transitivePeerDependencies:
-      - jiti
-      - supports-color
-
-  '@rush-temp/labkit-webapp-auth@file:projects/labkit-webapp-auth.tgz':
-    dependencies:
-      '@types/node': 25.6.0
-      eslint: 10.3.0
-      typescript: 6.0.3
-    transitivePeerDependencies:
-      - jiti
-      - supports-color
-
-  '@rush-temp/labkit-webapp-build-config@file:projects/labkit-webapp-build-config.tgz':
-    dependencies:
-      '@types/node': 25.6.0
-      eslint: 10.3.0
-      typescript: 6.0.3
-    transitivePeerDependencies:
-      - jiti
-      - supports-color
-
-  '@rush-temp/labkit-webapp-external-store@file:projects/labkit-webapp-external-store.tgz':
-    dependencies:
-      '@types/node': 25.6.0
-      eslint: 10.3.0
-      typescript: 6.0.3
-    transitivePeerDependencies:
-      - jiti
-      - supports-color
-
-  '@rush-temp/labkit-webapp-graphql-relay@file:projects/labkit-webapp-graphql-relay.tgz(graphql@16.13.2)(ws@8.20.0)':
-    dependencies:
-      '@types/node': 25.6.0
-      '@types/react-relay': 18.2.1
-      '@types/relay-runtime': 20.1.1
-      eslint: 10.3.0
-      graphql-ws: 6.0.8(graphql@16.13.2)(ws@8.20.0)
-      react: 19.2.5
-      react-relay: 20.1.1(react@19.2.5)
-      relay-runtime: 20.1.1
-      typescript: 6.0.3
-    transitivePeerDependencies:
-      - '@fastify/websocket'
-      - crossws
-      - encoding
-      - graphql
-      - jiti
-      - supports-color
-      - ws
-
-  '@rush-temp/labkit-webapp-realtime@file:projects/labkit-webapp-realtime.tgz(graphql@16.13.2)(ws@8.20.0)':
-    dependencies:
-      '@types/node': 25.6.0
-      eslint: 10.3.0
-      graphql-ws: 6.0.8(graphql@16.13.2)(ws@8.20.0)
-      typescript: 6.0.3
-    transitivePeerDependencies:
-      - '@fastify/websocket'
-      - crossws
-      - graphql
-      - jiti
-      - supports-color
-      - ws
-
-  '@rush-temp/labkit-webapp-ui@file:projects/labkit-webapp-ui.tgz':
-    dependencies:
-      '@types/node': 25.6.0
-      eslint: 10.3.0
-      typescript: 6.0.3
-    transitivePeerDependencies:
-      - jiti
-      - supports-color
-
   '@sqltools/formatter@1.2.5': {}
 
   '@tokenizer/inflate@0.4.1':
@@ -2220,7 +2195,7 @@ snapshots:
 
   '@types/esrecurse@4.3.1': {}
 
-  '@types/estree@1.0.8': {}
+  '@types/estree@1.0.9': {}
 
   '@types/json-schema@7.0.15': {}
 
@@ -2535,7 +2510,7 @@ snapshots:
   eslint-scope@9.1.2:
     dependencies:
       '@types/esrecurse': 4.3.1
-      '@types/estree': 1.0.8
+      '@types/estree': 1.0.9
       esrecurse: 4.3.0
       estraverse: 5.3.0
 
@@ -2554,7 +2529,7 @@ snapshots:
       '@humanfs/node': 0.16.8
       '@humanwhocodes/module-importer': 1.0.1
       '@humanwhocodes/retry': 0.4.3
-      '@types/estree': 1.0.8
+      '@types/estree': 1.0.9
       ajv: 6.15.0
       cross-spawn: 7.0.6
       debug: 4.4.3
@@ -2728,23 +2703,23 @@ snapshots:
 
   gopd@1.2.0: {}
 
-  graphql-query-complexity@1.1.0(graphql@16.13.2):
+  graphql-query-complexity@1.1.0(graphql@16.14.0):
     dependencies:
-      graphql: 16.13.2
+      graphql: 16.14.0
       lodash.get: 4.4.2
 
-  graphql-tag@2.12.6(graphql@16.13.2):
+  graphql-tag@2.12.6(graphql@16.14.0):
     dependencies:
-      graphql: 16.13.2
+      graphql: 16.14.0
       tslib: 2.8.1
 
-  graphql-ws@6.0.8(graphql@16.13.2)(ws@8.20.0):
+  graphql-ws@6.0.8(graphql@16.14.0)(ws@8.20.0):
     dependencies:
-      graphql: 16.13.2
+      graphql: 16.14.0
     optionalDependencies:
       ws: 8.20.0
 
-  graphql@16.13.2: {}
+  graphql@16.14.0: {}
 
   has-property-descriptors@1.0.2:
     dependencies:
@@ -2967,18 +2942,18 @@ snapshots:
       iconv-lite: 0.7.2
       unpipe: 1.0.0
 
-  react-relay@20.1.1(react@19.2.5):
+  react-relay@20.1.1(react@19.2.6):
     dependencies:
       '@babel/runtime': 7.29.2
       fbjs: 3.0.5
       invariant: 2.2.4
       nullthrows: 1.1.1
-      react: 19.2.5
+      react: 19.2.6
       relay-runtime: 20.1.1
     transitivePeerDependencies:
       - encoding
 
-  react@19.2.5: {}
+  react@19.2.6: {}
 
   readdirp@4.1.2: {}
 
@@ -3095,11 +3070,11 @@ snapshots:
     dependencies:
       '@tokenizer/token': 0.3.0
 
-  subscriptions-transport-ws@0.11.0(graphql@16.13.2):
+  subscriptions-transport-ws@0.11.0(graphql@16.14.0):
     dependencies:
       backo2: 1.0.2
       eventemitter3: 3.1.2
-      graphql: 16.13.2
+      graphql: 16.14.0
       iterall: 1.3.0
       symbol-observable: 1.2.0
       ws: 7.5.10

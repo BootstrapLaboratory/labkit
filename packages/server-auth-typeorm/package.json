@@ -35,8 +35,8 @@
     "verify": "npm run test"
   },
   "dependencies": {
-    "@omgjs/labkit-server-auth": "0.1.1",
-    "@omgjs/labkit-server-database": "0.1.1",
+    "@omgjs/labkit-server-auth": "workspace:*",
+    "@omgjs/labkit-server-database": "workspace:*",
     "@nestjs/common": "^11.1.19",
     "@nestjs/typeorm": "^11.0.1",
     "reflect-metadata": "^0.2.2",
@@ -44,7 +44,7 @@
     "typeorm": "^0.3.28"
   },
   "devDependencies": {
-    "@omgjs/labkit-eslint-config": "0.0.1",
+    "@omgjs/labkit-eslint-config": "workspace:*",
     "@types/node": "^25.6.0",
     "eslint": "^10.3.0",
     "typescript": "^6.0.3"

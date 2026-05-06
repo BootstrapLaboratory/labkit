@@ -10,8 +10,8 @@ const baseUrl =
   process.env.PAGES_BASE_PATH ?? (isProjectPages ? `/${repositoryName}/` : "/");
 const url =
   process.env.PAGES_SITE_URL ?? "https://bootstraplaboratory.github.io";
-const currentDocsVersion = "v0.1.0";
-const archivedDocsVersions = [];
+const currentDocsVersion = "vNext";
+const archivedDocsVersions = ["v0.1.1"];
 
 const config: Config = {
   title: "Labkit",

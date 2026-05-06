@@ -1,0 +1,10 @@
+{
+  "changes": [
+    {
+      "packageName": "@omgjs/labkit-server-graphql",
+      "comment": "Use workspace protocol for local Labkit dependencies.",
+      "type": "none"
+    }
+  ],
+  "packageName": "@omgjs/labkit-server-graphql"
+}

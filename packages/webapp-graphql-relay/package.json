@@ -38,13 +38,14 @@
     "verify": "npm run test"
   },
   "dependencies": {
-    "@omgjs/labkit-auth-contract": "0.1.1",
+    "@omgjs/labkit-auth-contract": "workspace:*",
+    "@omgjs/labkit-webapp-realtime": "workspace:*",
     "graphql-ws": "^6.0.8",
     "react-relay": "^20.1.1",
     "relay-runtime": "^20.1.1"
   },
   "devDependencies": {
-    "@omgjs/labkit-eslint-config": "0.0.1",
+    "@omgjs/labkit-eslint-config": "workspace:*",
     "@types/node": "^25.6.0",
     "@types/react-relay": "^18.2.1",
     "@types/relay-runtime": "^20.1.1",

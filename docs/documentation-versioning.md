@@ -9,7 +9,9 @@ project before build.
 
 The current version is configured in
 [`../website-docusaurus/docusaurus.config.ts`](../website-docusaurus/docusaurus.config.ts).
-For the first Labkit line, current docs are labeled `v0.1.0`.
+Current docs are labeled `vNext` while they describe unreleased package work.
+Published docs remain available through the version selector, starting with
+`v0.1.1`.
 
 The sidebar source is
 [`../website-docusaurus/docs-tree.yaml`](../website-docusaurus/docs-tree.yaml).

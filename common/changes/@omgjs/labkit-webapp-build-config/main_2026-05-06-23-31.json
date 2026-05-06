@@ -1,0 +1,10 @@
+{
+  "changes": [
+    {
+      "packageName": "@omgjs/labkit-webapp-build-config",
+      "comment": "Use workspace protocol for local Labkit dependencies.",
+      "type": "none"
+    }
+  ],
+  "packageName": "@omgjs/labkit-webapp-build-config"
+}

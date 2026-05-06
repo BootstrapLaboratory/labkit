@@ -38,10 +38,10 @@
     "verify": "npm run test"
   },
   "dependencies": {
-    "@omgjs/labkit-webapp-external-store": "0.1.1"
+    "@omgjs/labkit-webapp-external-store": "workspace:*"
   },
   "devDependencies": {
-    "@omgjs/labkit-eslint-config": "0.0.1",
+    "@omgjs/labkit-eslint-config": "workspace:*",
     "@types/node": "^25.6.0",
     "eslint": "^10.3.0",
     "typescript": "^6.0.3"

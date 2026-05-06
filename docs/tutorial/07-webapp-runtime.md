@@ -8,7 +8,7 @@ The webapp wraps Labkit factories in app-owned adapter files.
 auth/session.ts      -> createWebappAuthSession
 auth/auth-api.ts     -> createWebappAuthGraphqlApi
 graphql/endpoints.ts -> Vite endpoint resolution
-realtime/*           -> createWebappRealtimeConnection
+realtime/*           -> DefaultWebappRealtimeConnection
 relay/environment.ts -> createWebappRelayEnvironment
 theme/*              -> createWebappThemeController
 ```

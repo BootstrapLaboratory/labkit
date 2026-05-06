@@ -53,20 +53,20 @@ export function useAuthState() {
 
 ```ts
 import { createWebappRelayEnvironment } from "@omgjs/labkit-webapp-graphql-relay";
+import { realtimeConnection } from "../realtime/realtime-connection";
 
 export function createRelayEnvironment() {
   return createWebappRelayEnvironment({
     httpEndpoint: HTTP_ENDPOINT,
-    wsEndpoint: WS_ENDPOINT,
     auth,
-    realtime,
+    realtime: realtimeConnection,
   });
 }
 ```
 
 The `auth` adapter provides access-token reads, auth-state subscription,
-refresh, credentials, and auth-required error checks. The `realtime` adapter
-provides websocket client creation.
+refresh, credentials, and auth-required error checks. The `realtime` instance
+provides a stable websocket client and observable connection state.
 
 ## App Providers
 

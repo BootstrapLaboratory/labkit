@@ -92,19 +92,18 @@ export { hasAuthRequiredGraphqlErrors };
 
 ```ts
 import { createWebappRelayEnvironment } from "@omgjs/labkit-webapp-graphql-relay";
-import { HTTP_ENDPOINT, WS_ENDPOINT } from "../graphql/endpoints";
+import { HTTP_ENDPOINT } from "../graphql/endpoints";
 import {
   getRelayAuthRequestCredentials,
   hasAuthRequiredGraphqlErrors,
   refreshStoredAuthSession,
 } from "../auth/auth-api";
 import { getAccessToken, subscribeAuthState } from "../auth/session";
-import { createRealtimeGraphqlWsClient } from "../realtime/realtime-connection";
+import { realtimeConnection } from "../realtime/realtime-connection";
 
 export function createRelayEnvironment() {
   return createWebappRelayEnvironment({
     httpEndpoint: HTTP_ENDPOINT,
-    wsEndpoint: WS_ENDPOINT,
     auth: {
       getAccessToken,
       subscribeAuthState,
@@ -112,9 +111,7 @@ export function createRelayEnvironment() {
       getAuthRequestCredentials: getRelayAuthRequestCredentials,
       hasAuthRequiredGraphqlErrors,
     },
-    realtime: {
-      createRealtimeGraphqlWsClient,
-    },
+    realtime: realtimeConnection,
   });
 }
 ```

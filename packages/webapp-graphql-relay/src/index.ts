@@ -26,6 +26,10 @@ import {
   formatBearerToken,
   GRAPHQL_WS_AUTHORIZATION_PARAM,
 } from "@omgjs/labkit-auth-contract";
+import {
+  DefaultWebappRealtimeConnection,
+  type DefaultWebappRealtimeConnectionOptions,
+} from "@omgjs/labkit-webapp-realtime";
 
 export type GraphqlRelayRequestCredentials = "include" | "omit" | "same-origin";
 
@@ -54,11 +58,13 @@ export type GraphqlRelayAuthAdapter = {
 };
 
 export type GraphqlRelayRealtimeAdapter = {
-  createRealtimeGraphqlWsClient(
-    url: string,
-    connectionParams?: () => Record<string, string>,
-  ): Client;
+  getClient(): Client;
 };
+
+export type CreateWebappRelayDefaultRealtimeOptions = Omit<
+  DefaultWebappRealtimeConnectionOptions,
+  "connectionParams" | "wsEndpoint"
+>;
 
 export type CreateAuthAwareRelayFetchOptions = {
   auth: GraphqlRelayAuthAdapter;
@@ -71,13 +77,38 @@ export type CreateRelaySubscribeFunctionOptions = {
   wsClient: Client;
 };
 
-export type CreateWebappRelayEnvironmentOptions = {
+export type CreateWebappRelayEnvironmentBaseOptions = {
   auth: GraphqlRelayAuthAdapter;
   authOperationNames?: ReadonlySet<string> | readonly string[];
   fetch?: GraphqlRelayFetch;
   httpEndpoint: string;
+};
+
+export type CreateWebappRelayEnvironmentOptions =
+  | (CreateWebappRelayEnvironmentBaseOptions & {
+      realtime: GraphqlRelayRealtimeAdapter;
+      realtimeOptions?: never;
+      wsEndpoint?: string;
+    })
+  | (CreateWebappRelayEnvironmentBaseOptions & {
+      realtime?: never;
+      realtimeOptions?: CreateWebappRelayDefaultRealtimeOptions;
+      wsEndpoint: string;
+    });
+
+export type CreateWebappRelayRealtimeClientOptions =
+  CreateWebappRelayEnvironmentOptions & {
+    auth: Pick<GraphqlRelayAuthAdapter, "getAccessToken">;
+  };
+
+export type CreateWebappRelayRealtimeClientResult = {
   realtime: GraphqlRelayRealtimeAdapter;
-  wsEndpoint: string;
+  wsClient: Client;
+};
+
+export type CreateWebappRelayEnvironmentResolvedOptions =
+  CreateWebappRelayEnvironmentBaseOptions & {
+  realtime: GraphqlRelayRealtimeAdapter;
 };
 
 export type RouteAbortSignal = {
@@ -268,14 +299,33 @@ export function terminateRealtimeClientOnAuthTokenChange(options: {
   });
 }
 
+export function createWebappRelayRealtimeClient(
+  options: CreateWebappRelayRealtimeClientOptions,
+): CreateWebappRelayRealtimeClientResult {
+  if (options.realtime) {
+    return {
+      realtime: options.realtime,
+      wsClient: options.realtime.getClient(),
+    };
+  }
+
+  const realtime = new DefaultWebappRealtimeConnection({
+    ...options.realtimeOptions,
+    wsEndpoint: options.wsEndpoint,
+    connectionParams: () =>
+      createRelayGraphqlWsConnectionParams(() => options.auth.getAccessToken()),
+  });
+
+  return {
+    realtime,
+    wsClient: realtime.getClient(),
+  };
+}
+
 export function createWebappRelayEnvironment(
   options: CreateWebappRelayEnvironmentOptions,
 ): Environment {
-  const wsClient = options.realtime.createRealtimeGraphqlWsClient(
-    options.wsEndpoint,
-    () =>
-      createRelayGraphqlWsConnectionParams(() => options.auth.getAccessToken()),
-  );
+  const { wsClient } = createWebappRelayRealtimeClient(options);
 
   terminateRealtimeClientOnAuthTokenChange({
     getAccessToken: () => options.auth.getAccessToken(),

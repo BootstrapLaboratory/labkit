@@ -1,0 +1,249 @@
+{
+  "docsSidebar": [
+    {
+      "type": "doc",
+      "id": "introduction",
+      "label": "Introduction"
+    },
+    {
+      "type": "doc",
+      "id": "architecture",
+      "label": "Architecture"
+    },
+    {
+      "type": "doc",
+      "id": "package-groups",
+      "label": "Package Groups"
+    },
+    {
+      "type": "doc",
+      "id": "original-project",
+      "label": "Original Project"
+    },
+    {
+      "type": "doc",
+      "id": "graphql-contract",
+      "label": "GraphQL Contract"
+    },
+    {
+      "type": "doc",
+      "id": "auth-and-sessions",
+      "label": "Auth And Sessions"
+    },
+    {
+      "type": "doc",
+      "id": "realtime",
+      "label": "Realtime"
+    },
+    {
+      "type": "doc",
+      "id": "server-composition",
+      "label": "Server Composition"
+    },
+    {
+      "type": "doc",
+      "id": "webapp-composition",
+      "label": "Webapp Composition"
+    },
+    {
+      "type": "doc",
+      "id": "database-and-migrations",
+      "label": "Database And Migrations"
+    },
+    {
+      "type": "doc",
+      "id": "configuration",
+      "label": "Configuration"
+    },
+    {
+      "type": "doc",
+      "id": "documentation-versioning",
+      "label": "Documentation Versioning"
+    },
+    {
+      "type": "category",
+      "label": "Packages",
+      "items": [
+        {
+          "type": "doc",
+          "id": "packages/auth-contract",
+          "label": "Auth Contract"
+        },
+        {
+          "type": "doc",
+          "id": "packages/runtime-config",
+          "label": "Runtime Config"
+        },
+        {
+          "type": "doc",
+          "id": "packages/server-observability",
+          "label": "Server Observability"
+        },
+        {
+          "type": "doc",
+          "id": "packages/server-config",
+          "label": "Server Config"
+        },
+        {
+          "type": "doc",
+          "id": "packages/server-database",
+          "label": "Server Database"
+        },
+        {
+          "type": "doc",
+          "id": "packages/server-graphql",
+          "label": "Server GraphQL"
+        },
+        {
+          "type": "doc",
+          "id": "packages/server-auth",
+          "label": "Server Auth"
+        },
+        {
+          "type": "doc",
+          "id": "packages/server-auth-typeorm",
+          "label": "Server Auth TypeORM"
+        },
+        {
+          "type": "doc",
+          "id": "packages/webapp-external-store",
+          "label": "Webapp External Store"
+        },
+        {
+          "type": "doc",
+          "id": "packages/webapp-auth",
+          "label": "Webapp Auth"
+        },
+        {
+          "type": "doc",
+          "id": "packages/webapp-realtime",
+          "label": "Webapp Realtime"
+        },
+        {
+          "type": "doc",
+          "id": "packages/webapp-graphql-relay",
+          "label": "Webapp GraphQL Relay"
+        },
+        {
+          "type": "doc",
+          "id": "packages/webapp-ui",
+          "label": "Webapp UI"
+        },
+        {
+          "type": "doc",
+          "id": "packages/webapp-build-config",
+          "label": "Webapp Build Config"
+        }
+      ]
+    }
+  ],
+  "quickStartSidebar": [
+    {
+      "type": "doc",
+      "id": "quick-start",
+      "label": "Start Here"
+    },
+    {
+      "type": "doc",
+      "id": "quick-start/server",
+      "label": "Server"
+    },
+    {
+      "type": "doc",
+      "id": "quick-start/database",
+      "label": "Database"
+    },
+    {
+      "type": "doc",
+      "id": "quick-start/auth",
+      "label": "Auth"
+    },
+    {
+      "type": "doc",
+      "id": "quick-start/webapp",
+      "label": "Webapp"
+    },
+    {
+      "type": "doc",
+      "id": "quick-start/realtime",
+      "label": "Realtime"
+    },
+    {
+      "type": "doc",
+      "id": "quick-start/theme",
+      "label": "Theme"
+    },
+    {
+      "type": "doc",
+      "id": "quick-start/build-and-check",
+      "label": "Build And Check"
+    }
+  ],
+  "tutorialSidebar": [
+    {
+      "type": "doc",
+      "id": "tutorial",
+      "label": "Tutorial"
+    },
+    {
+      "type": "doc",
+      "id": "tutorial/system-overview",
+      "label": "System Overview"
+    },
+    {
+      "type": "doc",
+      "id": "tutorial/project-foundation",
+      "label": "Project Foundation"
+    },
+    {
+      "type": "doc",
+      "id": "tutorial/graphql-contract",
+      "label": "GraphQL Contract"
+    },
+    {
+      "type": "doc",
+      "id": "tutorial/server-runtime",
+      "label": "Server Runtime"
+    },
+    {
+      "type": "doc",
+      "id": "tutorial/database-and-feature-manifests",
+      "label": "Database And Feature Manifests"
+    },
+    {
+      "type": "doc",
+      "id": "tutorial/auth-server",
+      "label": "Auth Server"
+    },
+    {
+      "type": "doc",
+      "id": "tutorial/webapp-runtime",
+      "label": "Webapp Runtime"
+    },
+    {
+      "type": "doc",
+      "id": "tutorial/browser-auth-security",
+      "label": "Browser Auth Security"
+    },
+    {
+      "type": "doc",
+      "id": "tutorial/realtime-subscriptions",
+      "label": "Realtime Subscriptions"
+    },
+    {
+      "type": "doc",
+      "id": "tutorial/ui-and-theme-boundaries",
+      "label": "UI And Theme Boundaries"
+    },
+    {
+      "type": "doc",
+      "id": "tutorial/runtime-readiness",
+      "label": "Runtime Readiness"
+    },
+    {
+      "type": "doc",
+      "id": "tutorial/evolving-an-app",
+      "label": "Evolving An App"
+    }
+  ]
+}

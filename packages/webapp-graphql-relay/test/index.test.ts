@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import type { Client } from "graphql-ws";
+import type { Client, ClientOptions } from "graphql-ws";
 import type {
   Environment,
   GraphQLResponse,
@@ -14,6 +14,7 @@ import {
   createRelayGraphqlWsConnectionParams,
   createRelaySubscribeFunction,
   createUnauthorizedGraphqlResponse,
+  createWebappRelayRealtimeClient,
   fetchRelayGraphqlOnce,
   loadRouteQuery,
   terminateRealtimeClientOnAuthTokenChange,
@@ -223,6 +224,55 @@ test("terminateRealtimeClientOnAuthTokenChange terminates only when the token ch
   authListener.current?.();
 
   assert.equal(terminates, 1);
+});
+
+test("createWebappRelayRealtimeClient uses an explicit realtime instance", () => {
+  const wsClient = createFakeClient();
+  const realtime = {
+    getClient: () => wsClient,
+  };
+  const result = createWebappRelayRealtimeClient({
+    auth: createAuthAdapter(),
+    httpEndpoint: "https://example.com/graphql",
+    realtime,
+  });
+
+  assert.equal(result.realtime, realtime);
+  assert.equal(result.wsClient, wsClient);
+});
+
+test("createWebappRelayRealtimeClient creates default realtime from raw websocket options", () => {
+  const capturedClientOptions: {
+    current?: ClientOptions<Record<string, string>>;
+  } = {};
+  const wsClient = createFakeClient();
+  const result = createWebappRelayRealtimeClient({
+    auth: createAuthAdapter({
+      getAccessToken: () => "access-token",
+    }),
+    httpEndpoint: "https://example.com/graphql",
+    wsEndpoint: "ws://example.com/graphql",
+    realtimeOptions: {
+      browserLifecycle: null,
+      createClient: (options: ClientOptions<Record<string, string>>) => {
+        capturedClientOptions.current = options;
+        return wsClient;
+      },
+      reconnectWatchdogMs: 0,
+    },
+  });
+  const connectionParams = capturedClientOptions.current?.connectionParams;
+
+  assert.notEqual(result.wsClient, wsClient);
+  assert.equal(typeof result.wsClient.subscribe, "function");
+  assert.equal(capturedClientOptions.current?.url, "ws://example.com/graphql");
+  assert.equal(typeof connectionParams, "function");
+  assert.deepEqual(
+    (connectionParams as () => Record<string, string>)(),
+    {
+      authorization: "Bearer access-token",
+    },
+  );
 });
 
 test("loadRouteQuery disposes the query ref once when the route aborts", () => {

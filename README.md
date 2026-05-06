@@ -85,7 +85,7 @@ Labkit helpers:
 ```ts
 import { createWebappAuthSession } from "@omgjs/labkit-webapp-auth";
 import { createWebappRelayEnvironment } from "@omgjs/labkit-webapp-graphql-relay";
-import { createWebappRealtimeConnection } from "@omgjs/labkit-webapp-realtime";
+import { DefaultWebappRealtimeConnection } from "@omgjs/labkit-webapp-realtime";
 import { createWebappThemeController } from "@omgjs/labkit-webapp-ui";
 ```
 
@@ -93,8 +93,8 @@ Typical ownership:
 
 - Labkit owns reusable browser runtime policy: memory access tokens, non-secret
   session hints, refresh/logout GraphQL API wrappers, auth-aware Relay retry,
-  GraphQL WS reconnect behavior, route query disposal, external store mechanics,
-  and theme controller mechanics.
+  self-healing GraphQL WS recovery, connection-state monitoring, route query
+  disposal, external store mechanics, and theme controller mechanics.
 - The app owns endpoints, generated Relay operations, route files, React hooks,
   storage keys, concrete themes, CSS classes, UI components, and visual design.
 

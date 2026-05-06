@@ -13,7 +13,7 @@ const versionsJsonPath = path.join(docsVersionsRoot, "versions.json");
 const githubBlobBase =
   "https://github.com/BootstrapLaboratory/labkit/blob";
 
-const publishedVersions = [];
+const publishedVersions = ["v0.1.1"];
 
 function stripLeadingHeading(markdown) {
   return markdown.replace(/^# .+\r?\n+/, "");
