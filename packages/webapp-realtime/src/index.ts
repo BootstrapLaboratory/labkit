@@ -276,7 +276,9 @@ function appendRealtimeDetail(message: string, detail: string | null): string {
     return message;
   }
 
-  return message.endsWith(".") ? `${message} ${detail}` : `${message}. ${detail}`;
+  return message.endsWith(".")
+    ? `${message} ${detail}`
+    : `${message}. ${detail}`;
 }
 
 function createDefaultBrowserLifecycle(): RealtimeBrowserLifecycle | null {
@@ -398,7 +400,10 @@ class SelfHealingGraphqlWsClient implements Client {
 
     for (const subscription of this.activeSubscriptions.values()) {
       if (subscription.generation === previousGeneration) {
-        this.unsubscribeRestartingSubscription(subscription, previousGeneration);
+        this.unsubscribeRestartingSubscription(
+          subscription,
+          previousGeneration,
+        );
         subscription.innerUnsubscribe = undefined;
       }
     }
@@ -817,7 +822,13 @@ export class DefaultWebappRealtimeConnection {
           this.emitClientEvent(generation, "opened", socket);
         },
         connected: (socket, payload, wasRetry) => {
-          this.emitClientEvent(generation, "connected", socket, payload, wasRetry);
+          this.emitClientEvent(
+            generation,
+            "connected",
+            socket,
+            payload,
+            wasRetry,
+          );
           if (!this.client.isCurrentGeneration(generation)) {
             return;
           }
@@ -859,7 +870,9 @@ export class DefaultWebappRealtimeConnection {
               recoveryReason: "heartbeat-timeout",
               lastRecoveryAction: "terminate",
             });
-            this.logRealtime("No pong received in time. Terminating stuck socket.");
+            this.logRealtime(
+              "No pong received in time. Terminating stuck socket.",
+            );
             this.client.terminate();
             this.startReconnectWatchdog();
           }, this.heartbeatTimeoutMs);
@@ -961,11 +974,13 @@ export class DefaultWebappRealtimeConnection {
   private updateConnectionState(
     nextState: Partial<RealtimeConnectionState>,
   ): void {
-    this.connectionStateStore.updateSnapshot((connectionState: RealtimeConnectionState) => ({
-      ...connectionState,
-      ...nextState,
-      innerClientGeneration: this.client?.getCurrentGeneration() ?? 1,
-    }));
+    this.connectionStateStore.updateSnapshot(
+      (connectionState: RealtimeConnectionState) => ({
+        ...connectionState,
+        ...nextState,
+        innerClientGeneration: this.client?.getCurrentGeneration() ?? 1,
+      }),
+    );
   }
 
   private clearHeartbeatTimeout(): void {
@@ -1072,7 +1087,10 @@ export class DefaultWebappRealtimeConnection {
       "visibilitychange",
       recoverAfterBrowserResume,
     );
-    this.browserLifecycle.addEventListener("pageshow", recoverAfterBrowserResume);
+    this.browserLifecycle.addEventListener(
+      "pageshow",
+      recoverAfterBrowserResume,
+    );
     syncBrowserLifecycleState();
   }
 
@@ -1088,7 +1106,10 @@ export class DefaultWebappRealtimeConnection {
     this.reconnectWatchdogTimeout = setTimeout(() => {
       this.reconnectWatchdogTimeout = undefined;
 
-      if (!this.getConnectionState().browserOnline || !this.isReconnectInProgress()) {
+      if (
+        !this.getConnectionState().browserOnline ||
+        !this.isReconnectInProgress()
+      ) {
         return;
       }
 

@@ -7,9 +7,7 @@ UI.
 
 ```ts
 import { useSyncExternalStore } from "react";
-import {
-  type RealtimeConnectionState,
-} from "@omgjs/labkit-webapp-realtime";
+import { type RealtimeConnectionState } from "@omgjs/labkit-webapp-realtime";
 import { relayRuntime } from "../relay/environment";
 
 export {

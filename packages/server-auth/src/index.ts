@@ -250,8 +250,8 @@ export type ServerAuthPersistenceRepositories = {
 };
 
 export interface ServerAuthTransactionRunner<
-  TRepositories extends
-    ServerAuthPersistenceRepositories = ServerAuthPersistenceRepositories,
+  TRepositories extends ServerAuthPersistenceRepositories =
+    ServerAuthPersistenceRepositories,
 > {
   runInTransaction<TResult>(
     operation: (repositories: TRepositories) => MaybePromise<TResult>,
@@ -676,8 +676,8 @@ export type ServerAuthHttpRequest<
 
 export type ServerAuthGraphqlContext<
   TPrincipal extends GraphqlSubscriptionPrincipalLike = Principal,
-  TRequest extends
-    ServerAuthHttpRequest<TPrincipal> = ServerAuthHttpRequest<TPrincipal>,
+  TRequest extends ServerAuthHttpRequest<TPrincipal> =
+    ServerAuthHttpRequest<TPrincipal>,
 > = {
   readonly req?: TRequest;
   principal?: TPrincipal | null;
@@ -966,8 +966,7 @@ export class IdentityProviderRegistry {
 @Injectable()
 export class GraphqlAuthenticationGuard<
   TPrincipal extends GraphqlSubscriptionPrincipalLike = Principal,
-> implements CanActivate
-{
+> implements CanActivate {
   constructor(
     @Inject(SERVER_AUTH_ACCESS_TOKEN_VERIFIER)
     private readonly verifyAccessToken: ServerAuthAccessTokenVerifier<TPrincipal>,
@@ -1012,9 +1011,9 @@ export class GraphqlAuthenticationGuard<
 }
 
 @Injectable()
-export class RolesGuard<TPrincipal extends ServerAuthRolePrincipal = Principal>
-  implements CanActivate
-{
+export class RolesGuard<
+  TPrincipal extends ServerAuthRolePrincipal = Principal,
+> implements CanActivate {
   constructor(private readonly reflector: Reflector) {}
 
   canActivate(context: ExecutionContext): boolean {

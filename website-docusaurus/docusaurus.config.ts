@@ -68,8 +68,7 @@ const config: Config = {
               ]),
             ),
           },
-          editUrl:
-            "https://github.com/BootstrapLaboratory/labkit/edit/main/",
+          editUrl: "https://github.com/BootstrapLaboratory/labkit/edit/main/",
         },
         blog: false,
         theme: {

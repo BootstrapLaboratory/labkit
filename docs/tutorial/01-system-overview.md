@@ -11,15 +11,15 @@ meet at GraphQL.
 
 ## Ownership Map
 
-| Area | Labkit owns | App owns |
-| --- | --- | --- |
-| Auth contract | principal/payload shapes, bearer helpers, websocket auth names | business auth policy |
-| Server auth | provider contracts, guards, sessions, transport helpers | password hasher, JWT service, resolvers |
-| Database | config parsing, manifests, migration safety | DataSource, feature entities, migration execution |
-| GraphQL | Nest module/context helpers | DTOs, resolvers, schema publishing |
-| Relay | network, subscription, route preload helpers | generated operations and route files |
-| Realtime | reconnect/watchdog state | pub/sub backend and UI |
-| UI | theme mechanics, class helper | components, tokens, visual design |
+| Area          | Labkit owns                                                    | App owns                                          |
+| ------------- | -------------------------------------------------------------- | ------------------------------------------------- |
+| Auth contract | principal/payload shapes, bearer helpers, websocket auth names | business auth policy                              |
+| Server auth   | provider contracts, guards, sessions, transport helpers        | password hasher, JWT service, resolvers           |
+| Database      | config parsing, manifests, migration safety                    | DataSource, feature entities, migration execution |
+| GraphQL       | Nest module/context helpers                                    | DTOs, resolvers, schema publishing                |
+| Relay         | network, subscription, route preload helpers                   | generated operations and route files              |
+| Realtime      | reconnect/watchdog state                                       | pub/sub backend and UI                            |
+| UI            | theme mechanics, class helper                                  | components, tokens, visual design                 |
 
 The reference app demonstrates this split with `apps/server`, `apps/webapp`,
 and a generated GraphQL contract package. Labkit extracts the reusable parts so

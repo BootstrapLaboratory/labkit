@@ -34,9 +34,7 @@ websocket reconnects, and exposes the same realtime state that product UI can
 display.
 
 ```ts
-import {
-  DefaultWebappRelayRuntime,
-} from "@omgjs/labkit-webapp-graphql-relay";
+import { DefaultWebappRelayRuntime } from "@omgjs/labkit-webapp-graphql-relay";
 
 export const relayRuntime = new DefaultWebappRelayRuntime({
   httpEndpoint: HTTP_ENDPOINT,

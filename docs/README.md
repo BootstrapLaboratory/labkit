@@ -37,13 +37,13 @@ JWT secrets, deployment providers, visual design, and product features.
 
 ## Package Groups
 
-| Group | Packages | Purpose |
-| --- | --- | --- |
-| Shared contracts | `@omgjs/labkit-auth-contract`, `@omgjs/labkit-runtime-config` | Framework-free shapes, protocol constants, and parsing helpers. |
-| Server runtime | `@omgjs/labkit-server-config`, `@omgjs/labkit-server-database`, `@omgjs/labkit-server-graphql`, `@omgjs/labkit-server-observability` | Nest, GraphQL, config, logging, PostgreSQL, and TypeORM composition helpers. |
-| Server auth | `@omgjs/labkit-server-auth`, `@omgjs/labkit-server-auth-typeorm` | Auth provider orchestration, guards, refresh sessions, token transport, and TypeORM persistence. |
-| Browser runtime | `@omgjs/labkit-webapp-auth`, `@omgjs/labkit-webapp-realtime`, `@omgjs/labkit-webapp-graphql-relay`, `@omgjs/labkit-webapp-external-store`, `@omgjs/labkit-webapp-ui` | Auth state, Relay network, websocket reconnects, external-store mechanics, and theme helpers. |
-| Tooling | `@omgjs/labkit-webapp-build-config` | Vite production env validation and package-based chunk grouping. |
+| Group            | Packages                                                                                                                                                             | Purpose                                                                                          |
+| ---------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
+| Shared contracts | `@omgjs/labkit-auth-contract`, `@omgjs/labkit-runtime-config`                                                                                                        | Framework-free shapes, protocol constants, and parsing helpers.                                  |
+| Server runtime   | `@omgjs/labkit-server-config`, `@omgjs/labkit-server-database`, `@omgjs/labkit-server-graphql`, `@omgjs/labkit-server-observability`                                 | Nest, GraphQL, config, logging, PostgreSQL, and TypeORM composition helpers.                     |
+| Server auth      | `@omgjs/labkit-server-auth`, `@omgjs/labkit-server-auth-typeorm`                                                                                                     | Auth provider orchestration, guards, refresh sessions, token transport, and TypeORM persistence. |
+| Browser runtime  | `@omgjs/labkit-webapp-auth`, `@omgjs/labkit-webapp-realtime`, `@omgjs/labkit-webapp-graphql-relay`, `@omgjs/labkit-webapp-external-store`, `@omgjs/labkit-webapp-ui` | Auth state, Relay network, websocket reconnects, external-store mechanics, and theme helpers.    |
+| Tooling          | `@omgjs/labkit-webapp-build-config`                                                                                                                                  | Vite production env validation and package-based chunk grouping.                                 |
 
 Start with [Architecture](architecture.md) for the boundary model, or go
 straight to [Quick Start](quick-start/README.md) for a plain Nest/Vite setup.

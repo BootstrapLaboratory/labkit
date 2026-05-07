@@ -1,6 +1,9 @@
 import { randomUUID } from "node:crypto";
 import type { IncomingHttpHeaders } from "node:http";
-import { readConfigString, type ConfigReader } from "@omgjs/labkit-server-config";
+import {
+  readConfigString,
+  type ConfigReader,
+} from "@omgjs/labkit-server-config";
 import {
   isGraphqlSubscriptionLoggingEnabled,
   logStructuredEvent,

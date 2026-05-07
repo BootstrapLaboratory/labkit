@@ -61,9 +61,11 @@ import { relayRuntime } from "./relay/environment";
 const realtime = relayRuntime.getRealtime();
 const client = realtime.getClient();
 const state = relayRuntime.getRealtimeConnectionState();
-const unsubscribe = relayRuntime.subscribeToRealtimeConnectionState((nextState) => {
-  console.log(nextState.status, nextState.detail);
-});
+const unsubscribe = relayRuntime.subscribeToRealtimeConnectionState(
+  (nextState) => {
+    console.log(nextState.status, nextState.detail);
+  },
+);
 ```
 
 Product UI can use `getRealtimeConnectionMessage` for a first status banner,

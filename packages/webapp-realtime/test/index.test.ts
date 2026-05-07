@@ -32,12 +32,14 @@ type FakeClient = Client & {
   readonly terminations: () => number;
 };
 
-function createFakeClient(options: {
-  disposeError?: unknown;
-  onUnsubscribe?: (
-    sink: Sink<FormattedExecutionResult<unknown, unknown>>,
-  ) => void;
-} = {}): FakeClient {
+function createFakeClient(
+  options: {
+    disposeError?: unknown;
+    onUnsubscribe?: (
+      sink: Sink<FormattedExecutionResult<unknown, unknown>>,
+    ) => void;
+  } = {},
+): FakeClient {
   let disposals = 0;
   let terminations = 0;
   const subscriptions: CapturedSubscription[] = [];
@@ -201,11 +203,7 @@ test("DefaultWebappRealtimeConnection updates state for retry and fatal close ev
       lastDisconnectedAt: now,
     }),
   );
-  assert.deepEqual(emittedStatuses, [
-    "connecting",
-    "retrying",
-    "disconnected",
-  ]);
+  assert.deepEqual(emittedStatuses, ["connecting", "retrying", "disconnected"]);
 });
 
 test("createDefaultWebappRealtimeConnection returns the default class", () => {
@@ -350,7 +348,10 @@ test("browser resume recreates a stale connected client after a long pause", () 
     assert.equal(clients[0].disposals(), 1);
     assert.equal(clients[1].subscriptions.length, 1);
     assert.deepEqual(clients[1].subscriptions[0].payload, payload);
-    assert.equal(connection.getConnectionState().recoveryReason, "browser-resume");
+    assert.equal(
+      connection.getConnectionState().recoveryReason,
+      "browser-resume",
+    );
     assert.equal(connection.getConnectionState().restartCount, 1);
   } finally {
     void connection.dispose();
@@ -442,7 +443,10 @@ test("retrying subscription transport errors are recovered through a new inner c
     assert.equal(clients[1].subscriptions.length, 1);
     assert.deepEqual(clients[1].subscriptions[0].payload, payload);
     assert.equal(connection.getConnectionState().restartCount, 1);
-    assert.equal(connection.getConnectionState().recoveryReason, "transport-error");
+    assert.equal(
+      connection.getConnectionState().recoveryReason,
+      "transport-error",
+    );
   } finally {
     void connection.dispose();
   }
@@ -656,7 +660,10 @@ test("browser resume recreates a stuck retrying client", async () => {
     listeners.get("visibilitychange")?.();
 
     assert.equal(clients.length, 2);
-    assert.equal(connection.getConnectionState().recoveryReason, "browser-resume");
+    assert.equal(
+      connection.getConnectionState().recoveryReason,
+      "browser-resume",
+    );
     assert.equal(connection.getConnectionState().restartCount, 1);
   } finally {
     await connection.dispose();

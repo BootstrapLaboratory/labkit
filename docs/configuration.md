@@ -33,18 +33,18 @@ Use `createEnvironmentConfigReader(process.env)` outside Nest, or pass
 
 ## Common Server Keys
 
-| Key | Used by | Default |
-| --- | --- | --- |
-| `HOST` | `readServerRuntimeOptions` | `0.0.0.0` |
-| `PORT` | `readServerRuntimeOptions` | `3000` |
-| `GRAPHQL_PATH` | server GraphQL helpers | `/graphql` |
-| `PUBSUB_DRIVER` | app runtime selection | `memory` |
-| `CORS_ORIGIN` | `readServerCorsOptions` | `*` |
-| `AUTH_REFRESH_TOKEN_TRANSPORT` | server/browser auth alignment | `cookie` |
-| `AUTH_REFRESH_COOKIE_NAME` | app config reader for server auth | app-owned |
-| `AUTH_REFRESH_COOKIE_PATH` | app config reader for server auth | app-owned |
-| `AUTH_REFRESH_COOKIE_SAME_SITE` | app config reader for server auth | app-owned |
-| `AUTH_REFRESH_COOKIE_SECURE` | app config reader for server auth | app-owned |
+| Key                             | Used by                           | Default    |
+| ------------------------------- | --------------------------------- | ---------- |
+| `HOST`                          | `readServerRuntimeOptions`        | `0.0.0.0`  |
+| `PORT`                          | `readServerRuntimeOptions`        | `3000`     |
+| `GRAPHQL_PATH`                  | server GraphQL helpers            | `/graphql` |
+| `PUBSUB_DRIVER`                 | app runtime selection             | `memory`   |
+| `CORS_ORIGIN`                   | `readServerCorsOptions`           | `*`        |
+| `AUTH_REFRESH_TOKEN_TRANSPORT`  | server/browser auth alignment     | `cookie`   |
+| `AUTH_REFRESH_COOKIE_NAME`      | app config reader for server auth | app-owned  |
+| `AUTH_REFRESH_COOKIE_PATH`      | app config reader for server auth | app-owned  |
+| `AUTH_REFRESH_COOKIE_SAME_SITE` | app config reader for server auth | app-owned  |
+| `AUTH_REFRESH_COOKIE_SECURE`    | app config reader for server auth | app-owned  |
 
 `readServerCorsOptions` enables credentials automatically unless refresh tokens
 are transported in the response body.

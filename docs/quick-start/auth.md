@@ -42,7 +42,11 @@ export class IdentityConfigService
   }
 
   getRefreshTokenTtlSeconds(): number {
-    return readConfigNumber(this.config, "AUTH_REFRESH_TOKEN_TTL_SECONDS", 2592000);
+    return readConfigNumber(
+      this.config,
+      "AUTH_REFRESH_TOKEN_TTL_SECONDS",
+      2592000,
+    );
   }
 
   getRefreshCookieName(): string {
@@ -54,7 +58,11 @@ export class IdentityConfigService
   }
 
   getRefreshCookieSameSite(): ServerAuthRefreshCookieSameSite {
-    return readCookieSameSite(this.config, "AUTH_REFRESH_COOKIE_SAME_SITE", "lax");
+    return readCookieSameSite(
+      this.config,
+      "AUTH_REFRESH_COOKIE_SAME_SITE",
+      "lax",
+    );
   }
 
   isRefreshCookieSecure(): boolean {
@@ -83,7 +91,11 @@ export class IdentityConfigService
 
 ```ts
 import { Injectable } from "@nestjs/common";
-import { randomBytes, scrypt as scryptCallback, timingSafeEqual } from "node:crypto";
+import {
+  randomBytes,
+  scrypt as scryptCallback,
+  timingSafeEqual,
+} from "node:crypto";
 import { promisify } from "node:util";
 import type { ServerAuthPasswordHasher } from "@omgjs/labkit-server-auth";
 
@@ -102,7 +114,9 @@ export class PasswordService implements ServerAuthPasswordHasher {
     if (!salt || !encoded) return false;
     const expected = Buffer.from(encoded, "base64url");
     const actual = (await scrypt(password, salt, expected.length)) as Buffer;
-    return expected.length === actual.length && timingSafeEqual(expected, actual);
+    return (
+      expected.length === actual.length && timingSafeEqual(expected, actual)
+    );
   }
 }
 ```

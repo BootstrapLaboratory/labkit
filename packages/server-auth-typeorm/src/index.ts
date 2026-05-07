@@ -27,7 +27,8 @@ import { IdentityUserRoleEntity } from "./entities/identity-user-role.entity";
 import { IdentityUserEntity } from "./entities/identity-user.entity";
 import { CreateIdentityTables20260429143000 } from "./migrations/20260429143000-CreateIdentityTables";
 
-export const SERVER_AUTH_TYPEORM_PACKAGE_NAME = "@omgjs/labkit-server-auth-typeorm";
+export const SERVER_AUTH_TYPEORM_PACKAGE_NAME =
+  "@omgjs/labkit-server-auth-typeorm";
 
 export {
   CreateIdentityTables20260429143000,
@@ -58,9 +59,7 @@ export type ServerAuthTypeormDatabaseManifest =
 export type ServerAuthTypeormRepositoryAdapters =
   ServerAuthPersistenceRepositories;
 
-export class TypeormServerAuthIdentityAccountRepository
-  implements ServerAuthIdentityAccountRepository
-{
+export class TypeormServerAuthIdentityAccountRepository implements ServerAuthIdentityAccountRepository {
   constructor(
     private readonly accountRepository: Repository<IdentityAccountEntity>,
     private readonly userRepository: Repository<IdentityUserEntity>,
@@ -135,9 +134,7 @@ export class TypeormServerAuthIdentityAccountRepository
   }
 }
 
-export class TypeormServerAuthRoleRepository
-  implements ServerAuthRoleRepository
-{
+export class TypeormServerAuthRoleRepository implements ServerAuthRoleRepository {
   constructor(
     private readonly roleRepository: Repository<IdentityUserRoleEntity>,
   ) {}
@@ -151,9 +148,7 @@ export class TypeormServerAuthRoleRepository
   }
 }
 
-export class TypeormServerAuthRefreshSessionRepository
-  implements ServerAuthRefreshSessionRepository
-{
+export class TypeormServerAuthRefreshSessionRepository implements ServerAuthRefreshSessionRepository {
   constructor(
     private readonly refreshSessionRepository: Repository<IdentityRefreshSessionEntity>,
   ) {}
@@ -238,9 +233,7 @@ export class TypeormServerAuthRefreshSessionRepository
   }
 }
 
-export class TypeormServerAuthTransactionRunner
-  implements ServerAuthTransactionRunner
-{
+export class TypeormServerAuthTransactionRunner implements ServerAuthTransactionRunner {
   constructor(private readonly dataSource: DataSource) {}
 
   runInTransaction<TResult>(

@@ -101,7 +101,7 @@ const examples: readonly ArchitectureExample[] = [
     languageLabel: "ts",
     highlightLanguage: "typescript",
     code: [
-      'import {',
+      "import {",
       "  createIdentityProviderRegistryConfigProvider,",
       "  createServerAuthLocalIdentityProviderProvider,",
       "  createServerAuthRefreshTokenTransportProvider,",
@@ -145,7 +145,7 @@ const examples: readonly ArchitectureExample[] = [
       "      getAccessToken,",
       "      refreshStoredAuthSession,",
       "      subscribeAuthState,",
-      "      requestCredentials: \"include\",",
+      '      requestCredentials: "include",',
       "    },",
       "    realtime,",
       "  });",
@@ -179,10 +179,7 @@ const packageGroups: readonly PackageGroup[] = [
     title: "Shared Contracts",
     description:
       "Runtime config parsing and auth shapes shared by server and browser packages.",
-    packages: [
-      "@omgjs/labkit-auth-contract",
-      "@omgjs/labkit-runtime-config",
-    ],
+    packages: ["@omgjs/labkit-auth-contract", "@omgjs/labkit-runtime-config"],
     to: "/docs/package-groups#shared-packages",
   },
   {
@@ -524,8 +521,8 @@ export default function Home() {
               Pick the runtime concern you need
             </Heading>
             <p>
-              Packages are intentionally small. Install the groups your app
-              uses and keep framework packages as application dependencies.
+              Packages are intentionally small. Install the groups your app uses
+              and keep framework packages as application dependencies.
             </p>
           </div>
           <div className={styles.packageGrid}>

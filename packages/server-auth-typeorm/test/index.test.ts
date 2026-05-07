@@ -57,7 +57,10 @@ function createQueryRunnerMock(): QueryRunnerMock & {
 }
 
 test("exports the package identity", () => {
-  assert.equal(SERVER_AUTH_TYPEORM_PACKAGE_NAME, "@omgjs/labkit-server-auth-typeorm");
+  assert.equal(
+    SERVER_AUTH_TYPEORM_PACKAGE_NAME,
+    "@omgjs/labkit-server-auth-typeorm",
+  );
 });
 
 test("exports the auth database manifest", () => {

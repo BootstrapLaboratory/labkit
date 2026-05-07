@@ -27,8 +27,8 @@ extension points when an application needs to own a policy itself.
 
 ## Package Map
 
-| Package                                                            | Runtime | Purpose                                                                                                                |
-| ------------------------------------------------------------------ | ------- | ---------------------------------------------------------------------------------------------------------------------- |
+| Package                                                                           | Runtime | Purpose                                                                                                                |
+| --------------------------------------------------------------------------------- | ------- | ---------------------------------------------------------------------------------------------------------------------- |
 | [`@omgjs/labkit-auth-contract`](packages/auth-contract/README.md)                 | Shared  | Auth shapes and protocol constants that are safe for server and browser code.                                          |
 | [`@omgjs/labkit-runtime-config`](packages/runtime-config/README.md)               | Shared  | Small parsing helpers for environment and runtime configuration values.                                                |
 | [`@omgjs/labkit-server-observability`](packages/server-observability/README.md)   | Server  | Structured logging helpers and safe error serialization.                                                               |

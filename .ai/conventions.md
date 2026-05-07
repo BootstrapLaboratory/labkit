@@ -72,6 +72,15 @@ scripts and should not be hand-edited as source content.
 
 Keep released docs snapshots under `docs-versions` immutable once committed.
 
+## Code QA
+
+After repository code changes, run `trunk check -a -y` from the repository root
+as a QA cleanup step. Fix straightforward issues reported by Trunk when the fix
+is safe and scoped to the task. If an issue is not trivial or safe to fix, do
+not block the handoff; report the remaining issue clearly so the user can
+decide. If Trunk is not available in the environment, report that as a
+validation gap.
+
 ## Task Files
 
 Read [`.ai/rules/TasksFiles.md`](rules/TasksFiles.md) before creating or

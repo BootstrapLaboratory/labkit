@@ -10,8 +10,7 @@ const docsVersionsRoot = path.join(repoRoot, "docs-versions");
 const versionedDocsDir = path.join(docsVersionsRoot, "versioned_docs");
 const versionedSidebarsDir = path.join(docsVersionsRoot, "versioned_sidebars");
 const versionsJsonPath = path.join(docsVersionsRoot, "versions.json");
-const githubBlobBase =
-  "https://github.com/BootstrapLaboratory/labkit/blob";
+const githubBlobBase = "https://github.com/BootstrapLaboratory/labkit/blob";
 
 const publishedVersions = ["v0.1.1"];
 

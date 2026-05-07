@@ -77,7 +77,10 @@ export function createTypeormOptions(config: ConfigService): DataSourceOptions {
   console.log(
     JSON.stringify({
       event: "database_configured",
-      ...summarizePostgresConnection({ ...base, synchronize: flags.synchronize }),
+      ...summarizePostgresConnection({
+        ...base,
+        synchronize: flags.synchronize,
+      }),
     }),
   );
 
