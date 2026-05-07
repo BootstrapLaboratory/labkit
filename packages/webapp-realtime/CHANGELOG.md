@@ -1,6 +1,13 @@
 # Change Log - @omgjs/labkit-webapp-realtime
 
-This log was last generated on Thu, 07 May 2026 11:37:06 GMT and should not be manually modified.
+This log was last generated on Thu, 07 May 2026 12:53:20 GMT and should not be manually modified.
+
+## 1.0.3
+Thu, 07 May 2026 12:53:20 GMT
+
+### Patches
+
+- Recover realtime subscriptions after transport terminal events during reconnect.
 
 ## 1.0.2
 Thu, 07 May 2026 11:37:06 GMT
