@@ -1,6 +1,13 @@
 # Change Log - @omgjs/labkit-webapp-graphql-relay
 
-This log was last generated on Thu, 07 May 2026 12:53:20 GMT and should not be manually modified.
+This log was last generated on Thu, 07 May 2026 15:25:04 GMT and should not be manually modified.
+
+## 2.0.0
+Thu, 07 May 2026 15:25:04 GMT
+
+### Breaking changes
+
+- Add the default auth-aware Relay runtime and require auth session reads for websocket refresh.
 
 ## 1.0.3
 Thu, 07 May 2026 12:53:20 GMT

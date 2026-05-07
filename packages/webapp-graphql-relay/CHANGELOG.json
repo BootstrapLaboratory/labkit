@@ -2,6 +2,18 @@
   "name": "@omgjs/labkit-webapp-graphql-relay",
   "entries": [
     {
+      "version": "2.0.0",
+      "tag": "@omgjs/labkit-webapp-graphql-relay_v2.0.0",
+      "date": "Thu, 07 May 2026 15:25:04 GMT",
+      "comments": {
+        "major": [
+          {
+            "comment": "Add the default auth-aware Relay runtime and require auth session reads for websocket refresh."
+          }
+        ]
+      }
+    },
+    {
       "version": "1.0.3",
       "tag": "@omgjs/labkit-webapp-graphql-relay_v1.0.3",
       "date": "Thu, 07 May 2026 12:53:20 GMT",
