@@ -170,7 +170,7 @@ export const DEFAULT_HEARTBEAT_INTERVAL_MS = 10_000;
 export const DEFAULT_HEARTBEAT_TIMEOUT_MS = 5_000;
 export const DEFAULT_RECONNECT_WATCHDOG_MS = 30_000;
 export const DEFAULT_CONNECTION_ACK_WAIT_TIMEOUT_MS = 15_000;
-export const DEFAULT_MAX_TERMINATE_ATTEMPTS_BEFORE_RESTART = 1;
+export const DEFAULT_MAX_TERMINATE_ATTEMPTS_BEFORE_RESTART = 0;
 export const DEFAULT_FATAL_CLOSE_CODES = [
   4400, 4401, 4403, 4406, 4409, 4429,
 ] as const;
@@ -364,6 +364,10 @@ class SelfHealingGraphqlWsClient implements Client {
 
   public isCurrentGeneration(generation: number): boolean {
     return generation === this.currentGeneration;
+  }
+
+  public hasActiveSubscriptions(): boolean {
+    return this.activeSubscriptions.size > 0;
   }
 
   public emit<E extends Event>(
@@ -610,6 +614,7 @@ export class DefaultWebappRealtimeConnection {
   private browserLifecycleListenersInitialized = false;
   private heartbeatTimeout: ReturnType<typeof setTimeout> | undefined;
   private reconnectWatchdogTimeout: ReturnType<typeof setTimeout> | undefined;
+  private lastBrowserLifecycleEventAtMs = 0;
   private terminateAttemptsSinceHealthy = 0;
 
   public constructor(options: DefaultWebappRealtimeConnectionOptions) {
@@ -650,6 +655,7 @@ export class DefaultWebappRealtimeConnection {
       DEFAULT_RECONNECT_WATCHDOG_MS;
     this.shouldLogReconnects = options.logReconnects === true;
     this.wsEndpoint = options.wsEndpoint;
+    this.lastBrowserLifecycleEventAtMs = this.now().getTime();
     this.connectionStateStore = createExternalStore<RealtimeConnectionState>(
       createInitialConnectionState(this.browserLifecycle?.isOnline() ?? true),
     );
@@ -921,6 +927,30 @@ export class DefaultWebappRealtimeConnection {
     );
   }
 
+  private getBrowserResumeRestartThresholdMs(): number {
+    return Math.max(this.heartbeatIntervalMs + this.heartbeatTimeoutMs, 30_000);
+  }
+
+  private markBrowserLifecycleEvent(): number {
+    const nextBrowserLifecycleEventAtMs = this.now().getTime();
+    const elapsedMs = Math.max(
+      0,
+      nextBrowserLifecycleEventAtMs - this.lastBrowserLifecycleEventAtMs,
+    );
+    this.lastBrowserLifecycleEventAtMs = nextBrowserLifecycleEventAtMs;
+    return elapsedMs;
+  }
+
+  private shouldRestartAfterBrowserResume(elapsedMs: number): boolean {
+    return (
+      this.client.hasActiveSubscriptions() &&
+      this.getConnectionState().browserOnline &&
+      this.browserLifecycle?.isVisible?.() !== false &&
+      (this.isReconnectInProgress() ||
+        elapsedMs >= this.getBrowserResumeRestartThresholdMs())
+    );
+  }
+
   private initializeBrowserLifecycleListeners(): void {
     if (this.browserLifecycleListenersInitialized || !this.browserLifecycle) {
       return;
@@ -939,9 +969,19 @@ export class DefaultWebappRealtimeConnection {
           : "The browser is offline.",
       });
     };
-    const recoverAfterBrowserOnline = () => {
+    const syncBrowserOfflineState = () => {
+      this.markBrowserLifecycleEvent();
       syncBrowserLifecycleState();
-      if (this.isReconnectInProgress()) {
+    };
+    const recoverAfterBrowserOnline = () => {
+      const elapsedMs = this.markBrowserLifecycleEvent();
+      syncBrowserLifecycleState();
+      if (
+        this.client.hasActiveSubscriptions() &&
+        this.getConnectionState().browserOnline &&
+        (this.isReconnectInProgress() ||
+          elapsedMs >= this.getBrowserResumeRestartThresholdMs())
+      ) {
         this.restartInnerClient(
           "browser-online",
           "Browser returned online. Recreating the live connection.",
@@ -949,11 +989,9 @@ export class DefaultWebappRealtimeConnection {
       }
     };
     const recoverAfterBrowserResume = () => {
+      const elapsedMs = this.markBrowserLifecycleEvent();
       syncBrowserLifecycleState();
-      if (
-        this.isReconnectInProgress() &&
-        this.browserLifecycle?.isVisible?.() !== false
-      ) {
+      if (this.shouldRestartAfterBrowserResume(elapsedMs)) {
         this.restartInnerClient(
           "browser-resume",
           "Browser resumed. Recreating the live connection.",
@@ -961,7 +999,7 @@ export class DefaultWebappRealtimeConnection {
       }
     };
 
-    this.browserLifecycle.addEventListener("offline", syncBrowserLifecycleState);
+    this.browserLifecycle.addEventListener("offline", syncBrowserOfflineState);
     this.browserLifecycle.addEventListener("online", recoverAfterBrowserOnline);
     this.browserLifecycle.addEventListener(
       "visibilitychange",

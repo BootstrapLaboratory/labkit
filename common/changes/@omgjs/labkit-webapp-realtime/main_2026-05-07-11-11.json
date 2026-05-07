@@ -1,0 +1,10 @@
+{
+  "changes": [
+    {
+      "packageName": "@omgjs/labkit-webapp-realtime",
+      "comment": "Harden realtime recovery after browser sleep during server redeploys.",
+      "type": "patch"
+    }
+  ],
+  "packageName": "@omgjs/labkit-webapp-realtime"
+}

@@ -258,6 +258,7 @@ test("reconnect watchdog terminates first and recreates the inner client on the 
       clients.push(client);
       return client;
     },
+    maxTerminateAttemptsBeforeRestart: 1,
     reconnectWatchdogMs: 25,
     wsEndpoint: "ws://example.com/graphql",
   });
@@ -275,6 +276,131 @@ test("reconnect watchdog terminates first and recreates the inner client on the 
     assert.equal(connection.getConnectionState().innerClientGeneration, 2);
   } finally {
     await connection.dispose();
+  }
+});
+
+test("reconnect watchdog recreates the inner client by default", async () => {
+  const capturedClientOptions: CapturedClientOptions[] = [];
+  const clients: FakeClient[] = [];
+  const connection = new DefaultWebappRealtimeConnection({
+    browserLifecycle: null,
+    createClient: (options) => {
+      capturedClientOptions.push(options);
+      const client = createFakeClient();
+      clients.push(client);
+      return client;
+    },
+    reconnectWatchdogMs: 25,
+    wsEndpoint: "ws://example.com/graphql",
+  });
+
+  try {
+    capturedClientOptions[0].on?.connecting?.(true);
+    await wait(35);
+
+    assert.equal(clients[0].terminations(), 0);
+    assert.equal(clients[0].disposals(), 1);
+    assert.equal(clients.length, 2);
+    assert.equal(connection.getConnectionState().restartCount, 1);
+    assert.equal(connection.getConnectionState().lastRecoveryAction, "restart");
+  } finally {
+    await connection.dispose();
+  }
+});
+
+test("browser resume recreates a stale connected client after a long pause", () => {
+  const capturedClientOptions: CapturedClientOptions[] = [];
+  const clients: FakeClient[] = [];
+  const listeners = new Map<string, () => void>();
+  let now = new Date("2026-05-07T00:00:00.000Z");
+  const connection = new DefaultWebappRealtimeConnection({
+    browserLifecycle: {
+      isOnline: () => true,
+      isVisible: () => true,
+      addEventListener: (type, listener) => {
+        listeners.set(type, listener);
+      },
+    },
+    createClient: (options) => {
+      capturedClientOptions.push(options);
+      const client = createFakeClient();
+      clients.push(client);
+      return client;
+    },
+    now: () => now,
+    reconnectWatchdogMs: 0,
+    wsEndpoint: "ws://example.com/graphql",
+  });
+  const payload = {
+    query: "subscription MessageAdded { messageAdded { id } }",
+  };
+
+  try {
+    connection.getClient().subscribe(payload, {
+      next: () => {},
+      error: () => {},
+      complete: () => {},
+    });
+
+    capturedClientOptions[0].on?.connected?.({}, undefined, false);
+    now = new Date("2026-05-07T00:02:00.000Z");
+    listeners.get("visibilitychange")?.();
+
+    assert.equal(clients.length, 2);
+    assert.equal(clients[0].disposals(), 1);
+    assert.equal(clients[1].subscriptions.length, 1);
+    assert.deepEqual(clients[1].subscriptions[0].payload, payload);
+    assert.equal(connection.getConnectionState().recoveryReason, "browser-resume");
+    assert.equal(connection.getConnectionState().restartCount, 1);
+  } finally {
+    void connection.dispose();
+  }
+});
+
+test("browser resume keeps a fresh connected client", () => {
+  const capturedClientOptions: CapturedClientOptions[] = [];
+  const clients: FakeClient[] = [];
+  const listeners = new Map<string, () => void>();
+  let now = new Date("2026-05-07T00:00:00.000Z");
+  const connection = new DefaultWebappRealtimeConnection({
+    browserLifecycle: {
+      isOnline: () => true,
+      isVisible: () => true,
+      addEventListener: (type, listener) => {
+        listeners.set(type, listener);
+      },
+    },
+    createClient: (options) => {
+      capturedClientOptions.push(options);
+      const client = createFakeClient();
+      clients.push(client);
+      return client;
+    },
+    now: () => now,
+    reconnectWatchdogMs: 0,
+    wsEndpoint: "ws://example.com/graphql",
+  });
+
+  try {
+    connection.getClient().subscribe(
+      {
+        query: "subscription MessageAdded { messageAdded { id } }",
+      },
+      {
+        next: () => {},
+        error: () => {},
+        complete: () => {},
+      },
+    );
+
+    capturedClientOptions[0].on?.connected?.({}, undefined, false);
+    now = new Date("2026-05-07T00:00:05.000Z");
+    listeners.get("visibilitychange")?.();
+
+    assert.equal(clients.length, 1);
+    assert.equal(connection.getConnectionState().status, "connected");
+  } finally {
+    void connection.dispose();
   }
 });
 
@@ -386,6 +512,16 @@ test("browser resume recreates a stuck retrying client", async () => {
   });
 
   try {
+    connection.getClient().subscribe(
+      {
+        query: "subscription MessageAdded { messageAdded { id } }",
+      },
+      {
+        next: () => {},
+        error: () => {},
+        complete: () => {},
+      },
+    );
     capturedClientOptions[0].on?.connecting?.(true);
     listeners.get("visibilitychange")?.();
 
@@ -497,6 +633,16 @@ test("browser resume restart keeps the reconnect watchdog armed", async () => {
   });
 
   try {
+    connection.getClient().subscribe(
+      {
+        query: "subscription MessageAdded { messageAdded { id } }",
+      },
+      {
+        next: () => {},
+        error: () => {},
+        complete: () => {},
+      },
+    );
     capturedClientOptions[0].on?.connecting?.(true);
     listeners.get("visibilitychange")?.();
 
