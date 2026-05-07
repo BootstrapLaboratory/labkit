@@ -217,6 +217,23 @@ export function getRealtimeErrorMessage(error: unknown): string {
   return typeof error === "string" && error.length > 0 ? error : "unknown";
 }
 
+function getRealtimeShutdownErrorMessage(error: unknown): string {
+  if (isGraphqlWsCloseLike(error)) {
+    const detail = getGraphqlWsCloseDetail(error);
+    if (typeof error.code === "number" && detail) {
+      return `${error.code}: ${detail}`;
+    }
+
+    if (typeof error.code === "number") {
+      return String(error.code);
+    }
+
+    return detail ?? "closed";
+  }
+
+  return getRealtimeErrorMessage(error);
+}
+
 export function getRealtimeConnectionMessage(
   state: RealtimeConnectionState,
 ): string | null {
@@ -332,6 +349,10 @@ class SelfHealingGraphqlWsClient implements Client {
   public constructor(
     private readonly options: {
       createInnerClient(generation: number): Client;
+      onRestartShutdownError?(
+        error: unknown,
+        details: { generation: number; phase: "dispose" | "unsubscribe" },
+      ): void;
     },
   ) {
     this.innerClient = this.createNextInnerClient();
@@ -356,16 +377,20 @@ class SelfHealingGraphqlWsClient implements Client {
 
   public restart(): number {
     const previousGeneration = this.currentGeneration;
+    const previousInnerClient = this.innerClient;
     this.restartingGenerations.add(previousGeneration);
 
     for (const subscription of this.activeSubscriptions.values()) {
       if (subscription.generation === previousGeneration) {
-        subscription.innerUnsubscribe?.();
+        this.unsubscribeRestartingSubscription(subscription, previousGeneration);
         subscription.innerUnsubscribe = undefined;
       }
     }
 
-    void this.innerClient.dispose();
+    void this.disposeRestartingInnerClient(
+      previousInnerClient,
+      previousGeneration,
+    );
     this.innerClient = this.createNextInnerClient();
 
     for (const subscription of this.activeSubscriptions.values()) {
@@ -489,6 +514,36 @@ class SelfHealingGraphqlWsClient implements Client {
     return this.options.createInnerClient(this.currentGeneration);
   }
 
+  private async disposeRestartingInnerClient(
+    client: Client,
+    generation: number,
+  ): Promise<void> {
+    try {
+      await client.dispose();
+    } catch (error) {
+      this.options.onRestartShutdownError?.(error, {
+        generation,
+        phase: "dispose",
+      });
+    } finally {
+      this.restartingGenerations.delete(generation);
+    }
+  }
+
+  private unsubscribeRestartingSubscription(
+    subscription: ActiveSubscription,
+    generation: number,
+  ): void {
+    try {
+      subscription.innerUnsubscribe?.();
+    } catch (error) {
+      this.options.onRestartShutdownError?.(error, {
+        generation,
+        phase: "unsubscribe",
+      });
+    }
+  }
+
   private subscribeActiveSubscription(subscription: ActiveSubscription): void {
     const generation = this.currentGeneration;
     subscription.generation = generation;
@@ -600,6 +655,13 @@ export class DefaultWebappRealtimeConnection {
     );
     this.client = new SelfHealingGraphqlWsClient({
       createInnerClient: (generation) => this.createInnerClient(generation),
+      onRestartShutdownError: (error, details) => {
+        this.logRealtime("Ignored old live GraphQL client shutdown error.", {
+          error: getRealtimeShutdownErrorMessage(error),
+          generation: details.generation,
+          phase: details.phase,
+        });
+      },
     });
     this.updateConnectionState({
       innerClientGeneration: this.client.getCurrentGeneration(),
@@ -977,6 +1039,7 @@ export class DefaultWebappRealtimeConnection {
       generation: innerClientGeneration,
       reason: recoveryReason,
     });
+    this.startReconnectWatchdog();
   }
 
   private logRealtime(

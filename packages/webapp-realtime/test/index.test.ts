@@ -33,6 +33,7 @@ type FakeClient = Client & {
 };
 
 function createFakeClient(options: {
+  disposeError?: unknown;
   onUnsubscribe?: (
     sink: Sink<FormattedExecutionResult<unknown, unknown>>,
   ) => void;
@@ -44,6 +45,11 @@ function createFakeClient(options: {
   return {
     dispose: () => {
       disposals += 1;
+      if (options.disposeError) {
+        // graphql-ws rejects with close-like objects for lazy client shutdown.
+        // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
+        return Promise.reject(options.disposeError);
+      }
     },
     iterate: async function* () {},
     on: () => () => {},
@@ -289,7 +295,7 @@ test("active subscriptions are resubscribed after inner client recreation", asyn
       return client;
     },
     maxTerminateAttemptsBeforeRestart: 0,
-    reconnectWatchdogMs: 5,
+    reconnectWatchdogMs: 25,
     wsEndpoint: "ws://example.com/graphql",
   });
   const payload = {
@@ -306,7 +312,7 @@ test("active subscriptions are resubscribed after inner client recreation", asyn
     });
 
     capturedClientOptions[0].on?.connecting?.(true);
-    await wait(15);
+    await wait(35);
 
     assert.equal(clients.length, 2);
     assert.equal(clients[0].subscriptions.length, 1);
@@ -330,7 +336,7 @@ test("unsubscribed operations are not resubscribed after recreation", async () =
       return client;
     },
     maxTerminateAttemptsBeforeRestart: 0,
-    reconnectWatchdogMs: 5,
+    reconnectWatchdogMs: 25,
     wsEndpoint: "ws://example.com/graphql",
   });
 
@@ -348,7 +354,7 @@ test("unsubscribed operations are not resubscribed after recreation", async () =
     unsubscribe();
 
     capturedClientOptions[0].on?.connecting?.(true);
-    await wait(15);
+    await wait(35);
 
     assert.equal(clients.length, 2);
     assert.equal(clients[1].subscriptions.length, 0);
@@ -386,6 +392,119 @@ test("browser resume recreates a stuck retrying client", async () => {
     assert.equal(clients.length, 2);
     assert.equal(connection.getConnectionState().recoveryReason, "browser-resume");
     assert.equal(connection.getConnectionState().restartCount, 1);
+  } finally {
+    await connection.dispose();
+  }
+});
+
+test("browser resume restart suppresses old lazy shutdown errors and resubscribes active operations", async () => {
+  const capturedClientOptions: CapturedClientOptions[] = [];
+  const clients: FakeClient[] = [];
+  const closeEvent = { code: 1000, reason: "All Subscriptions Gone" };
+  const logEntries: Array<{
+    details?: Record<string, unknown>;
+    message: string;
+  }> = [];
+  const listeners = new Map<string, () => void>();
+  let subscriptionErrors = 0;
+  const connection = new DefaultWebappRealtimeConnection({
+    browserLifecycle: {
+      isOnline: () => true,
+      isVisible: () => true,
+      addEventListener: (type, listener) => {
+        listeners.set(type, listener);
+      },
+    },
+    createClient: (options) => {
+      capturedClientOptions.push(options);
+      const isFirstClient = clients.length === 0;
+      const client = createFakeClient({
+        disposeError: isFirstClient ? closeEvent : undefined,
+        onUnsubscribe: (sink) => {
+          sink.error(closeEvent);
+        },
+      });
+      clients.push(client);
+      return client;
+    },
+    logger: {
+      info: (message, details) => {
+        logEntries.push({ details, message });
+      },
+    },
+    logReconnects: true,
+    reconnectWatchdogMs: 0,
+    wsEndpoint: "ws://example.com/graphql",
+  });
+  const payload = {
+    query: "subscription MessageAdded { messageAdded { id } }",
+  };
+
+  try {
+    connection.getClient().subscribe(payload, {
+      next: () => {},
+      error: () => {
+        subscriptionErrors += 1;
+      },
+      complete: () => {},
+    });
+
+    capturedClientOptions[0].on?.connecting?.(true);
+    listeners.get("visibilitychange")?.();
+    await wait(0);
+
+    assert.equal(subscriptionErrors, 0);
+    assert.equal(clients.length, 2);
+    assert.equal(clients[0].subscriptions.length, 1);
+    assert.equal(clients[1].subscriptions.length, 1);
+    assert.deepEqual(clients[1].subscriptions[0].payload, payload);
+    assert.ok(
+      logEntries.some(
+        (entry) =>
+          entry.message ===
+            "[realtime] Ignored old live GraphQL client shutdown error." &&
+          entry.details?.error === "1000: All Subscriptions Gone" &&
+          entry.details?.phase === "dispose" &&
+          entry.details?.generation === 1,
+      ),
+    );
+  } finally {
+    await connection.dispose();
+  }
+});
+
+test("browser resume restart keeps the reconnect watchdog armed", async () => {
+  const capturedClientOptions: CapturedClientOptions[] = [];
+  const clients: FakeClient[] = [];
+  const listeners = new Map<string, () => void>();
+  const connection = new DefaultWebappRealtimeConnection({
+    browserLifecycle: {
+      isOnline: () => true,
+      isVisible: () => true,
+      addEventListener: (type, listener) => {
+        listeners.set(type, listener);
+      },
+    },
+    createClient: (options) => {
+      capturedClientOptions.push(options);
+      const client = createFakeClient();
+      clients.push(client);
+      return client;
+    },
+    maxTerminateAttemptsBeforeRestart: 0,
+    reconnectWatchdogMs: 5,
+    wsEndpoint: "ws://example.com/graphql",
+  });
+
+  try {
+    capturedClientOptions[0].on?.connecting?.(true);
+    listeners.get("visibilitychange")?.();
+
+    assert.equal(connection.getConnectionState().restartCount, 1);
+    await wait(15);
+
+    assert.equal(connection.getConnectionState().restartCount > 1, true);
+    assert.equal(clients.length > 2, true);
   } finally {
     await connection.dispose();
   }

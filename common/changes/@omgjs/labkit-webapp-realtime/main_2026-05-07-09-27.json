@@ -1,0 +1,10 @@
+{
+  "changes": [
+    {
+      "packageName": "@omgjs/labkit-webapp-realtime",
+      "comment": "Harden realtime restart recovery after old websocket shutdowns.",
+      "type": "patch"
+    }
+  ],
+  "packageName": "@omgjs/labkit-webapp-realtime"
+}
