@@ -9,7 +9,7 @@ auth/session.ts      -> createWebappAuthSession
 auth/auth-api.ts     -> createWebappAuthGraphqlApi
 graphql/endpoints.ts -> Vite endpoint resolution
 realtime/*           -> DefaultWebappRealtimeConnection
-relay/environment.ts -> createWebappRelayEnvironment
+relay/environment.ts -> DefaultWebappRelayRuntime
 theme/*              -> createWebappThemeController
 ```
 

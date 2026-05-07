@@ -51,19 +51,17 @@ The default runtime handles:
 ## State Monitoring
 
 Applications observe connection state; they do not own recovery decisions.
+When Relay is present, prefer observing the runtime from
+`DefaultWebappRelayRuntime` so UI monitors the same realtime connection Relay
+uses.
 
 ```ts
-import { DefaultWebappRealtimeConnection } from "@omgjs/labkit-webapp-realtime";
+import { relayRuntime } from "./relay/environment";
 
-export const realtime = new DefaultWebappRealtimeConnection({
-  wsEndpoint: WS_ENDPOINT,
-  connectionParams: () =>
-    createRelayGraphqlWsConnectionParams(() => auth.getAccessToken()),
-});
-
+const realtime = relayRuntime.getRealtime();
 const client = realtime.getClient();
-const state = realtime.getConnectionState();
-const unsubscribe = realtime.subscribeToConnectionState((nextState) => {
+const state = relayRuntime.getRealtimeConnectionState();
+const unsubscribe = relayRuntime.subscribeToRealtimeConnectionState((nextState) => {
   console.log(nextState.status, nextState.detail);
 });
 ```
@@ -73,25 +71,25 @@ or render richer state from `getConnectionState()`.
 
 ## Relay Integration
 
-`@omgjs/labkit-webapp-graphql-relay` accepts an already-created realtime
-instance. This is the preferred shape when UI also monitors the same runtime:
+`@omgjs/labkit-webapp-graphql-relay` provides a default runtime that creates
+the Relay environment and realtime connection together:
 
 ```ts
-const realtime = new DefaultWebappRealtimeConnection({
+import { DefaultWebappRelayRuntime } from "@omgjs/labkit-webapp-graphql-relay";
+
+const relayRuntime = new DefaultWebappRelayRuntime({
+  httpEndpoint: HTTP_ENDPOINT,
   wsEndpoint: WS_ENDPOINT,
-  connectionParams: () =>
-    createRelayGraphqlWsConnectionParams(() => auth.getAccessToken()),
+  auth,
 });
 
-const environment = createWebappRelayEnvironment({
-  httpEndpoint: HTTP_ENDPOINT,
-  auth,
-  realtime,
-});
+const environment = relayRuntime.getEnvironment();
+const realtime = relayRuntime.getRealtime();
 ```
 
-For smaller apps, `createWebappRelayEnvironment` can also create the default
-realtime runtime from `wsEndpoint` and `realtimeOptions`.
+The runtime uses auth-session expiry to refresh before websocket reconnects.
+Advanced apps can still pass a custom realtime adapter to
+`createWebappRelayEnvironment`.
 
 ## Runtime Notes
 

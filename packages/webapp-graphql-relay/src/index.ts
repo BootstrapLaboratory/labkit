@@ -29,9 +29,21 @@ import {
 import {
   DefaultWebappRealtimeConnection,
   type DefaultWebappRealtimeConnectionOptions,
+  type GraphqlWsConnectionParamsFactory,
+  type RealtimeConnectionState,
+  type RealtimeConnectionStateListener,
 } from "@omgjs/labkit-webapp-realtime";
 
 export type GraphqlRelayRequestCredentials = "include" | "omit" | "same-origin";
+
+export type GraphqlRelayAuthSessionLike = {
+  accessToken: string;
+  accessTokenExpiresAt: number;
+};
+
+export type GraphqlRelayAuthRefreshPolicy = {
+  refreshAccessTokenBeforeExpiresMs?: number;
+};
 
 export type GraphqlRelayFetchResponse = {
   ok: boolean;
@@ -51,6 +63,7 @@ export type GraphqlRelayFetch = (
 
 export type GraphqlRelayAuthAdapter = {
   getAccessToken(): string | null;
+  getAuthSession(): GraphqlRelayAuthSessionLike | null;
   subscribeAuthState(listener: () => void): () => void;
   refreshStoredAuthSession(): Promise<unknown>;
   getAuthRequestCredentials(): GraphqlRelayRequestCredentials;
@@ -73,6 +86,20 @@ export type CreateAuthAwareRelayFetchOptions = {
   httpEndpoint: string;
 };
 
+export type CreateAuthAwareRelayGraphqlWsConnectionParamsOptions = {
+  auth: Pick<
+    GraphqlRelayAuthAdapter,
+    "getAccessToken" | "getAuthSession" | "refreshStoredAuthSession"
+  >;
+  refreshAccessTokenBeforeExpiresMs?: number;
+  now?: () => number;
+};
+
+type AuthAwareRelayGraphqlWsConnectionParamsLifecycle = {
+  onAfterRefreshStoredAuthSession?(): void;
+  onBeforeRefreshStoredAuthSession?(): void;
+};
+
 export type CreateRelaySubscribeFunctionOptions = {
   wsClient: Client;
 };
@@ -80,6 +107,7 @@ export type CreateRelaySubscribeFunctionOptions = {
 export type CreateWebappRelayEnvironmentBaseOptions = {
   auth: GraphqlRelayAuthAdapter;
   authOperationNames?: ReadonlySet<string> | readonly string[];
+  authRefreshPolicy?: GraphqlRelayAuthRefreshPolicy;
   fetch?: GraphqlRelayFetch;
   httpEndpoint: string;
 };
@@ -97,9 +125,7 @@ export type CreateWebappRelayEnvironmentOptions =
     });
 
 export type CreateWebappRelayRealtimeClientOptions =
-  CreateWebappRelayEnvironmentOptions & {
-    auth: Pick<GraphqlRelayAuthAdapter, "getAccessToken">;
-  };
+  CreateWebappRelayEnvironmentOptions;
 
 export type CreateWebappRelayRealtimeClientResult = {
   realtime: GraphqlRelayRealtimeAdapter;
@@ -108,8 +134,14 @@ export type CreateWebappRelayRealtimeClientResult = {
 
 export type CreateWebappRelayEnvironmentResolvedOptions =
   CreateWebappRelayEnvironmentBaseOptions & {
-  realtime: GraphqlRelayRealtimeAdapter;
-};
+    realtime: GraphqlRelayRealtimeAdapter;
+  };
+
+export type DefaultWebappRelayRuntimeOptions =
+  CreateWebappRelayEnvironmentBaseOptions & {
+    realtimeOptions?: CreateWebappRelayDefaultRealtimeOptions;
+    wsEndpoint: string;
+  };
 
 export type RouteAbortSignal = {
   readonly aborted: boolean;
@@ -149,6 +181,8 @@ export const DEFAULT_AUTH_OPERATION_NAMES = [
   "LogoutMutation",
 ] as const;
 
+export const DEFAULT_REFRESH_ACCESS_TOKEN_BEFORE_EXPIRES_MS = 60_000;
+
 function createOperationNameSet(
   operationNames: ReadonlySet<string> | readonly string[] | undefined,
 ): ReadonlySet<string> {
@@ -179,6 +213,71 @@ export function createRelayGraphqlWsConnectionParams(
   }
 
   return { [GRAPHQL_WS_AUTHORIZATION_PARAM]: formatBearerToken(accessToken) };
+}
+
+export function shouldRefreshRelayAuthSessionForRealtime(options: {
+  authSession: GraphqlRelayAuthSessionLike | null;
+  nowMs?: number;
+  refreshAccessTokenBeforeExpiresMs?: number;
+}): boolean {
+  if (!options.authSession) {
+    return false;
+  }
+
+  const refreshAccessTokenBeforeExpiresMs =
+    options.refreshAccessTokenBeforeExpiresMs ??
+    DEFAULT_REFRESH_ACCESS_TOKEN_BEFORE_EXPIRES_MS;
+  const nowMs = options.nowMs ?? Date.now();
+
+  return (
+    options.authSession.accessTokenExpiresAt <=
+    nowMs + refreshAccessTokenBeforeExpiresMs
+  );
+}
+
+export function createAuthAwareRelayGraphqlWsConnectionParams({
+  auth,
+  now,
+  refreshAccessTokenBeforeExpiresMs,
+}: CreateAuthAwareRelayGraphqlWsConnectionParamsOptions): GraphqlWsConnectionParamsFactory {
+  return createAuthAwareRelayGraphqlWsConnectionParamsFactory({
+    auth,
+    now,
+    refreshAccessTokenBeforeExpiresMs,
+  });
+}
+
+function createAuthAwareRelayGraphqlWsConnectionParamsFactory(
+  {
+    auth,
+    now,
+    refreshAccessTokenBeforeExpiresMs,
+  }: CreateAuthAwareRelayGraphqlWsConnectionParamsOptions,
+  lifecycle: AuthAwareRelayGraphqlWsConnectionParamsLifecycle = {},
+): GraphqlWsConnectionParamsFactory {
+  return async () => {
+    if (
+      shouldRefreshRelayAuthSessionForRealtime({
+        authSession: auth.getAuthSession(),
+        nowMs: now?.(),
+        refreshAccessTokenBeforeExpiresMs,
+      })
+    ) {
+      lifecycle.onBeforeRefreshStoredAuthSession?.();
+      let refreshedSession: unknown;
+      try {
+        refreshedSession = await auth.refreshStoredAuthSession();
+      } finally {
+        lifecycle.onAfterRefreshStoredAuthSession?.();
+      }
+
+      if (!refreshedSession) {
+        return {};
+      }
+    }
+
+    return createRelayGraphqlWsConnectionParams(() => auth.getAccessToken());
+  };
 }
 
 export function createUnauthorizedGraphqlResponse(): GraphQLResponse {
@@ -312,8 +411,11 @@ export function createWebappRelayRealtimeClient(
   const realtime = new DefaultWebappRealtimeConnection({
     ...options.realtimeOptions,
     wsEndpoint: options.wsEndpoint,
-    connectionParams: () =>
-      createRelayGraphqlWsConnectionParams(() => options.auth.getAccessToken()),
+    connectionParams: createAuthAwareRelayGraphqlWsConnectionParams({
+      auth: options.auth,
+      refreshAccessTokenBeforeExpiresMs:
+        options.authRefreshPolicy?.refreshAccessTokenBeforeExpiresMs,
+    }),
   });
 
   return {
@@ -339,6 +441,79 @@ export function createWebappRelayEnvironment(
       createRelaySubscribeFunction({ wsClient }),
     ),
   });
+}
+
+export class DefaultWebappRelayRuntime {
+  private readonly authStateUnsubscribe: () => void;
+  private readonly environment: Environment;
+  private readonly realtime: DefaultWebappRealtimeConnection;
+  private disposed = false;
+
+  public constructor(options: DefaultWebappRelayRuntimeOptions) {
+    let realtimeConnectionParamsRefreshes = 0;
+    this.realtime = new DefaultWebappRealtimeConnection({
+      ...options.realtimeOptions,
+      wsEndpoint: options.wsEndpoint,
+      connectionParams: createAuthAwareRelayGraphqlWsConnectionParamsFactory(
+        {
+          auth: options.auth,
+          refreshAccessTokenBeforeExpiresMs:
+            options.authRefreshPolicy?.refreshAccessTokenBeforeExpiresMs,
+        },
+        {
+          onAfterRefreshStoredAuthSession: () => {
+            realtimeConnectionParamsRefreshes -= 1;
+          },
+          onBeforeRefreshStoredAuthSession: () => {
+            realtimeConnectionParamsRefreshes += 1;
+          },
+        },
+      ),
+    });
+
+    const wsClient = this.realtime.getClient();
+    let realtimeAccessToken = options.auth.getAccessToken();
+    this.authStateUnsubscribe = options.auth.subscribeAuthState(() => {
+      const nextAccessToken = options.auth.getAccessToken();
+      if (nextAccessToken === realtimeAccessToken) {
+        return;
+      }
+
+      realtimeAccessToken = nextAccessToken;
+      if (realtimeConnectionParamsRefreshes > 0) {
+        return;
+      }
+
+      wsClient.terminate();
+    });
+    this.environment = new Environment({
+      network: Network.create(
+        createAuthAwareRelayFetchFunction(options),
+        createRelaySubscribeFunction({ wsClient }),
+      ),
+    });
+  }
+
+  public getEnvironment = (): Environment => this.environment;
+
+  public getRealtime = (): DefaultWebappRealtimeConnection => this.realtime;
+
+  public getRealtimeConnectionState = (): RealtimeConnectionState =>
+    this.realtime.getConnectionState();
+
+  public subscribeToRealtimeConnectionState = (
+    listener: RealtimeConnectionStateListener,
+  ): (() => void) => this.realtime.subscribeToConnectionState(listener);
+
+  public dispose = (): void | Promise<void> => {
+    if (this.disposed) {
+      return;
+    }
+
+    this.disposed = true;
+    this.authStateUnsubscribe();
+    return this.realtime.dispose();
+  };
 }
 
 export function loadRouteQuery<TQuery extends OperationType>(

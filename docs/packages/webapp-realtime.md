@@ -45,12 +45,11 @@ import {
   DefaultWebappRealtimeConnection,
   parseRealtimeReconnectWatchdogMs,
 } from "@omgjs/labkit-webapp-realtime";
-import { createRelayGraphqlWsConnectionParams } from "@omgjs/labkit-webapp-graphql-relay";
+import { createAuthAwareRelayGraphqlWsConnectionParams } from "@omgjs/labkit-webapp-graphql-relay";
 
 export const realtime = new DefaultWebappRealtimeConnection({
   wsEndpoint: WS_ENDPOINT,
-  connectionParams: () =>
-    createRelayGraphqlWsConnectionParams(() => auth.getAccessToken()),
+  connectionParams: createAuthAwareRelayGraphqlWsConnectionParams({ auth }),
   logReconnects: import.meta.env.VITE_GRAPHQL_LOG_RECONNECTS === "true",
   reconnectWatchdogMs: parseRealtimeReconnectWatchdogMs(
     import.meta.env.VITE_GRAPHQL_RECONNECT_WATCHDOG_MS,

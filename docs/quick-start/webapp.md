@@ -52,6 +52,7 @@ const authSession = createWebappAuthSession({
 });
 
 export const getAuthState = authSession.getAuthState;
+export const getAuthSession = authSession.getAuthSession;
 export const getAccessToken = authSession.getAccessToken;
 export const setAuthSessionFromPayload = authSession.setAuthSessionFromPayload;
 export const clearAuthSession = authSession.clearAuthSession;
@@ -91,29 +92,40 @@ export { hasAuthRequiredGraphqlErrors };
 ## `webapp/src/shared/relay/environment.ts`
 
 ```ts
-import { createWebappRelayEnvironment } from "@omgjs/labkit-webapp-graphql-relay";
-import { HTTP_ENDPOINT } from "../graphql/endpoints";
+import { DefaultWebappRelayRuntime } from "@omgjs/labkit-webapp-graphql-relay";
+import { parseRealtimeReconnectWatchdogMs } from "@omgjs/labkit-webapp-realtime";
+import { HTTP_ENDPOINT, WS_ENDPOINT } from "../graphql/endpoints";
 import {
   getRelayAuthRequestCredentials,
   hasAuthRequiredGraphqlErrors,
   refreshStoredAuthSession,
 } from "../auth/auth-api";
-import { getAccessToken, subscribeAuthState } from "../auth/session";
-import { realtimeConnection } from "../realtime/realtime-connection";
+import {
+  getAccessToken,
+  getAuthSession,
+  subscribeAuthState,
+} from "../auth/session";
 
-export function createRelayEnvironment() {
-  return createWebappRelayEnvironment({
-    httpEndpoint: HTTP_ENDPOINT,
-    auth: {
-      getAccessToken,
-      subscribeAuthState,
-      refreshStoredAuthSession,
-      getAuthRequestCredentials: getRelayAuthRequestCredentials,
-      hasAuthRequiredGraphqlErrors,
-    },
-    realtime: realtimeConnection,
-  });
-}
+export const relayRuntime = new DefaultWebappRelayRuntime({
+  httpEndpoint: HTTP_ENDPOINT,
+  wsEndpoint: WS_ENDPOINT,
+  auth: {
+    getAccessToken,
+    getAuthSession,
+    subscribeAuthState,
+    refreshStoredAuthSession,
+    getAuthRequestCredentials: getRelayAuthRequestCredentials,
+    hasAuthRequiredGraphqlErrors,
+  },
+  realtimeOptions: {
+    logReconnects: import.meta.env.VITE_GRAPHQL_LOG_RECONNECTS === "true",
+    reconnectWatchdogMs: parseRealtimeReconnectWatchdogMs(
+      import.meta.env.VITE_GRAPHQL_RECONNECT_WATCHDOG_MS,
+    ),
+  },
+});
+
+export const createRelayEnvironment = relayRuntime.getEnvironment;
 ```
 
 ## `webapp/src/App.tsx`

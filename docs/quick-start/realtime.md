@@ -1,19 +1,16 @@
 # Realtime
 
-Create one realtime runtime and reuse it for Relay plus product UI.
+Reuse the realtime runtime created by `DefaultWebappRelayRuntime` for product
+UI.
 
 ## `webapp/src/shared/realtime/realtime-connection.ts`
 
 ```ts
 import { useSyncExternalStore } from "react";
 import {
-  DefaultWebappRealtimeConnection,
-  parseRealtimeReconnectWatchdogMs,
   type RealtimeConnectionState,
 } from "@omgjs/labkit-webapp-realtime";
-import { createRelayGraphqlWsConnectionParams } from "@omgjs/labkit-webapp-graphql-relay";
-import { WS_ENDPOINT } from "../graphql/endpoints";
-import { getAccessToken } from "../auth/session";
+import { relayRuntime } from "../relay/environment";
 
 export {
   getRealtimeConnectionMessage,
@@ -21,23 +18,15 @@ export {
   type RealtimeConnectionStatus,
 } from "@omgjs/labkit-webapp-realtime";
 
-export const realtimeConnection = new DefaultWebappRealtimeConnection({
-  wsEndpoint: WS_ENDPOINT,
-  connectionParams: () =>
-    createRelayGraphqlWsConnectionParams(() => getAccessToken()),
-  logReconnects: import.meta.env.VITE_GRAPHQL_LOG_RECONNECTS === "true",
-  reconnectWatchdogMs: parseRealtimeReconnectWatchdogMs(
-    import.meta.env.VITE_GRAPHQL_RECONNECT_WATCHDOG_MS,
-  ),
-});
+export const realtimeConnection = relayRuntime.getRealtime();
 
 export const realtimeClient = realtimeConnection.getClient();
 
 export function useRealtimeConnectionState(): RealtimeConnectionState {
   return useSyncExternalStore(
-    (listener) => realtimeConnection.subscribeToConnectionState(listener),
-    () => realtimeConnection.getConnectionState(),
-    () => realtimeConnection.getConnectionState(),
+    relayRuntime.subscribeToRealtimeConnectionState,
+    relayRuntime.getRealtimeConnectionState,
+    relayRuntime.getRealtimeConnectionState,
   );
 }
 ```

@@ -1,0 +1,10 @@
+{
+  "changes": [
+    {
+      "packageName": "@omgjs/labkit-webapp-graphql-relay",
+      "comment": "Add the default auth-aware Relay runtime and require auth session reads for websocket refresh.",
+      "type": "major"
+    }
+  ],
+  "packageName": "@omgjs/labkit-webapp-graphql-relay"
+}

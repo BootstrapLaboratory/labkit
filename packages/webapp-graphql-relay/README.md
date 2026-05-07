@@ -8,10 +8,12 @@ and Relay store maintenance.
 
 - Relay environment factory.
 - Auth-aware Relay fetch with one refresh retry for non-auth operations.
-- GraphQL WS connection-params creation.
+- Auth-aware GraphQL WS connection-params creation.
+- Default Relay runtime that composes Relay, auth, and realtime recovery.
 - Relay subscribe function integration.
 - Default realtime runtime creation when only websocket options are provided.
 - Realtime client termination after auth-token changes.
+- Realtime connection-state access for UI.
 - Route query preload with abort disposal.
 - Root-field store updater helper.
 - Unauthorized GraphQL response helper.
@@ -26,30 +28,40 @@ and Relay store maintenance.
 
 ## Usage
 
-Pass an explicit realtime instance when product UI should monitor the same
-runtime Relay uses:
+Use `DefaultWebappRelayRuntime` for the normal production path. It creates the
+Relay environment and realtime runtime together, refreshes expiring auth before
+websocket reconnects, and exposes the same realtime state that product UI can
+display.
 
 ```ts
-import { DefaultWebappRealtimeConnection } from "@omgjs/labkit-webapp-realtime";
 import {
-  createRelayGraphqlWsConnectionParams,
-  createWebappRelayEnvironment,
+  DefaultWebappRelayRuntime,
 } from "@omgjs/labkit-webapp-graphql-relay";
 
-export const realtime = new DefaultWebappRealtimeConnection({
+export const relayRuntime = new DefaultWebappRelayRuntime({
+  httpEndpoint: HTTP_ENDPOINT,
   wsEndpoint: WS_ENDPOINT,
-  connectionParams: () =>
-    createRelayGraphqlWsConnectionParams(() => auth.getAccessToken()),
+  auth,
 });
 
 export function createRelayEnvironment() {
-  return createWebappRelayEnvironment({
-    httpEndpoint: HTTP_ENDPOINT,
-    auth,
-    realtime,
-  });
+  return relayRuntime.getEnvironment();
 }
+
+export const realtime = relayRuntime.getRealtime();
+export const getRealtimeConnectionState =
+  relayRuntime.getRealtimeConnectionState;
+export const subscribeToRealtimeConnectionState =
+  relayRuntime.subscribeToRealtimeConnectionState;
 ```
+
+The auth adapter must include `getAuthSession()` so Labkit can refresh an
+expiring access token before websocket reconnects.
+
+Advanced applications can still provide their own realtime adapter to
+`createWebappRelayEnvironment` or use
+`createAuthAwareRelayGraphqlWsConnectionParams` directly when replacing only one
+runtime policy.
 
 For TanStack Router loaders:
 

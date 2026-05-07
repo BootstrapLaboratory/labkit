@@ -37,8 +37,8 @@ The browser should:
 
 - define Relay operations near routes/features;
 - generate Relay artifacts from the server schema;
-- create one Relay environment with auth-aware HTTP fetch and websocket
-  subscription support;
+- create one `DefaultWebappRelayRuntime` with auth-aware HTTP fetch,
+  auth-aware websocket reconnects, and websocket subscription support;
 - preload route queries through route loaders and dispose aborted preloads;
 - update Relay store records explicitly for mutations/subscriptions when needed.
 

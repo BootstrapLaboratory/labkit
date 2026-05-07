@@ -38,6 +38,7 @@ const authSession = createWebappAuthSession({
 });
 
 export const getAccessToken = authSession.getAccessToken;
+export const getAuthSession = authSession.getAuthSession;
 export const subscribeAuthState = authSession.subscribeAuthState;
 
 export function useAuthState() {
@@ -52,21 +53,23 @@ export function useAuthState() {
 ## Relay Environment
 
 ```ts
-import { createWebappRelayEnvironment } from "@omgjs/labkit-webapp-graphql-relay";
-import { realtimeConnection } from "../realtime/realtime-connection";
+import { DefaultWebappRelayRuntime } from "@omgjs/labkit-webapp-graphql-relay";
+
+export const relayRuntime = new DefaultWebappRelayRuntime({
+  httpEndpoint: HTTP_ENDPOINT,
+  wsEndpoint: WS_ENDPOINT,
+  auth,
+});
 
 export function createRelayEnvironment() {
-  return createWebappRelayEnvironment({
-    httpEndpoint: HTTP_ENDPOINT,
-    auth,
-    realtime: realtimeConnection,
-  });
+  return relayRuntime.getEnvironment();
 }
 ```
 
 The `auth` adapter provides access-token reads, auth-state subscription,
-refresh, credentials, and auth-required error checks. The `realtime` instance
-provides a stable websocket client and observable connection state.
+auth-session reads, refresh, credentials, and auth-required error checks. The
+runtime provides the Relay environment, the realtime instance, and observable
+connection state.
 
 ## App Providers
 

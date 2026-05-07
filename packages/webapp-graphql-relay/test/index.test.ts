@@ -10,16 +10,20 @@ import type {
 import type { PreloadedQuery } from "react-relay";
 import {
   appendRootFieldRecordIfMissing,
+  createAuthAwareRelayGraphqlWsConnectionParams,
   createAuthAwareRelayFetchFunction,
   createRelayGraphqlWsConnectionParams,
   createRelaySubscribeFunction,
   createUnauthorizedGraphqlResponse,
   createWebappRelayRealtimeClient,
+  DefaultWebappRelayRuntime,
   fetchRelayGraphqlOnce,
   loadRouteQuery,
+  shouldRefreshRelayAuthSessionForRealtime,
   terminateRealtimeClientOnAuthTokenChange,
   type GraphqlRelayAuthAdapter,
   type GraphqlRelayFetch,
+  type GraphqlRelayAuthSessionLike,
 } from "../src/index";
 
 function createRequest(name: string, text = "query Test { node }") {
@@ -31,6 +35,7 @@ function createAuthAdapter(
 ): GraphqlRelayAuthAdapter {
   return {
     getAccessToken: () => null,
+    getAuthSession: () => null,
     getAuthRequestCredentials: () => "include",
     hasAuthRequiredGraphqlErrors: () => false,
     refreshStoredAuthSession: async () => null,
@@ -73,6 +78,112 @@ test("createRelayGraphqlWsConnectionParams returns bearer authorization when a t
       authorization: "Bearer abc",
     },
   );
+});
+
+test("shouldRefreshRelayAuthSessionForRealtime detects expiring access tokens", () => {
+  const nowMs = Date.parse("2026-05-07T12:00:00.000Z");
+
+  assert.equal(
+    shouldRefreshRelayAuthSessionForRealtime({
+      authSession: null,
+      nowMs,
+    }),
+    false,
+  );
+  assert.equal(
+    shouldRefreshRelayAuthSessionForRealtime({
+      authSession: {
+        accessToken: "access-token",
+        accessTokenExpiresAt: nowMs + 30_000,
+      },
+      nowMs,
+    }),
+    true,
+  );
+  assert.equal(
+    shouldRefreshRelayAuthSessionForRealtime({
+      authSession: {
+        accessToken: "access-token",
+        accessTokenExpiresAt: nowMs + 120_000,
+      },
+      nowMs,
+    }),
+    false,
+  );
+});
+
+test("createAuthAwareRelayGraphqlWsConnectionParams refreshes expiring sessions before returning params", async () => {
+  const nowMs = Date.parse("2026-05-07T12:00:00.000Z");
+  let session: GraphqlRelayAuthSessionLike | null = {
+    accessToken: "old-token",
+    accessTokenExpiresAt: nowMs - 1,
+  };
+  let refreshes = 0;
+  const connectionParams = createAuthAwareRelayGraphqlWsConnectionParams({
+    auth: createAuthAdapter({
+      getAccessToken: () => session?.accessToken ?? null,
+      getAuthSession: () => session,
+      refreshStoredAuthSession: async () => {
+        refreshes += 1;
+        session = {
+          accessToken: "new-token",
+          accessTokenExpiresAt: nowMs + 15 * 60_000,
+        };
+        return session;
+      },
+    }),
+    now: () => nowMs,
+  });
+
+  assert.deepEqual(await connectionParams(), {
+    authorization: "Bearer new-token",
+  });
+  assert.equal(refreshes, 1);
+});
+
+test("createAuthAwareRelayGraphqlWsConnectionParams keeps fresh sessions without refresh", async () => {
+  const nowMs = Date.parse("2026-05-07T12:00:00.000Z");
+  let refreshes = 0;
+  const connectionParams = createAuthAwareRelayGraphqlWsConnectionParams({
+    auth: createAuthAdapter({
+      getAccessToken: () => "fresh-token",
+      getAuthSession: () => ({
+        accessToken: "fresh-token",
+        accessTokenExpiresAt: nowMs + 15 * 60_000,
+      }),
+      refreshStoredAuthSession: async () => {
+        refreshes += 1;
+        return null;
+      },
+    }),
+    now: () => nowMs,
+  });
+
+  assert.deepEqual(await connectionParams(), {
+    authorization: "Bearer fresh-token",
+  });
+  assert.equal(refreshes, 0);
+});
+
+test("createAuthAwareRelayGraphqlWsConnectionParams returns anonymous params when refresh clears a stale session", async () => {
+  const nowMs = Date.parse("2026-05-07T12:00:00.000Z");
+  let session: GraphqlRelayAuthSessionLike | null = {
+    accessToken: "old-token",
+    accessTokenExpiresAt: nowMs - 1,
+  };
+  const connectionParams = createAuthAwareRelayGraphqlWsConnectionParams({
+    auth: createAuthAdapter({
+      getAccessToken: () => session?.accessToken ?? null,
+      getAuthSession: () => session,
+      refreshStoredAuthSession: async () => {
+        session = null;
+        return null;
+      },
+    }),
+    now: () => nowMs,
+  });
+
+  assert.deepEqual(await connectionParams(), {});
 });
 
 test("fetchRelayGraphqlOnce adds auth headers and maps HTTP 401 to GraphQL auth errors", async () => {
@@ -241,7 +352,7 @@ test("createWebappRelayRealtimeClient uses an explicit realtime instance", () =>
   assert.equal(result.wsClient, wsClient);
 });
 
-test("createWebappRelayRealtimeClient creates default realtime from raw websocket options", () => {
+test("createWebappRelayRealtimeClient creates default realtime from raw websocket options", async () => {
   const capturedClientOptions: {
     current?: ClientOptions<Record<string, string>>;
   } = {};
@@ -249,6 +360,10 @@ test("createWebappRelayRealtimeClient creates default realtime from raw websocke
   const result = createWebappRelayRealtimeClient({
     auth: createAuthAdapter({
       getAccessToken: () => "access-token",
+      getAuthSession: () => ({
+        accessToken: "access-token",
+        accessTokenExpiresAt: Date.now() + 15 * 60_000,
+      }),
     }),
     httpEndpoint: "https://example.com/graphql",
     wsEndpoint: "ws://example.com/graphql",
@@ -268,11 +383,167 @@ test("createWebappRelayRealtimeClient creates default realtime from raw websocke
   assert.equal(capturedClientOptions.current?.url, "ws://example.com/graphql");
   assert.equal(typeof connectionParams, "function");
   assert.deepEqual(
-    (connectionParams as () => Record<string, string>)(),
+    await (connectionParams as () => Promise<Record<string, string>>)(),
     {
       authorization: "Bearer access-token",
     },
   );
+});
+
+test("DefaultWebappRelayRuntime exposes Relay, realtime, and bound state methods", async () => {
+  const capturedClientOptions: {
+    current?: ClientOptions<Record<string, string>>;
+  } = {};
+  const wsClient = createFakeClient();
+  const runtime = new DefaultWebappRelayRuntime({
+    auth: createAuthAdapter(),
+    httpEndpoint: "https://example.com/graphql",
+    wsEndpoint: "ws://example.com/graphql",
+    realtimeOptions: {
+      browserLifecycle: null,
+      createClient: (options: ClientOptions<Record<string, string>>) => {
+        capturedClientOptions.current = options;
+        return wsClient;
+      },
+      reconnectWatchdogMs: 0,
+    },
+  });
+
+  const getEnvironment = runtime.getEnvironment;
+  const getRealtime = runtime.getRealtime;
+  const getState = runtime.getRealtimeConnectionState;
+  const subscribe = runtime.subscribeToRealtimeConnectionState;
+
+  assert.equal(getEnvironment(), runtime.getEnvironment());
+  assert.equal(getRealtime(), runtime.getRealtime());
+  assert.equal(getState().status, "idle");
+  assert.equal(capturedClientOptions.current?.url, "ws://example.com/graphql");
+
+  let stateNotifications = 0;
+  const unsubscribe = subscribe(() => {
+    stateNotifications += 1;
+  });
+  unsubscribe();
+  await Promise.resolve(runtime.dispose());
+  assert.equal(stateNotifications, 0);
+});
+
+test("DefaultWebappRelayRuntime refreshes stale auth before websocket connection params", async () => {
+  const nowMs = Date.parse("2026-05-07T12:00:00.000Z");
+  const capturedClientOptions: {
+    current?: ClientOptions<Record<string, string>>;
+  } = {};
+  let session: GraphqlRelayAuthSessionLike | null = {
+    accessToken: "old-token",
+    accessTokenExpiresAt: nowMs - 1,
+  };
+  let refreshes = 0;
+  const runtime = new DefaultWebappRelayRuntime({
+    auth: createAuthAdapter({
+      getAccessToken: () => session?.accessToken ?? null,
+      getAuthSession: () => session,
+      refreshStoredAuthSession: async () => {
+        refreshes += 1;
+        session = {
+          accessToken: "new-token",
+          accessTokenExpiresAt: nowMs + 15 * 60_000,
+        };
+        return session;
+      },
+    }),
+    authRefreshPolicy: {
+      refreshAccessTokenBeforeExpiresMs: 60_000,
+    },
+    httpEndpoint: "https://example.com/graphql",
+    wsEndpoint: "ws://example.com/graphql",
+    realtimeOptions: {
+      browserLifecycle: null,
+      createClient: (options: ClientOptions<Record<string, string>>) => {
+        capturedClientOptions.current = options;
+        return createFakeClient();
+      },
+      reconnectWatchdogMs: 0,
+    },
+  });
+
+  const connectionParams = capturedClientOptions.current?.connectionParams;
+
+  assert.equal(typeof connectionParams, "function");
+  assert.deepEqual(
+    await (connectionParams as () => Promise<Record<string, string>>)(),
+    {
+      authorization: "Bearer new-token",
+    },
+  );
+  assert.equal(refreshes, 1);
+  await Promise.resolve(runtime.dispose());
+});
+
+test("DefaultWebappRelayRuntime does not terminate realtime for its own connection-param auth refresh", async () => {
+  const nowMs = Date.parse("2026-05-07T12:00:00.000Z");
+  const capturedClientOptions: {
+    current?: ClientOptions<Record<string, string>>;
+  } = {};
+  const authListener: {
+    current?: () => void;
+  } = {};
+  let session: GraphqlRelayAuthSessionLike | null = {
+    accessToken: "old-token",
+    accessTokenExpiresAt: nowMs - 1,
+  };
+  let terminates = 0;
+  const runtime = new DefaultWebappRelayRuntime({
+    auth: createAuthAdapter({
+      getAccessToken: () => session?.accessToken ?? null,
+      getAuthSession: () => session,
+      refreshStoredAuthSession: async () => {
+        session = {
+          accessToken: "new-token",
+          accessTokenExpiresAt: nowMs + 15 * 60_000,
+        };
+        authListener.current?.();
+        return session;
+      },
+      subscribeAuthState: (listener) => {
+        authListener.current = listener;
+        return () => {
+          authListener.current = undefined;
+        };
+      },
+    }),
+    httpEndpoint: "https://example.com/graphql",
+    wsEndpoint: "ws://example.com/graphql",
+    realtimeOptions: {
+      browserLifecycle: null,
+      createClient: (options: ClientOptions<Record<string, string>>) => {
+        capturedClientOptions.current = options;
+        return createFakeClient(() => {
+          terminates += 1;
+        });
+      },
+      reconnectWatchdogMs: 0,
+    },
+  });
+
+  const connectionParams = capturedClientOptions.current?.connectionParams;
+
+  assert.equal(typeof connectionParams, "function");
+  assert.deepEqual(
+    await (connectionParams as () => Promise<Record<string, string>>)(),
+    {
+      authorization: "Bearer new-token",
+    },
+  );
+  assert.equal(terminates, 0);
+
+  session = {
+    accessToken: "next-token",
+    accessTokenExpiresAt: nowMs + 15 * 60_000,
+  };
+  authListener.current?.();
+
+  assert.equal(terminates, 1);
+  await Promise.resolve(runtime.dispose());
 });
 
 test("loadRouteQuery disposes the query ref once when the route aborts", () => {
