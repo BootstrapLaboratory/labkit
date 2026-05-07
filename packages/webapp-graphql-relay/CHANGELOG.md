@@ -1,6 +1,11 @@
 # Change Log - @omgjs/labkit-webapp-graphql-relay
 
-This log was last generated on Thu, 07 May 2026 09:45:22 GMT and should not be manually modified.
+This log was last generated on Thu, 07 May 2026 11:37:06 GMT and should not be manually modified.
+
+## 1.0.2
+Thu, 07 May 2026 11:37:06 GMT
+
+_Version update only_
 
 ## 1.0.1
 Thu, 07 May 2026 09:45:22 GMT

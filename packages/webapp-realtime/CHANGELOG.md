@@ -1,6 +1,13 @@
 # Change Log - @omgjs/labkit-webapp-realtime
 
-This log was last generated on Thu, 07 May 2026 09:45:22 GMT and should not be manually modified.
+This log was last generated on Thu, 07 May 2026 11:37:06 GMT and should not be manually modified.
+
+## 1.0.2
+Thu, 07 May 2026 11:37:06 GMT
+
+### Patches
+
+- Harden realtime recovery after browser sleep during server redeploys.
 
 ## 1.0.1
 Thu, 07 May 2026 09:45:22 GMT

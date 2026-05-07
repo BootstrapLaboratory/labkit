@@ -2,6 +2,18 @@
   "name": "@omgjs/labkit-webapp-graphql-relay",
   "entries": [
     {
+      "version": "1.0.2",
+      "tag": "@omgjs/labkit-webapp-graphql-relay_v1.0.2",
+      "date": "Thu, 07 May 2026 11:37:06 GMT",
+      "comments": {
+        "dependency": [
+          {
+            "comment": "Updating dependency \"@omgjs/labkit-webapp-realtime\" to `1.0.2`"
+          }
+        ]
+      }
+    },
+    {
       "version": "1.0.1",
       "tag": "@omgjs/labkit-webapp-graphql-relay_v1.0.1",
       "date": "Thu, 07 May 2026 09:45:22 GMT",
