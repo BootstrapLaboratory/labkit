@@ -2,6 +2,18 @@
   "name": "@omgjs/labkit-webapp-realtime",
   "entries": [
     {
+      "version": "1.0.1",
+      "tag": "@omgjs/labkit-webapp-realtime_v1.0.1",
+      "date": "Thu, 07 May 2026 09:45:22 GMT",
+      "comments": {
+        "patch": [
+          {
+            "comment": "Harden realtime restart recovery after old websocket shutdowns."
+          }
+        ]
+      }
+    },
+    {
       "version": "1.0.0",
       "tag": "@omgjs/labkit-webapp-realtime_v1.0.0",
       "date": "Wed, 06 May 2026 23:48:49 GMT",

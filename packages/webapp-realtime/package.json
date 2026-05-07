@@ -1,6 +1,6 @@
 {
   "name": "@omgjs/labkit-webapp-realtime",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Browser realtime connection helpers for GraphQL WebSocket reconnect, heartbeat, and state tracking.",
   "license": "MIT",
   "repository": {

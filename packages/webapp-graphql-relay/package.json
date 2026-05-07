@@ -1,6 +1,6 @@
 {
   "name": "@omgjs/labkit-webapp-graphql-relay",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Relay environment, network, route preloading, and store helpers for Labkit webapps.",
   "license": "MIT",
   "repository": {
