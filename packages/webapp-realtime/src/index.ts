@@ -166,6 +166,12 @@ type ActiveSubscription = {
 
 type FacadeEventListener = (...args: readonly unknown[]) => void;
 
+type RecoverableSubscriptionTerminalEvent = {
+  error?: unknown;
+  generation: number;
+  type: "complete" | "error";
+};
+
 export const DEFAULT_HEARTBEAT_INTERVAL_MS = 10_000;
 export const DEFAULT_HEARTBEAT_TIMEOUT_MS = 5_000;
 export const DEFAULT_RECONNECT_WATCHDOG_MS = 30_000;
@@ -353,6 +359,12 @@ class SelfHealingGraphqlWsClient implements Client {
         error: unknown,
         details: { generation: number; phase: "dispose" | "unsubscribe" },
       ): void;
+      onRecoverableSubscriptionTerminalEvent?(
+        event: RecoverableSubscriptionTerminalEvent,
+      ): void;
+      shouldRecoverSubscriptionTerminalEvent?(
+        event: RecoverableSubscriptionTerminalEvent,
+      ): boolean;
     },
   ) {
     this.innerClient = this.createNextInnerClient();
@@ -564,6 +576,16 @@ class SelfHealingGraphqlWsClient implements Client {
             return;
           }
 
+          if (
+            this.recoverSubscriptionTerminalEvent(subscription, {
+              error,
+              generation,
+              type: "error",
+            })
+          ) {
+            return;
+          }
+
           subscription.closed = true;
           this.activeSubscriptions.delete(subscription.id);
           subscription.sink.error(error);
@@ -573,12 +595,34 @@ class SelfHealingGraphqlWsClient implements Client {
             return;
           }
 
+          if (
+            this.recoverSubscriptionTerminalEvent(subscription, {
+              generation,
+              type: "complete",
+            })
+          ) {
+            return;
+          }
+
           subscription.closed = true;
           this.activeSubscriptions.delete(subscription.id);
           subscription.sink.complete();
         },
       },
     );
+  }
+
+  private recoverSubscriptionTerminalEvent(
+    subscription: ActiveSubscription,
+    event: RecoverableSubscriptionTerminalEvent,
+  ): boolean {
+    if (!this.options.shouldRecoverSubscriptionTerminalEvent?.(event)) {
+      return false;
+    }
+
+    subscription.innerUnsubscribe = undefined;
+    this.options.onRecoverableSubscriptionTerminalEvent?.(event);
+    return true;
   }
 
   private shouldSuppressTerminalEvent(
@@ -668,6 +712,25 @@ export class DefaultWebappRealtimeConnection {
           phase: details.phase,
         });
       },
+      onRecoverableSubscriptionTerminalEvent: (event) => {
+        this.logRealtime(
+          "Live GraphQL subscription ended during recovery. Recreating client.",
+          {
+            error:
+              event.error === undefined
+                ? null
+                : getRealtimeShutdownErrorMessage(event.error),
+            generation: event.generation,
+            type: event.type,
+          },
+        );
+        this.restartInnerClient(
+          "transport-error",
+          "Live updates transport ended during recovery. Recreating the websocket client.",
+        );
+      },
+      shouldRecoverSubscriptionTerminalEvent: () =>
+        this.shouldRecoverSubscriptionTerminalEvent(),
     });
     this.updateConnectionState({
       innerClientGeneration: this.client.getCurrentGeneration(),
@@ -949,6 +1012,10 @@ export class DefaultWebappRealtimeConnection {
       (this.isReconnectInProgress() ||
         elapsedMs >= this.getBrowserResumeRestartThresholdMs())
     );
+  }
+
+  private shouldRecoverSubscriptionTerminalEvent(): boolean {
+    return this.isReconnectInProgress();
   }
 
   private initializeBrowserLifecycleListeners(): void {

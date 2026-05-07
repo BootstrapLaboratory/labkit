@@ -404,6 +404,136 @@ test("browser resume keeps a fresh connected client", () => {
   }
 });
 
+test("retrying subscription transport errors are recovered through a new inner client", () => {
+  const capturedClientOptions: CapturedClientOptions[] = [];
+  const clients: FakeClient[] = [];
+  let subscriptionErrors = 0;
+  const closeEvent = { code: 1006, reason: "" };
+  const connection = new DefaultWebappRealtimeConnection({
+    browserLifecycle: null,
+    createClient: (options) => {
+      capturedClientOptions.push(options);
+      const client = createFakeClient();
+      clients.push(client);
+      return client;
+    },
+    reconnectWatchdogMs: 0,
+    wsEndpoint: "ws://example.com/graphql",
+  });
+  const payload = {
+    query: "subscription MessageAdded { messageAdded { id } }",
+  };
+
+  try {
+    connection.getClient().subscribe(payload, {
+      next: () => {},
+      error: () => {
+        subscriptionErrors += 1;
+      },
+      complete: () => {},
+    });
+
+    capturedClientOptions[0].on?.connecting?.(true);
+    clients[0].subscriptions[0].sink.error(closeEvent);
+
+    assert.equal(subscriptionErrors, 0);
+    assert.equal(clients[0].disposals(), 1);
+    assert.equal(clients.length, 2);
+    assert.equal(clients[1].subscriptions.length, 1);
+    assert.deepEqual(clients[1].subscriptions[0].payload, payload);
+    assert.equal(connection.getConnectionState().restartCount, 1);
+    assert.equal(connection.getConnectionState().recoveryReason, "transport-error");
+  } finally {
+    void connection.dispose();
+  }
+});
+
+test("retrying subscription completes are recovered through a new inner client", () => {
+  const capturedClientOptions: CapturedClientOptions[] = [];
+  const clients: FakeClient[] = [];
+  let subscriptionCompletes = 0;
+  const connection = new DefaultWebappRealtimeConnection({
+    browserLifecycle: null,
+    createClient: (options) => {
+      capturedClientOptions.push(options);
+      const client = createFakeClient();
+      clients.push(client);
+      return client;
+    },
+    reconnectWatchdogMs: 0,
+    wsEndpoint: "ws://example.com/graphql",
+  });
+
+  try {
+    connection.getClient().subscribe(
+      {
+        query: "subscription MessageAdded { messageAdded { id } }",
+      },
+      {
+        next: () => {},
+        error: () => {},
+        complete: () => {
+          subscriptionCompletes += 1;
+        },
+      },
+    );
+
+    capturedClientOptions[0].on?.connecting?.(true);
+    clients[0].subscriptions[0].sink.complete();
+
+    assert.equal(subscriptionCompletes, 0);
+    assert.equal(clients[0].disposals(), 1);
+    assert.equal(clients.length, 2);
+    assert.equal(clients[1].subscriptions.length, 1);
+    assert.equal(connection.getConnectionState().restartCount, 1);
+  } finally {
+    void connection.dispose();
+  }
+});
+
+test("connected subscription errors still reach the consumer", () => {
+  const capturedClientOptions: CapturedClientOptions[] = [];
+  const clients: FakeClient[] = [];
+  let subscriptionErrors = 0;
+  const connection = new DefaultWebappRealtimeConnection({
+    browserLifecycle: null,
+    createClient: (options) => {
+      capturedClientOptions.push(options);
+      const client = createFakeClient();
+      clients.push(client);
+      return client;
+    },
+    reconnectWatchdogMs: 0,
+    wsEndpoint: "ws://example.com/graphql",
+  });
+
+  try {
+    connection.getClient().subscribe(
+      {
+        query: "subscription MessageAdded { messageAdded { id } }",
+      },
+      {
+        next: () => {},
+        error: () => {
+          subscriptionErrors += 1;
+        },
+        complete: () => {},
+      },
+    );
+
+    capturedClientOptions[0].on?.connected?.({}, undefined, false);
+    clients[0].subscriptions[0].sink.error([
+      { message: "Subscription rejected." },
+    ]);
+
+    assert.equal(subscriptionErrors, 1);
+    assert.equal(clients.length, 1);
+    assert.equal(connection.getConnectionState().restartCount, 0);
+  } finally {
+    void connection.dispose();
+  }
+});
+
 test("active subscriptions are resubscribed after inner client recreation", async () => {
   const capturedClientOptions: CapturedClientOptions[] = [];
   const clients: FakeClient[] = [];
