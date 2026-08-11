@@ -2,6 +2,18 @@
   "name": "@omgjs/labkit-webapp-graphql-relay",
   "entries": [
     {
+      "version": "3.0.0",
+      "tag": "@omgjs/labkit-webapp-graphql-relay_v3.0.0",
+      "date": "Tue, 11 Aug 2026 14:08:42 GMT",
+      "comments": {
+        "major": [
+          {
+            "comment": "Require applications to provide the exact Relay 20.1.1 peer pair so Labkit and React Relay share one runtime graph."
+          }
+        ]
+      }
+    },
+    {
       "version": "2.0.0",
       "tag": "@omgjs/labkit-webapp-graphql-relay_v2.0.0",
       "date": "Thu, 07 May 2026 15:25:04 GMT",

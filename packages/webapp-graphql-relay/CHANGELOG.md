@@ -1,6 +1,13 @@
 # Change Log - @omgjs/labkit-webapp-graphql-relay
 
-This log was last generated on Thu, 07 May 2026 15:25:04 GMT and should not be manually modified.
+This log was last generated on Tue, 11 Aug 2026 14:08:42 GMT and should not be manually modified.
+
+## 3.0.0
+Tue, 11 Aug 2026 14:08:42 GMT
+
+### Breaking changes
+
+- Require applications to provide the exact Relay 20.1.1 peer pair so Labkit and React Relay share one runtime graph.
 
 ## 2.0.0
 Thu, 07 May 2026 15:25:04 GMT
