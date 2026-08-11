@@ -4,6 +4,64 @@
 auth-aware GraphQL HTTP requests, GraphQL WS subscriptions, route preloading,
 and Relay store maintenance.
 
+## Install
+
+Install the package and its required Relay peers directly in the application:
+
+```bash
+npm install \
+  @omgjs/labkit-webapp-graphql-relay \
+  react-relay@20.1.1 \
+  relay-runtime@20.1.1
+```
+
+The supported runtime pair is exactly `react-relay@20.1.1` and
+`relay-runtime@20.1.1`. Both packages are application-owned, required peers.
+Do not mix versions or substitute another Relay release, even when the package
+manager completes the install with only a warning.
+
+Applications that compile Relay operations or TypeScript can use the
+repository-validated development-tooling set:
+
+```bash
+npm install --save-dev \
+  relay-compiler@20.1.1 \
+  @types/react-relay@18.2.1 \
+  @types/relay-runtime@20.1.1
+```
+
+`relay-compiler` and the type packages are development tools, not runtime
+peers. Keep the compiler aligned with the runtime pair so generated artifacts
+match the runtime that executes them.
+
+## Relay Runtime Contract
+
+Labkit-created environments and preloaded query references are consumed by the
+application's `RelayEnvironmentProvider`, hooks, and Relay imports. All of
+those boundaries must resolve one canonical installation of each required
+Relay package. Labkit does not support a private or nested Relay runtime.
+
+Inspect the installed graph after installation or a lockfile update:
+
+```bash
+npm ls react-relay relay-runtime
+# pnpm consumers:
+pnpm why --recursive react-relay relay-runtime
+```
+
+The graph must contain only the matched `20.1.1` pair, with no `invalid`, unmet,
+or nested copy under Labkit. Peer metadata describes the supported contract,
+but package-manager settings can weaken its diagnostics. Auto-installation,
+warning-only modes, `--force`, `--legacy-peer-deps`, aliases, and overrides do
+not make another graph supported.
+
+When upgrading from Labkit 2.x, add both exact Relay packages as direct
+dependencies, align the compiler and types shown above, remove Relay aliases or
+deduplication overrides used as workarounds, reinstall with the normal package
+manager mode, and inspect the graph before building the application. See the
+[package reference](../../docs/packages/webapp-graphql-relay.md#migrating-from-2x)
+for the complete migration checklist.
+
 ## Owns
 
 - Relay environment factory.

@@ -47,3 +47,14 @@ jobs:
 
       - name: Verify packages
         run: node common/scripts/install-run-rush.js verify --parallelism 1
+
+      - name: Test packed Relay consumer contract
+        run: npm run test:relay-consumer-contract
+
+      - name: Upload Relay consumer contract failure evidence
+        if: failure()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: relay-consumer-contract-failure
+          path: common/temp/relay-consumer-contract-artifacts
+          if-no-files-found: ignore

@@ -69,8 +69,19 @@ npm install \
   @omgjs/labkit-webapp-graphql-relay \
   @omgjs/labkit-webapp-external-store \
   @omgjs/labkit-webapp-ui \
-  @omgjs/labkit-webapp-build-config
+  @omgjs/labkit-webapp-build-config \
+  react-relay@20.1.1 \
+  relay-runtime@20.1.1
+
+npm install --save-dev \
+  relay-compiler@20.1.1 \
+  @types/react-relay@18.2.1 \
+  @types/relay-runtime@20.1.1
 ```
 
-Labkit does not pin your Nest, React, Relay, TypeORM, Vite, or GraphQL stack.
-Those framework packages remain application dependencies.
+Nest, React, Relay, TypeORM, Vite, and GraphQL remain application-owned
+framework dependencies. The Relay package currently supports the exact,
+consumer-installed `react-relay@20.1.1` and `relay-runtime@20.1.1` pair. Keep
+the development-time Relay compiler aligned with that runtime; see the
+[Relay package reference](packages/webapp-graphql-relay.md#required-relay-peers)
+for the complete peer and migration contract.

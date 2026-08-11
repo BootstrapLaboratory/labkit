@@ -1,0 +1,9 @@
+{
+  "name": "react-relay",
+  "version": "99.0.0",
+  "private": true,
+  "peerDependencies": {
+    "react": "^19.0.0",
+    "relay-runtime": "99.0.0"
+  }
+}

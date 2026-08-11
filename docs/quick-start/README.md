@@ -67,10 +67,12 @@ npm install -w server \
 
 ```bash
 npm install -w webapp \
-  graphql graphql-ws react-relay relay-runtime
+  graphql graphql-ws \
+  react-relay@20.1.1 relay-runtime@20.1.1
 
 npm install -w webapp -D \
-  @types/react-relay @types/relay-runtime relay-compiler
+  relay-compiler@20.1.1 \
+  @types/react-relay@18.2.1 @types/relay-runtime@20.1.1
 
 npm install -w webapp \
   @omgjs/labkit-webapp-auth \
@@ -80,6 +82,25 @@ npm install -w webapp \
   @omgjs/labkit-webapp-realtime \
   @omgjs/labkit-webapp-ui
 ```
+
+The two Relay runtime packages are direct, required application peers for
+`@omgjs/labkit-webapp-graphql-relay`. Keep the exact `20.1.1` pair together;
+the type packages and compiler are development-time tooling, and the compiler
+must stay aligned with the runtime that executes its generated artifacts.
+
+After installation, verify that the webapp resolves one pair and reports no
+invalid or unmet peer:
+
+```bash
+npm ls -w webapp react-relay relay-runtime
+```
+
+Do not use force, legacy-peer, alias, or override settings to install a
+different pair. Some package-manager modes warn or auto-install instead of
+failing, but an unsupported graph is not compatible merely because installation
+completed. See the
+[Relay package reference](../packages/webapp-graphql-relay.md#required-relay-peers)
+for pnpm inspection and migration guidance.
 
 Then continue through the pages in order. Each page gives complete file bodies
 for the Labkit adapter files it introduces.

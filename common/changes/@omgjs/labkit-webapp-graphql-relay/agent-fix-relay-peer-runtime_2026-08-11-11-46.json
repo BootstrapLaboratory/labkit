@@ -1,0 +1,11 @@
+{
+  "changes": [
+    {
+      "comment": "Require applications to provide the exact Relay 20.1.1 peer pair so Labkit and React Relay share one runtime graph.",
+      "type": "major",
+      "packageName": "@omgjs/labkit-webapp-graphql-relay"
+    }
+  ],
+  "packageName": "@omgjs/labkit-webapp-graphql-relay",
+  "email": "artkor@live.ru"
+}

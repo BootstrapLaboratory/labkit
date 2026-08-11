@@ -15,6 +15,7 @@
     "rush:verify": "node common/scripts/install-run-rush.js verify",
     "rush:version": "node common/scripts/install-run-rush.js version",
     "rush:publish": "node common/scripts/install-run-rush.js publish",
+    "test:relay-consumer-contract": "node common/scripts/test-relay-consumer-contract.mjs",
     "site:docusaurus:build": "npm --prefix website-docusaurus run build",
     "site:docusaurus:check": "npm --prefix website-docusaurus run check",
     "site:docusaurus:sync-docs": "npm --prefix website-docusaurus run sync-docs",
