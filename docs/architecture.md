@@ -87,7 +87,8 @@ user-facing behavior. Labkit helps the browser wire the runtime:
   stale refresh token fails server-side.
 - `@omgjs/labkit-webapp-graphql-relay` creates an auth-aware Relay environment,
   retries one non-auth GraphQL operation after refresh, wires GraphQL
-  subscriptions, and disposes route preloads when navigation aborts.
+  subscriptions, and coordinates route-query ownership across loader abort and
+  mounted React consumers before disposal.
 - `@omgjs/labkit-webapp-realtime` provides a self-healing websocket runtime
   with a stable GraphQL WS client facade, connection-state monitoring,
   heartbeat/watchdog policy, browser online/resume recovery, fatal close-code
@@ -97,8 +98,11 @@ user-facing behavior. Labkit helps the browser wire the runtime:
   class application, while concrete components remain app-owned.
 
 The app still owns routes, generated operation files, endpoint resolution,
-React hooks, form components, token storage policy selection, CSS classes,
-theme values, and product UI.
+product React hooks, form components, token storage policy selection, CSS
+classes, theme values, and product UI. Browser packages may expose focused
+framework hooks when a reusable runtime resource needs framework lifecycle
+integration; those hooks must remain independent of app route definitions and
+product behavior.
 
 ## Shared Boundary
 

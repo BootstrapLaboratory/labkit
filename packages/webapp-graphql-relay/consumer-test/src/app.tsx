@@ -1,7 +1,10 @@
 import {
+  createRouteQueryLifetime,
   createWebappRelayEnvironment,
   loadRouteQuery,
+  useRouteQueryLifetime,
   type GraphqlRelayAuthAdapter,
+  type RouteQueryLifetime,
 } from "@omgjs/labkit-webapp-graphql-relay";
 import { Suspense, type ReactElement } from "react";
 import {
@@ -32,10 +35,13 @@ const wsClient = {
 } as unknown as Client;
 
 function FixtureView({
+  queryLifetime,
   queryReference,
 }: {
+  queryLifetime: RouteQueryLifetime;
   queryReference: PreloadedQuery<FixtureOperationQuery>;
 }): ReactElement {
+  useRouteQueryLifetime(queryLifetime);
   const data = usePreloadedQuery(fixtureQuery, queryReference);
   return <strong data-contract-result>{data.viewer.name}</strong>;
 }
@@ -65,6 +71,9 @@ export function createFixtureTree(): {
     },
   });
   const abortController = new AbortController();
+  const queryLifetime = createRouteQueryLifetime({
+    routeAbortSignal: abortController.signal,
+  });
   const operation = createOperationDescriptor(fixtureQuery, {});
   const initialSnapshot = environment.lookup(operation.fragment);
   let readinessSubscription: Disposable | undefined;
@@ -86,9 +95,9 @@ export function createFixtureTree(): {
     );
   });
   const queryReference = loadRouteQuery<FixtureOperationQuery>({
-    abortSignal: abortController.signal,
     environment,
     fetchPolicy: "network-only",
+    lifetime: queryLifetime,
     query: fixtureQuery,
     variables: {},
   });
@@ -96,13 +105,16 @@ export function createFixtureTree(): {
   return {
     dispose: () => {
       readinessSubscription?.dispose();
-      queryReference.dispose();
+      queryLifetime.abort();
     },
     ready,
     tree: (
       <RelayEnvironmentProvider environment={environment}>
         <Suspense fallback={<span>Loading fixture</span>}>
-          <FixtureView queryReference={queryReference} />
+          <FixtureView
+            queryLifetime={queryLifetime}
+            queryReference={queryReference}
+          />
         </Suspense>
       </RelayEnvironmentProvider>
     ),

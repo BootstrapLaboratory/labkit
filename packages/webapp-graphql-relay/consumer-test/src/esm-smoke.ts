@@ -1,7 +1,9 @@
 import assert from "node:assert/strict";
 import {
+  createRouteQueryLifetime,
   createWebappRelayEnvironment,
   loadRouteQuery,
+  useRouteQueryLifetime,
 } from "@omgjs/labkit-webapp-graphql-relay";
 import type { Client } from "graphql-ws";
 import { Environment } from "relay-runtime";
@@ -32,5 +34,7 @@ const environment = createWebappRelayEnvironment({
 });
 
 assert.equal(typeof loadRouteQuery, "function");
+assert.equal(typeof createRouteQueryLifetime, "function");
+assert.equal(typeof useRouteQueryLifetime, "function");
 assert.ok(environment instanceof Environment);
 process.stdout.write("ESM entrypoint uses the application Relay runtime.\n");

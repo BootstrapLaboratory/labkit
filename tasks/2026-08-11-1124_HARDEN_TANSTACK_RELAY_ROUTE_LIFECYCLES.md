@@ -1,14 +1,15 @@
 # Harden TanStack Router And Relay Route-Query Lifecycles
 
-Status: planned; begin with characterization and a public-contract decision
-gate.
+Status: implementation and validation complete; awaiting commit/PR and the
+post-merge release workflow.
 Created: 2026-08-11
-Classification: integration hardening and compatibility improvement. It is not
-a confirmed library bug at task creation.
+Classification: confirmed lifecycle integration bug whose smallest reusable
+fix is an additive public API improvement.
 Prerequisite:
-[Fix Relay Peer Runtime Contract](./2026-08-11-1124_FIX_RELAY_PEER_RUNTIME_CONTRACT.md).
-Release guidance: determine after the contract gate; tests alone do not require
-a public package release.
+[Fix Relay Peer Runtime Contract](./completed/2026-08-11-1124_FIX_RELAY_PEER_RUNTIME_CONTRACT.md).
+Release guidance: proposed minor release of
+`@omgjs/labkit-webapp-graphql-relay` (3.0.0 to 3.1.0) if Gate B approves the
+additive API. Do not edit the version manually.
 
 ## Decision Summary
 
@@ -23,7 +24,7 @@ helper and a documented application-owned route recipe, stop at the public API
 gate and obtain maintainer approval before adding exports, changing signatures,
 or introducing a public TanStack dependency/package.
 
-This task is reclassified only from evidence:
+The initial classification rules were:
 
 - it is a library bug if the documented helper fails in an explicitly
   supported, single-runtime configuration;
@@ -32,7 +33,9 @@ This task is reclassified only from evidence:
 - it becomes an API feature/change if a new lifecycle controller, ownership
   handle, or router adapter is required.
 
-Do not choose a Rush bump type until that outcome is recorded.
+Phase 1 evidence below confirms the first and third cases: the supported helper
+can dispose Relay work while its mounted consumer remains visible, and fixing
+that ownership mismatch requires a reusable lifetime primitive.
 
 ## Prerequisite And Baseline
 
@@ -258,34 +261,34 @@ rejections, work outside `act`, or open handles after teardown.
 Do not generate a full Cartesian product. Implement every distinct transition
 below and apply alternate completion order/Strict Mode only where specified.
 
-| ID | Scenario | Required outcome |
-| --- | --- | --- |
-| B1 | Direct initial entry; one query suspends then succeeds | Correct data renders; the reference stays live while mounted |
-| B2 | Full browser reload on the single-query URL | A fresh runtime/reference renders the same correct identity without warmed state |
-| B3 | Signal already aborted and repeated abort notifications | The reference never renders and disposal is idempotent |
-| N1 | Rendered A navigates to B while B is pending | A remains usable while mounted; B commits correctly; A is eventually released |
-| N2 | Pending A is superseded by B | A is canceled/released; a late A response cannot commit |
-| N3 | Rapid A(1) -> A(2) -> B with out-of-order responses | Only the final match commits; all superseded work is released |
-| N4 | Route param or search dependency changes | Old/new identities cannot be confused and replacement follows the selected policy |
-| H1 | A -> B -> browser back inside the fresh-cache window | Back reuses a proven-live reference or reloads before render, exactly as documented |
-| H2 | Browser forward after H1 | Forward follows the same ownership/cache policy |
-| H3 | Return after cache expiry or explicit clear | A new reference is created; an expired/released reference is never reused |
-| H4 | Supported stale revalidation | Active data remains usable until replacement commits; no early release occurs |
-| P1 | Pending preload is promoted by navigation | The documented promotion/deduplication behavior occurs without early release |
-| P2 | Completed preload is promoted | Preloaded data renders under the documented freshness policy |
-| P3 | Preload is canceled or expires unused | It never renders and is eventually released |
-| R1 | Query failure, route error, then retry succeeds | Retry creates valid new work; failed work is not reused or leaked |
-| R2 | Active route invalidation/replacement | The current route follows the documented pending/replacement policy safely |
-| R3 | Retry/invalidation is superseded by navigation | Superseded retry work cannot commit and is released |
-| M1 | Two queries, first completes before second | Both results render; sibling completion does not release the other reference |
-| M2 | Two queries, second completes before first | Ownership and final rendering match M1 |
-| M3 | One query completes, then the route is abandoned while its sibling is pending | Both route-owned references are eventually released; pending work is canceled as supported |
-| M4 | One of two queries fails, then retry succeeds | No sibling leak or reuse of failed/released work |
-| M5 | Partial multi-query construction throws | Every already-created reference is cleaned up according to the approved contract |
-| S1 | B1 under React Strict Mode | No duplicate loader ownership, premature disposal, warning, or failure |
-| S2 | N1 and one multi-query transition under Strict Mode | Mount probing cannot release work still required by active UI |
-| T1 | Router/provider/root teardown | All integration-owned references, requests, listeners, and subscriptions are released |
-| T2 | Runtime/router recreated at the same location | No reference or store identity crosses from the old runtime |
+| ID  | Scenario                                                                      | Required outcome                                                                           |
+| --- | ----------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------ |
+| B1  | Direct initial entry; one query suspends then succeeds                        | Correct data renders; the reference stays live while mounted                               |
+| B2  | Full browser reload on the single-query URL                                   | A fresh runtime/reference renders the same correct identity without warmed state           |
+| B3  | Signal already aborted and repeated abort notifications                       | The reference never renders and disposal is idempotent                                     |
+| N1  | Rendered A navigates to B while B is pending                                  | A remains usable while mounted; B commits correctly; A is eventually released              |
+| N2  | Pending A is superseded by B                                                  | A is canceled/released; a late A response cannot commit                                    |
+| N3  | Rapid A(1) -> A(2) -> B with out-of-order responses                           | Only the final match commits; all superseded work is released                              |
+| N4  | Route param or search dependency changes                                      | Old/new identities cannot be confused and replacement follows the selected policy          |
+| H1  | A -> B -> browser back inside the fresh-cache window                          | Back reuses a proven-live reference or reloads before render, exactly as documented        |
+| H2  | Browser forward after H1                                                      | Forward follows the same ownership/cache policy                                            |
+| H3  | Return after cache expiry or explicit clear                                   | A new reference is created; an expired/released reference is never reused                  |
+| H4  | Supported stale revalidation                                                  | Active data remains usable until replacement commits; no early release occurs              |
+| P1  | Pending preload is promoted by navigation                                     | The documented promotion/deduplication behavior occurs without early release               |
+| P2  | Completed preload is promoted                                                 | Preloaded data renders under the documented freshness policy                               |
+| P3  | Preload is canceled or expires unused                                         | It never renders and is eventually released                                                |
+| R1  | Query failure, route error, then retry succeeds                               | Retry creates valid new work; failed work is not reused or leaked                          |
+| R2  | Active route invalidation/replacement                                         | The current route follows the documented pending/replacement policy safely                 |
+| R3  | Retry/invalidation is superseded by navigation                                | Superseded retry work cannot commit and is released                                        |
+| M1  | Two queries, first completes before second                                    | Both results render; sibling completion does not release the other reference               |
+| M2  | Two queries, second completes before first                                    | Ownership and final rendering match M1                                                     |
+| M3  | One query completes, then the route is abandoned while its sibling is pending | Both route-owned references are eventually released; pending work is canceled as supported |
+| M4  | One of two queries fails, then retry succeeds                                 | No sibling leak or reuse of failed/released work                                           |
+| M5  | Partial multi-query construction throws                                       | Every already-created reference is cleaned up according to the approved contract           |
+| S1  | B1 under React Strict Mode                                                    | No duplicate loader ownership, premature disposal, warning, or failure                     |
+| S2  | N1 and one multi-query transition under Strict Mode                           | Mount probing cannot release work still required by active UI                              |
+| T1  | Router/provider/root teardown                                                 | All integration-owned references, requests, listeners, and subscriptions are released      |
+| T2  | Runtime/router recreated at the same location                                 | No reference or store identity crosses from the old runtime                                |
 
 For history and stale-revalidation cases, choose and document one coherent
 strategy:
@@ -296,30 +299,261 @@ strategy:
 Do not accept accidental reload behavior or an arbitrary grace timeout as the
 contract.
 
+## Evidence And Decisions
+
+### Characterization Baseline
+
+Phase 1 used a private Rush fixture with Node 24.18.0, React/React DOM 19.2.6,
+React Relay/Relay Runtime/Relay Compiler 20.1.1, TanStack React Router 1.170.25
+(Router Core 1.171.21), TypeScript 6.0.3, Vitest 4.1.10, jsdom 30.0.1, Vite
+8.2.1, and Playwright 1.62.1.
+
+The fixture imports the public Labkit package root and uses a real
+`RouterProvider`, `RelayEnvironmentProvider`, generated operations,
+`usePreloadedQuery`, controlled Relay network Observables, and an event ledger.
+Its preflight proves that fixture code, Labkit, React Relay, and Relay Runtime
+resolve the exact supported 20.1.1 pair through one canonical runtime path. A
+negative preflight test rejects a duplicate runtime path.
+
+The official contracts used for characterization are:
+
+- TanStack assigns `abortController.signal` to a loader invocation. The signal
+  aborts when that invocation becomes outdated and no Router consumer needs
+  it. Navigation and preload may share an invocation.
+- TanStack navigation `staleTime` defaults to zero, preloads have separate
+  freshness, and cached matches have garbage-collection behavior. Cache
+  clearing does not replace active match ownership.
+- Relay retains a query reference until `dispose()`; after disposal it is no
+  longer a valid mounted-consumer resource. Network completion and reference
+  ownership are separate.
+
+The selected safe router policy is blocking route replacement with an explicit
+pending component and `gcTime: 0`. Loader values containing query references
+must not be reused after release. Preload freshness remains explicit, and final
+teardown navigates to a query-free route, clears cache, and unmounts.
+
+### Observed Results
+
+The existing helper passes direct entry, already-aborted loading, safe history
+reload under the selected no-reuse policy, preload promotion, retry, both
+two-query completion orders, and final teardown.
+
+It fails N1 under a normal, single-runtime supported graph:
+
+1. route A creates reference A, resolves, renders, and mounts;
+2. route B starts and suspends on pending reference B;
+3. TanStack keeps the mounted A UI visible while B is pending;
+4. TanStack retires A's loader invocation and aborts A's loader signal;
+5. `loadRouteQuery` immediately disposes reference A;
+6. A remains mounted and visible with a disposed reference.
+
+The Strict Mode S2 pair reproduces the same mismatch for two references: both
+are released when replacement starts while their mounted route remains the
+visible UI. This is not a duplicate-runtime, network-order, timer, cache, or
+test-`act` artifact. The minimized invariant is that a loader invocation's
+lifetime is shorter than the mounted React consumer's lifetime.
+
+Partial multi-query construction exposes a second ownership gap. If the first
+reference is created and construction of the second throws, TanStack does not
+immediately abort the loader signal, so the first reference leaks. An explicit
+terminal abort of a shared child lifetime fixes this path but does not fix N1;
+the mounted consumer must also hold a lease.
+
+The characterization suite intentionally retains failing N1 and S2 assertions
+at Gate B. It must not be wired into required CI until the approved ownership
+contract makes those invariants pass.
+
+### Gate A Decision
+
+The existing `loadRouteQuery` abort behavior plus an application-only cache
+recipe is insufficient. A loader signal cannot represent both a TanStack
+loader invocation and one or more mounted React consumers. Keeping released
+references in Router cache, delaying disposal with a timeout, or changing fetch
+policy cannot make those ownership domains identical.
+
+TanStack remains application-owned, but reusable Relay reference lifetime
+mechanics belong in the Relay library. The fixture may translate TanStack
+events into a router-agnostic library lifetime; the library must not import
+TanStack types or runtime code.
+
+### Gate B Proposal - Approval Required
+
+Add the following router-agnostic API to
+`@omgjs/labkit-webapp-graphql-relay`:
+
+```ts
+export type RouteQueryOwnerSignal = RouteAbortSignal & {
+  readonly reason?: unknown;
+  removeEventListener(type: "abort", listener: () => void): void;
+};
+
+export type RouteQueryLifetime = {
+  readonly abortSignal: RouteAbortSignal;
+  abort(reason?: unknown): void;
+  acquire(): () => void;
+};
+
+export function createRouteQueryLifetime(options: {
+  routeAbortSignal: RouteQueryOwnerSignal;
+}): RouteQueryLifetime;
+
+export function useRouteQueryLifetime(lifetime: RouteQueryLifetime): void;
+
+// The existing environment/query/variables/fetch options are unchanged.
+export type LoadRouteQueryLifetimeOptions<TQuery extends OperationType> =
+  LoadRouteQueryBaseOptions<TQuery> & {
+    lifetime: RouteQueryLifetime;
+    abortSignal?: never;
+  };
+
+/** @deprecated Use LoadRouteQueryLifetimeOptions for mounted route queries. */
+export type LoadRouteQueryOptions<TQuery extends OperationType> =
+  LoadRouteQueryBaseOptions<TQuery> & {
+    abortSignal: RouteAbortSignal;
+    lifetime?: never;
+  };
+```
+
+The ownership state is:
+
+```text
+route lease + zero mounted leases
+              |
+              +-- acquire --> route lease + mounted lease(s)
+              |
+route abort --+--> mounted lease(s) remain --> final mounted release --> abort
+              |
+              +--> no mounted lease -------------------------------> abort
+explicit terminal abort -------------------------------------------> abort
+```
+
+The lifetime is passed unchanged to one or more calls to `loadRouteQuery`; its
+child `abortSignal` remains available for other abort-aware resources. The
+parent route signal releases only the route lease. The
+hook acquires complementary commit-time and passive mounted leases. The layout
+lease covers the interval before passive effects run; the passive lease
+survives React Suspense disconnecting layout effects while the previous UI
+remains visible. Both release during their corresponding cleanup. The child
+signal aborts exactly once after the route lease and final mounted lease are
+gone, or immediately after explicit terminal `abort()`. Listeners are detached
+at terminal release. Acquisition after terminal release is rejected. Every
+returned release callback and `abort()` is idempotent.
+
+Responsibilities are:
+
+- the loader creates one lifetime per invocation and passes that lifetime to
+  every query reference created by that loader;
+- on partial construction failure, the loader calls terminal `abort()` before
+  rethrowing;
+- the route component calls `useRouteQueryLifetime` for the returned lifetime;
+- the application owns route cache policy, pending UI, retry, history, and
+  final router teardown;
+- the library owns lease accounting, terminal abort, listener cleanup, and
+  Strict Mode-safe mounted ownership;
+- one lifetime may own one reference or a group of independently completing
+  references; completion never releases ownership by itself.
+
+`loadRouteQuery` remains source-compatible for valid existing calls. Its safe,
+documented branch accepts `lifetime`; the raw `abortSignal` branch remains
+available but is deprecated for abort-scoped work guaranteed never to mount.
+The ownership inputs are mutually exclusive in declarations and at runtime.
+TanStack route loaders with mounted consumers create a lifetime, pass it into
+the helper, return it with their refs, and mount the hook.
+
+This adds no TanStack dependency or peer. React is already a peer. The public
+package's CJS, ESM, and declaration surfaces must export the new API and pass
+packed-consumer validation. The proposed change is additive and therefore a
+minor Rush change for only this package, with an expected version of 3.1.0.
+
+Rejected alternatives:
+
+- use the TanStack loader signal directly: proven to dispose mounted work;
+- retain loader values in cache: can make a disposed reference reusable;
+- add a timeout or grace period: nondeterministic and has no ownership event;
+- copy a controller into every application: duplicates reusable Relay
+  lifecycle mechanics and leaves the documented helper unsafe to compose;
+- add a TanStack adapter package: no router-specific public type or event is
+  required by the proposed primitive;
+- change `loadRouteQuery` semantics: would be breaking and would overload one
+  abort signal with ownership it cannot observe.
+
+Maintainer approval of this proposal was granted on 2026-08-11. Phase 2 may
+proceed with option 3 exactly as proposed.
+
+### Approved Implementation Result
+
+The public package now implements the approved router-independent lifetime and
+adds no TanStack dependency. Before commit, the maintainer approved a
+lifetime-first refinement: `loadRouteQuery({ lifetime })` is the safe branch,
+the raw `abortSignal` branch is deprecated compatibility for work guaranteed
+never to mount, and supplying both or neither ownership input is rejected. The
+existing exported raw-signal options type is preserved, while a separate
+`LoadRouteQueryLifetimeOptions` type and lifetime-first function overload keep
+the change genuinely additive/minor. Valid existing raw-signal calls and
+wrappers continue to compile and retain their behavior. Unit coverage proves
+route/consumer ownership, multiple consumers, already-aborted signals, listener
+detachment, terminal partial-construction abort, idempotency, exclusive
+ownership inputs, and rejection of acquisition after terminal release.
+
+Real React characterization refined the approved hook implementation. A
+layout-only lease is insufficient because Suspense can disconnect layout
+effects while keeping the previous route visible. The final hook holds one
+commit-time layout lease and one passive mounted lease. The first closes the
+pre-passive commit gap; the second survives that Suspense disconnection until
+real unmount. N1 and Strict Mode S2 pass with this complementary ownership.
+
+Permanent validation completed with:
+
+- 25 public-package unit tests, including lifetime-first runtime behavior,
+  deprecated raw-signal behavior, and compile/runtime ownership exclusivity;
+- 27 deterministic real TanStack/React/Relay/jsdom lifecycle tests covering
+  every matrix row;
+- one real Chromium/Vite test covering fresh direct entry, pending
+  replacement, document reload, browser back/forward, runtime recreation, and
+  final teardown;
+- a publish-equivalent isolated 3.1 tarball matrix covering supported npm and
+  isolated pnpm installs, strict peers, negative peer graphs, declarations,
+  CJS, native and bundled ESM, Vite, SSR/provider rendering, and one canonical
+  Relay runtime;
+- full Rush build, lint, test, and verify;
+- Docusaurus source synchronization, typecheck, and production build.
+
+The customer migration is documented in
+[Upgrade Webapp GraphQL Relay To
+3.1](../docs/upgrades/webapp-graphql-relay-3.1.md) and registered in the
+Docusaurus docs tree. Package README/reference, GraphQL contract, webapp
+composition, and architecture sources describe the same ownership boundary.
+
+`trunk check -a -y` was executed. Task-owned formatting was retained and
+out-of-scope autofixes were reverted. Remaining findings are repository-wide
+pre-existing Docker/action-pin, generated changelog Markdown, and dependency
+advisory findings; none points to the new public source, fixture source, or
+customer documentation.
+
 ## Work Plan
 
 ### Phase 1 - Upstream Contract And Characterization
 
 Make no public source changes in this phase.
 
-- [ ] Read `AGENTS.md`, `.ai/conventions.md`, `.ai/architecture.md`, and the
+- [x] Read `AGENTS.md`, `.ai/conventions.md`, `.ai/architecture.md`, and the
       task-specific task-file, documentation, and library-release rules before
       implementation.
-- [ ] Read current official TanStack and Relay documentation for the pinned
+- [x] Read current official TanStack and Relay documentation for the pinned
       versions.
-- [ ] Inspect `git status --short` and preserve unrelated changes.
-- [ ] Complete the one-runtime preflight.
-- [ ] Record current `loadRouteQuery` behavior and existing unit coverage.
-- [ ] Create the private Rush fixture, neutral schema/operations, controlled
+- [x] Inspect `git status --short` and preserve unrelated changes.
+- [x] Complete the one-runtime preflight.
+- [x] Record current `loadRouteQuery` behavior and existing unit coverage.
+- [x] Create the private Rush fixture, neutral schema/operations, controlled
       network, and lifecycle ledger.
-- [ ] Characterize at least B1, N1, N2, H1, P1, R1, M1, M2, and T1 against the
+- [x] Characterize at least B1, N1, N2, H1, P1, R1, M1, M2, and T1 against the
       existing public helper.
-- [ ] Minimize each failure and distinguish Labkit behavior, fixture mistakes,
+- [x] Minimize each failure and distinguish Labkit behavior, fixture mistakes,
       documented TanStack behavior, unsupported configuration, and upstream
       defects.
-- [ ] Add an `Evidence And Decisions` section to this file with observed event
+- [x] Add an `Evidence And Decisions` section to this file with observed event
       order and exact tested versions.
-- [ ] Do not land assertions that merely freeze accidental current behavior.
+- [x] Do not land assertions that merely freeze accidental current behavior.
 
 Phase 1 is complete when the current ownership boundary is measured rather than
 assumed.
@@ -371,37 +605,37 @@ package before approval is recorded.
 
 After Gate A or Gate B is resolved:
 
-- [ ] Implement only the approved ownership model.
-- [ ] Keep the core Relay package router-agnostic whenever possible.
-- [ ] Keep disposal idempotent and detach listeners when ownership transfer
+- [x] Implement only the approved ownership model.
+- [x] Keep the core Relay package router-agnostic whenever possible.
+- [x] Keep disposal idempotent and detach listeners when ownership transfer
       makes them obsolete.
-- [ ] Never call `loadQuery` during React render.
-- [ ] Do not read, clone, or serialize private query-reference fields.
-- [ ] Treat multiple references as independent resources.
-- [ ] Clean up partial construction failures.
-- [ ] Preserve existing fetch policy and network-cache options unless an
+- [x] Never call `loadQuery` during React render.
+- [x] Do not read, clone, or serialize private query-reference fields.
+- [x] Treat multiple references as independent resources.
+- [x] Clean up partial construction failures.
+- [x] Preserve existing fetch policy and network-cache options unless an
       approved public proposal says otherwise.
-- [ ] Add focused unit/state-machine tests before expanding the integration
+- [x] Add focused unit/state-machine tests before expanding the integration
       suite.
-- [ ] Preserve a safe compatibility path if a new additive API is approved.
+- [x] Preserve a safe compatibility path if a new additive API is approved.
 
 Phase 2 is complete when the minimal approved contract is implemented and its
 unit-level ownership transitions pass.
 
 ### Phase 3 - Complete The Integration And Browser Matrices
 
-- [ ] Implement every required matrix row.
-- [ ] Use controlled response order rather than race-prone sleeps.
-- [ ] Assert route and rendered data identity after every navigation.
-- [ ] Assert late responses cannot alter the selected final UI.
-- [ ] Assert exact disposal at controlled contract seams and public
+- [x] Implement every required matrix row.
+- [x] Use controlled response order rather than race-prone sleeps.
+- [x] Assert route and rendered data identity after every navigation.
+- [x] Assert late responses cannot alter the selected final UI.
+- [x] Assert exact disposal at controlled contract seams and public
       cancellation/teardown outcomes in real Relay cases.
-- [ ] Execute both multi-query completion orders.
-- [ ] Execute selected transitions under Strict Mode.
-- [ ] Add the minimal Vite/browser subset for direct entry, reload, history,
+- [x] Execute both multi-query completion orders.
+- [x] Execute selected transitions under Strict Mode.
+- [x] Add the minimal Vite/browser subset for direct entry, reload, history,
       and final teardown.
-- [ ] Give every test a fresh runtime and complete cleanup.
-- [ ] Remove temporary diagnostic logging after ledger assertions stabilize.
+- [x] Give every test a fresh runtime and complete cleanup.
+- [x] Remove temporary diagnostic logging after ledger assertions stabilize.
 
 If a documented upstream behavior prevents a required invariant, record a
 minimal reproduction and stop rather than hiding the behavior with a delay,
@@ -411,20 +645,25 @@ retry loop, or cache workaround.
 
 After the ownership decision, update only affected current sources:
 
-- [ ] [Package README](../packages/webapp-graphql-relay/README.md).
-- [ ] [Package reference](../docs/packages/webapp-graphql-relay.md).
-- [ ] [GraphQL contract](../docs/graphql-contract.md), if the general query
+- [x] [Package README](../packages/webapp-graphql-relay/README.md).
+- [x] [Package reference](../docs/packages/webapp-graphql-relay.md).
+- [x] [GraphQL contract](../docs/graphql-contract.md), if the general query
       ownership contract changes.
-- [ ] [Webapp composition](../docs/webapp-composition.md).
-- [ ] [Architecture](../docs/architecture.md), only if the Labkit/application
+- [x] [Webapp composition](../docs/webapp-composition.md).
+- [x] [Architecture](../docs/architecture.md), only if the Labkit/application
       ownership boundary changes or needs a reusable rule.
+- [x] Add a customer-facing 3.1 upgrade guide to the current `docs` source and
+      Docusaurus navigation. Cover migration from passing the TanStack loader
+      signal directly, single- and multi-query examples, supported cache and
+      pending-UI policy, retry/error cleanup, Strict Mode, and final teardown.
 
 Document exact tested versions, supported cache/revalidation assumptions,
 initial/preload/navigation/history/retry behavior, multi-query composition,
 final release rules, app-owned responsibilities, and migration if applicable.
 
 Do not present fixture route files or generated operations as Labkit-owned.
-Do not hand-edit `website-docusaurus/docs` or `docs-versions`.
+Do not hand-edit generated `website-docusaurus/docs` or `docs-versions`; the
+upgrade guide must live in the current source consumed by Docusaurus.
 
 ### Phase 5 - Release And CI Decision
 
@@ -438,15 +677,15 @@ Choose release metadata from the final diff:
 - incompatible signature, dependency, or behavior change: major;
 - new public adapter package: separate approved package/release design.
 
-- [ ] Register the private tool project and its build ordering intentionally in
+- [x] Register the private tool project and its build ordering intentionally in
       `rush.json`.
-- [ ] Make fast deterministic tests part of Rush test/verify.
-- [ ] Add a dedicated browser command/workflow step only if the browser layer
+- [x] Make fast deterministic tests part of Rush test/verify.
+- [x] Add a dedicated browser command/workflow step only if the browser layer
       cannot run safely inside the existing job.
-- [ ] Create Rush change metadata only for packages whose released contract
+- [x] Create Rush change metadata only for packages whose released contract
       changes.
-- [ ] Do not manually edit package versions or changelogs.
-- [ ] Leave publication to post-merge CI.
+- [x] Do not manually edit package versions or changelogs.
+- [x] Leave publication to post-merge CI.
 
 ## Validation
 
@@ -474,42 +713,44 @@ trunk check -a -y
 ```
 
 The permanent matrix must have no arbitrary sleeps, random completion order,
-shared runtime between cases, expected console warnings, network dependency, or
-open handles. Report unavailable commands or unrelated failures precisely.
+shared runtime between cases, network dependency, or open handles. Intentional
+route-error cases may capture only TanStack's exact development-mode route
+boundary warning; every other console message fails the test. Report
+unavailable commands or unrelated failures precisely.
 
 ## Acceptance Criteria
 
-- [ ] Exact tested framework/compiler/tool versions and upstream lifecycle
+- [x] Exact tested framework/compiler/tool versions and upstream lifecycle
       meanings are recorded.
-- [ ] The fixture rejects an unsupported or duplicated Relay graph before
+- [x] The fixture rejects an unsupported or duplicated Relay graph before
       lifecycle assertions.
-- [ ] A private non-published Rush fixture exercises the package root.
-- [ ] TanStack remains private test tooling unless a public boundary is
+- [x] A private non-published Rush fixture exercises the package root.
+- [x] TanStack remains private test tooling unless a public boundary is
       explicitly approved.
-- [ ] A real `RouterProvider`, `RelayEnvironmentProvider`, generated operation,
+- [x] A real `RouterProvider`, `RelayEnvironmentProvider`, generated operation,
       default `loadRouteQuery`, and `usePreloadedQuery` path render correct data.
-- [ ] The lifecycle ledger deterministically records creation, ownership,
+- [x] The lifecycle ledger deterministically records creation, ownership,
       network, routing, rendering, retry, and cleanup transitions.
-- [ ] Every required matrix row passes under the approved ownership policy.
-- [ ] Fresh direct entry and actual document reload do not depend on warmed
+- [x] Every required matrix row passes under the approved ownership policy.
+- [x] Fresh direct entry and actual document reload do not depend on warmed
       Relay or router state.
-- [ ] Active or cached routes never observe a released reference.
-- [ ] Superseded work cannot commit after a late response.
-- [ ] Back/forward and stale revalidation follow one explicit cache policy.
-- [ ] Unused preloads and evicted matches eventually release owned work.
-- [ ] Both multi-query completion orders and partial-failure paths are safe.
-- [ ] Strict Mode introduces no duplicate ownership or premature release.
-- [ ] Final teardown leaves no owned references, requests, listeners,
+- [x] Active or cached routes never observe a released reference.
+- [x] Superseded work cannot commit after a late response.
+- [x] Back/forward and stale revalidation follow one explicit cache policy.
+- [x] Unused preloads and evicted matches eventually release owned work.
+- [x] Both multi-query completion orders and partial-failure paths are safe.
+- [x] Strict Mode introduces no duplicate ownership or premature release.
+- [x] Final teardown leaves no owned references, requests, listeners,
       subscriptions, console errors, or open handles.
-- [ ] No test relies on private Relay fields, undocumented router internals, or
+- [x] No test relies on private Relay fields, undocumented router internals, or
       wall-clock timing.
-- [ ] Gate A evidence is recorded, and Gate B approval exists before any public
+- [x] Gate A evidence is recorded, and Gate B approval exists before any public
       API/dependency/package change.
-- [ ] Package/root docs describe the final supported contract and app-owned
+- [x] Package/root docs describe the final supported contract and app-owned
       responsibilities.
-- [ ] Rush and CI wiring execute the permanent matrix deterministically.
-- [ ] Release metadata matches only the actual public impact.
-- [ ] Focused, full Rush, docs, browser, and Trunk validation pass or every gap
+- [x] Rush and CI wiring execute the permanent matrix deterministically.
+- [x] Release metadata matches only the actual public impact.
+- [x] Focused, full Rush, docs, browser, and Trunk validation pass or every gap
       is reported.
 - [ ] This file is moved to `tasks/completed` only when every applicable item
       is complete.

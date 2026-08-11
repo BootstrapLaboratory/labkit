@@ -1,0 +1,39 @@
+{
+  "name": "@omgjs/labkit-webapp-graphql-relay-lifecycle-fixture",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "relay-compiler --validate && npm run typecheck && vite build",
+    "lint": "eslint .",
+    "relay": "relay-compiler",
+    "test": "relay-compiler --validate && vitest run",
+    "test:browser": "playwright test --config playwright.config.ts",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "verify": "npm run test"
+  },
+  "dependencies": {
+    "@omgjs/labkit-webapp-graphql-relay": "workspace:*",
+    "@tanstack/react-router": "1.170.25",
+    "react": "19.2.6",
+    "react-dom": "19.2.6",
+    "react-relay": "20.1.1",
+    "relay-runtime": "20.1.1"
+  },
+  "devDependencies": {
+    "@omgjs/labkit-eslint-config": "workspace:*",
+    "@playwright/test": "1.62.1",
+    "@types/jsdom": "30.0.0",
+    "@types/node": "25.6.0",
+    "@types/react": "19.2.14",
+    "@types/react-dom": "19.2.4",
+    "@types/react-relay": "18.2.1",
+    "@types/relay-runtime": "20.1.1",
+    "eslint": "10.3.0",
+    "jsdom": "30.0.1",
+    "relay-compiler": "20.1.1",
+    "typescript": "6.0.3",
+    "vite": "8.2.1",
+    "vitest": "4.1.10"
+  }
+}

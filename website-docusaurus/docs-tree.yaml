@@ -19,6 +19,10 @@ items:
     source: ../docs/graphql-contract.md
     id: graphql-contract
     description: Server-owned schema and browser-owned Relay operations.
+  - title: Upgrade Webapp GraphQL Relay To 3.1
+    source: ../docs/upgrades/webapp-graphql-relay-3.1.md
+    id: upgrades/webapp-graphql-relay-3-1
+    description: Migrate mounted route queries to explicit lifetime ownership.
   - title: Auth And Sessions
     source: ../docs/auth-and-sessions.md
     id: auth-and-sessions

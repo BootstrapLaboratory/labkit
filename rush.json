@@ -94,6 +94,11 @@
       "projectFolder": "tools/eslint-config",
       "reviewCategory": "tools",
       "versionPolicyName": "labkit"
+    },
+    {
+      "packageName": "@omgjs/labkit-webapp-graphql-relay-lifecycle-fixture",
+      "projectFolder": "tools/webapp-graphql-relay-lifecycle-fixture",
+      "reviewCategory": "tools"
     }
   ]
 }

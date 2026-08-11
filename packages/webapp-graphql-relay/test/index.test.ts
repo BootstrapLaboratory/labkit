@@ -10,6 +10,7 @@ import type {
 import type { PreloadedQuery } from "react-relay";
 import {
   appendRootFieldRecordIfMissing,
+  createRouteQueryLifetime,
   createAuthAwareRelayGraphqlWsConnectionParams,
   createAuthAwareRelayFetchFunction,
   createRelayGraphqlWsConnectionParams,
@@ -24,6 +25,11 @@ import {
   type GraphqlRelayAuthAdapter,
   type GraphqlRelayFetch,
   type GraphqlRelayAuthSessionLike,
+  type LoadRouteQueryLifetimeOptions,
+  type LoadRouteQueryOptions,
+  type RouteAbortSignal,
+  type RouteQueryLifetime,
+  type RouteQueryOwnerSignal,
 } from "../src/index";
 
 function createRequest(name: string, text = "query Test { node }") {
@@ -66,6 +72,43 @@ type TestRouteQuery = OperationType & {
     };
   };
 };
+
+class TestRouteQueryOwnerSignal implements RouteQueryOwnerSignal {
+  public aborted = false;
+  public addCalls = 0;
+  public reason: unknown;
+  public removeCalls = 0;
+
+  private readonly listeners = new Set<() => void>();
+
+  public addEventListener(
+    type: "abort",
+    listener: () => void,
+    _options?: { once?: boolean },
+  ): void {
+    assert.equal(type, "abort");
+    this.addCalls += 1;
+    this.listeners.add(listener);
+  }
+
+  public removeEventListener(type: "abort", listener: () => void): void {
+    assert.equal(type, "abort");
+    this.removeCalls += 1;
+    this.listeners.delete(listener);
+  }
+
+  public abort(reason?: unknown): void {
+    if (this.aborted) {
+      return;
+    }
+
+    this.aborted = true;
+    this.reason = reason;
+    for (const listener of [...this.listeners]) {
+      listener();
+    }
+  }
+}
 
 test("createRelayGraphqlWsConnectionParams returns bearer authorization when a token exists", () => {
   assert.deepEqual(
@@ -546,7 +589,119 @@ test("DefaultWebappRelayRuntime does not terminate realtime for its own connecti
   await Promise.resolve(runtime.dispose());
 });
 
-test("loadRouteQuery disposes the query ref once when the route aborts", () => {
+test("createRouteQueryLifetime waits for the final consumer after route abort", () => {
+  const routeAbortSignal = new TestRouteQueryOwnerSignal();
+  const lifetime = createRouteQueryLifetime({ routeAbortSignal });
+  const releaseFirst = lifetime.acquire();
+  const releaseSecond = lifetime.acquire();
+  let aborts = 0;
+
+  lifetime.abortSignal.addEventListener("abort", () => {
+    aborts += 1;
+  });
+  routeAbortSignal.abort("route-replaced");
+
+  assert.equal(lifetime.abortSignal.aborted, false);
+  assert.equal(routeAbortSignal.addCalls, 1);
+  assert.equal(routeAbortSignal.removeCalls, 1);
+
+  releaseFirst();
+  releaseFirst();
+  assert.equal(lifetime.abortSignal.aborted, false);
+
+  releaseSecond();
+  releaseSecond();
+  assert.equal(lifetime.abortSignal.aborted, true);
+  assert.equal(aborts, 1);
+  assert.equal((lifetime.abortSignal as AbortSignal).reason, "route-replaced");
+});
+
+test("createRouteQueryLifetime aborts unmounted work with its route", () => {
+  const routeAbortSignal = new TestRouteQueryOwnerSignal();
+  const lifetime = createRouteQueryLifetime({ routeAbortSignal });
+
+  routeAbortSignal.abort(new Error("route-cancelled"));
+  routeAbortSignal.abort(new Error("ignored"));
+
+  assert.equal(lifetime.abortSignal.aborted, true);
+  assert.equal(routeAbortSignal.removeCalls, 1);
+  assert.match(
+    String((lifetime.abortSignal as AbortSignal).reason),
+    /route-cancelled/u,
+  );
+});
+
+test("createRouteQueryLifetime handles an already-aborted route signal", () => {
+  const routeAbortSignal = new TestRouteQueryOwnerSignal();
+  routeAbortSignal.abort("already-aborted");
+
+  const lifetime = createRouteQueryLifetime({ routeAbortSignal });
+
+  assert.equal(lifetime.abortSignal.aborted, true);
+  assert.equal(routeAbortSignal.addCalls, 0);
+  assert.equal(routeAbortSignal.removeCalls, 0);
+  assert.throws(
+    () => lifetime.acquire(),
+    /Cannot acquire an aborted route query lifetime/u,
+  );
+});
+
+test("createRouteQueryLifetime terminal abort is immediate and idempotent", () => {
+  const routeAbortSignal = new TestRouteQueryOwnerSignal();
+  const lifetime = createRouteQueryLifetime({ routeAbortSignal });
+  const release = lifetime.acquire();
+  let aborts = 0;
+  lifetime.abortSignal.addEventListener("abort", () => {
+    aborts += 1;
+  });
+
+  lifetime.abort("partial-construction-failure");
+  lifetime.abort("ignored");
+  release();
+  release();
+  routeAbortSignal.abort("ignored-route-abort");
+
+  assert.equal(lifetime.abortSignal.aborted, true);
+  assert.equal(aborts, 1);
+  assert.equal(routeAbortSignal.removeCalls, 1);
+  assert.equal(
+    (lifetime.abortSignal as AbortSignal).reason,
+    "partial-construction-failure",
+  );
+  assert.throws(
+    () => lifetime.acquire(),
+    /Cannot acquire an aborted route query lifetime/u,
+  );
+});
+
+test("loadRouteQuery keeps lifetime-owned work until its final owner releases", () => {
+  const routeAbortSignal = new TestRouteQueryOwnerSignal();
+  const lifetime = createRouteQueryLifetime({ routeAbortSignal });
+  const releaseMountedOwner = lifetime.acquire();
+  let disposals = 0;
+
+  loadRouteQuery<TestRouteQuery>({
+    environment: {} as Environment,
+    lifetime,
+    loadQuery: () =>
+      ({
+        dispose: () => {
+          disposals += 1;
+        },
+      }) as PreloadedQuery<TestRouteQuery>,
+    query: {} as never,
+    variables: { id: "1" },
+  });
+
+  routeAbortSignal.abort("route-replaced");
+  assert.equal(disposals, 0);
+
+  releaseMountedOwner();
+  releaseMountedOwner();
+  assert.equal(disposals, 1);
+});
+
+test("loadRouteQuery retains the deprecated raw abort-signal behavior", () => {
   const abortController = new AbortController();
   let disposals = 0;
   const queryRef = {
@@ -575,7 +730,7 @@ test("loadRouteQuery disposes the query ref once when the route aborts", () => {
   assert.equal(disposals, 1);
 });
 
-test("loadRouteQuery disposes immediately when the route signal is already aborted", () => {
+test("loadRouteQuery disposes immediately for an already-aborted raw signal", () => {
   const abortController = new AbortController();
   let disposals = 0;
   abortController.abort();
@@ -596,7 +751,7 @@ test("loadRouteQuery disposes immediately when the route signal is already abort
   assert.equal(disposals, 1);
 });
 
-test("loadRouteQuery registers one route abort disposal listener", () => {
+test("loadRouteQuery registers one raw-signal disposal listener", () => {
   const listeners: Array<{
     listener: () => void;
     options?: { once?: boolean };
@@ -636,6 +791,44 @@ test("loadRouteQuery registers one route abort disposal listener", () => {
   listeners[0].listener();
 
   assert.equal(disposals, 1);
+});
+
+test("loadRouteQuery options accept exactly one ownership input", () => {
+  const baseOptions = {
+    environment: {} as Environment,
+    query: {} as never,
+    variables: { id: "1" },
+  };
+  const lifetime = {} as RouteQueryLifetime;
+  const abortSignal = {} as RouteAbortSignal;
+  const lifetimeOptions: LoadRouteQueryLifetimeOptions<TestRouteQuery> = {
+    ...baseOptions,
+    lifetime,
+  };
+  const legacyOptions: LoadRouteQueryOptions<TestRouteQuery> = {
+    ...baseOptions,
+    abortSignal,
+  };
+  const mixedOptions: LoadRouteQueryLifetimeOptions<TestRouteQuery> = {
+    ...baseOptions,
+    // @ts-expect-error Lifetime and raw abort-signal ownership are exclusive.
+    abortSignal,
+    lifetime,
+  };
+  // @ts-expect-error A lifetime-based query load requires its ownership input.
+  const missingOptions: LoadRouteQueryLifetimeOptions<TestRouteQuery> =
+    baseOptions;
+
+  assert.equal(lifetimeOptions.lifetime, lifetime);
+  assert.equal(legacyOptions.abortSignal, abortSignal);
+  assert.throws(
+    () => loadRouteQuery(mixedOptions),
+    /requires exactly one of lifetime or abortSignal/u,
+  );
+  assert.throws(
+    () => loadRouteQuery(missingOptions),
+    /requires exactly one of lifetime or abortSignal/u,
+  );
 });
 
 test("appendRootFieldRecordIfMissing appends unique root records", () => {

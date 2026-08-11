@@ -29,6 +29,8 @@ const environment = labkit.createWebappRelayEnvironment({
 });
 
 assert.equal(typeof labkit.loadRouteQuery, "function");
+assert.equal(typeof labkit.createRouteQueryLifetime, "function");
+assert.equal(typeof labkit.useRouteQueryLifetime, "function");
 assert.ok(environment instanceof relayRuntime.Environment);
 process.stdout.write(
   "CommonJS entrypoint uses the application Relay runtime.\n",

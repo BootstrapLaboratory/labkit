@@ -72,7 +72,8 @@ for the complete migration checklist.
 - Default realtime runtime creation when only websocket options are provided.
 - Realtime client termination after auth-token changes.
 - Realtime connection-state access for UI.
-- Route query preload with abort disposal.
+- Route-query lifetime ownership across loader abort, mounted React consumers,
+  Suspense replacement, and final disposal.
 - Root-field store updater helper.
 - Unauthorized GraphQL response helper.
 
@@ -119,20 +120,68 @@ Advanced applications can still provide their own realtime adapter to
 `createAuthAwareRelayGraphqlWsConnectionParams` directly when replacing only one
 runtime policy.
 
-For TanStack Router loaders:
+For TanStack Router loaders whose query reference is consumed by a mounted
+route, create one lifetime per loader invocation and mount that lifetime in the
+route component:
 
-```ts
-import { loadRouteQuery } from "@omgjs/labkit-webapp-graphql-relay";
+```tsx
+import {
+  createRouteQueryLifetime,
+  loadRouteQuery,
+  useRouteQueryLifetime,
+} from "@omgjs/labkit-webapp-graphql-relay";
+import { usePreloadedQuery } from "react-relay";
 
-loader: ({ abortController, context }) => ({
-  queryRef: loadRouteQuery({
-    abortSignal: abortController.signal,
-    environment: context.relayEnvironment,
-    query: ChatPageQuery,
-    variables: {},
-  }),
+const chatRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "chat",
+  pendingComponent: ChatPending,
+  loader: ({ abortController, context }) => {
+    const queryLifetime = createRouteQueryLifetime({
+      routeAbortSignal: abortController.signal,
+    });
+
+    try {
+      return {
+        queryLifetime,
+        queryRef: loadRouteQuery({
+          environment: context.relayEnvironment,
+          lifetime: queryLifetime,
+          query: ChatPageQuery,
+          variables: {},
+        }),
+      };
+    } catch (error) {
+      queryLifetime.abort(error);
+      throw error;
+    }
+  },
+  component: ChatRoute,
 });
+
+function ChatRoute() {
+  const { queryLifetime, queryRef } = chatRoute.useLoaderData();
+  useRouteQueryLifetime(queryLifetime);
+  const data = usePreloadedQuery(ChatPageQuery, queryRef);
+
+  return <ChatPage data={data} />;
+}
 ```
+
+Pass the same lifetime to every query reference created by the same loader. A
+router abort releases loader ownership; mounted ownership keeps the reference
+usable until replacement commits and the route unmounts. The raw
+`abortSignal` option remains as a deprecated compatibility path only for work
+that can never become a mounted React resource; do not supply it together with
+`lifetime`. Call `queryLifetime.abort(error)` when multi-query construction
+fails partway.
+
+The validated TanStack policy uses an explicit pending component,
+`defaultGcTime: 0`, `defaultStaleTime: 0`, and blocking stale reloads so retired
+loader data is replaced before render. See the
+[3.1 upgrade guide](../../docs/upgrades/webapp-graphql-relay-3.1.md) for
+single-query and multi-query migration, preload/history/retry behavior, Strict
+Mode, and teardown.
 
 Endpoint resolution intentionally remains app-owned until another browser app
 needs the same Vite URL policy.

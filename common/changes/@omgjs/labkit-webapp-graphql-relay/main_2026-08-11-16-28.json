@@ -1,0 +1,10 @@
+{
+  "changes": [
+    {
+      "packageName": "@omgjs/labkit-webapp-graphql-relay",
+      "comment": "Add route-query lifetime ownership for mounted Relay consumers and document TanStack Router migration.",
+      "type": "minor"
+    }
+  ],
+  "packageName": "@omgjs/labkit-webapp-graphql-relay"
+}
