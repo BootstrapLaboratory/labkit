@@ -1,14 +1,16 @@
 # Fix Relay Peer Runtime Contract
 
-Status: in progress; implementation and CI release authorized on 2026-08-11.
+Status: completed and released on 2026-08-11.
 Created: 2026-08-11
 Classification: packaging/runtime bug with a breaking public package-contract
 change.
 Primary package: `@omgjs/labkit-webapp-graphql-relay`.
-Release guidance: major Rush change; the current `2.0.0` package is expected to
-become `3.0.0` when CI publishes the completed change.
+Released version:
+[`@omgjs/labkit-webapp-graphql-relay@3.0.0`](https://www.npmjs.com/package/@omgjs/labkit-webapp-graphql-relay/v/3.0.0).
+Release guidance: fulfilled by the package-scoped major Rush change and the
+post-merge CI release flow.
 Related follow-up:
-[Harden TanStack Router and Relay Route-Query Lifecycles](./2026-08-11-1124_HARDEN_TANSTACK_RELAY_ROUTE_LIFECYCLES.md).
+[Harden TanStack Router and Relay Route-Query Lifecycles](../2026-08-11-1124_HARDEN_TANSTACK_RELAY_ROUTE_LIFECYCLES.md).
 
 ## Decision Summary
 
@@ -36,21 +38,21 @@ the published package must not own a private stateful Relay graph.
 ## Confirmed Repository Evidence
 
 - Before this fix, the
-  [package manifest](../packages/webapp-graphql-relay/package.json) declared
+  [package manifest](../../packages/webapp-graphql-relay/package.json) declared
   `react-relay` and `relay-runtime` as `^20.1.1` production dependencies. The
   range resolved to 20.1.1 in the Rush lockfile.
-- The [package source](../packages/webapp-graphql-relay/src/index.ts) imports
+- The [package source](../../packages/webapp-graphql-relay/src/index.ts) imports
   runtime values from both packages, creates Relay `Environment` instances,
   and calls React Relay `loadQuery` through `loadRouteQuery`.
 - Public option and return types also reference Relay types, so type-resolution
   behavior is part of the consumer contract.
 - `react-relay@20.1.1` depends on exactly `relay-runtime@20.1.1` in
-  [the lockfile](../common/config/rush/pnpm-lock.yaml). Two independent broad
+  [the lockfile](../../common/config/rush/pnpm-lock.yaml). Two independent broad
   peer ranges would not express that correlated pair requirement.
 - Labkit already declares React as a peer and development dependency in the
   package manifest.
 - The pre-fix metadata contradicted the
-  [package groups documentation](../docs/package-groups.md), which assigns
+  [package groups documentation](../../docs/package-groups.md), which assigns
   React and Relay ownership to the application.
 - The package publishes CommonJS, ESM, and declaration entrypoints. All three
   consumer surfaces must resolve the consumer-owned Relay pair.
@@ -317,14 +319,14 @@ entrypoint-specific split fails CI deterministically.
 
 Update the current source documentation:
 
-- [x] [Package README](../packages/webapp-graphql-relay/README.md): direct
+- [x] [Package README](../../packages/webapp-graphql-relay/README.md): direct
       install command, exact supported pair, singleton/coherence rule, and
       package-manager diagnostic limitations.
-- [x] [Package reference](../docs/packages/webapp-graphql-relay.md): required
+- [x] [Package reference](../../docs/packages/webapp-graphql-relay.md): required
       peers, supported versions, types/compiler expectations, and migration.
-- [x] [Package groups](../docs/package-groups.md): make the typical browser
+- [x] [Package groups](../../docs/package-groups.md): make the typical browser
       install consistent with application-owned framework dependencies.
-- [x] [Quick-start install](../docs/quick-start/README.md): pin the compatible
+- [x] [Quick-start install](../../docs/quick-start/README.md): pin the compatible
       runtime pair and align development-time Relay tooling.
 - [x] Review other current Relay installation or composition pages and update
       only statements affected by this contract.
@@ -354,9 +356,9 @@ consumer fixture describe the same contract.
 - [x] Run the full required validation listed below.
 - [x] Record the exact supported pair, matrix results, tarball contents, and
       any manager-specific diagnostic differences in this task.
-- [ ] Leave npm publication to the repository's post-merge CI release flow;
+- [x] Leave npm publication to the repository's post-merge CI release flow;
       do not invoke a credentialed local publish.
-- [ ] After publication, verify a clean external consumer installs the expected
+- [x] After publication, verify a clean external consumer installs the expected
       major version and one Relay graph without an override or alias.
 
 Phase 5 is complete only after CI publishes the release and clean external npm
@@ -364,6 +366,39 @@ and pnpm consumers verify the published artifact. Local publication is not part
 of implementation completion.
 
 ## Execution Record
+
+Pull request
+[#2](https://github.com/BootstrapLaboratory/labkit/pull/2) merged the
+implementation as `c70924b0971b9fc5d7f000f3c35f23204c08a183` after the full
+PR validation workflow passed. Post-merge
+[package-release run 31496679087, attempt 4](https://github.com/BootstrapLaboratory/labkit/actions/runs/31496679087/attempts/4)
+published `3.0.0` and pushed generated release commit
+`1fb192b3ebf9bdd9c07e72999b5658b934cb8790` to `main`. The generated commit
+updated the package version and changelogs and consumed the one package-scoped
+major Rush change file.
+
+The npm registry reports `3.0.0` as `latest`, with tarball SHA-1
+`ac872dc6bed0a20953131d13d9483cd1e0ba2abe` and SHA-512 integrity
+`sha512-ZWLxYha2XfraJ5J33Gp+ZC6qz7u/1OxBMb6q/JXJB5aLh/AVVg6Pbt3FQN81w9quTuAN6mcq+BMYm9UTzT0GxQ==`.
+An independent download reproduced the SHA-1 and confirmed the exact required
+Relay peers, absence of production/optional/bundled Relay declarations, and
+the expected CommonJS, ESM, declaration, ESM marker, and README payload.
+
+Cold external consumers then installed the registry release with npm 11.16.0
+strict peers and repository-pinned pnpm 10.33.2 using its isolated linker,
+strict peers, and peer auto-installation disabled. Both installed one physical
+`react-relay@20.1.1` and one physical `relay-runtime@20.1.1`. Application,
+Labkit, and React Relay resolution reached the same canonical runtime path.
+CommonJS environment identity, native ESM export resolution, and Vite-bundled
+ESM execution all passed without an override, alias, workspace link, or local
+tarball substitution.
+
+Release attempts 1-3 stopped only at npm authentication: two unauthorized
+`E404` responses and one explicit bypass-2FA `E403`. No version was published
+by those attempts. After the repository secret was replaced with a valid
+package-scoped, bypass-enabled granular token, attempt 4 completed. The three
+generated-only `publish-*` branches stranded by the failed attempts were
+audited and deleted; the unrelated older May release branch was preserved.
 
 Implementation and the final packed-consumer run used Node `24.18.0`, npm
 `11.16.0`, Rush `5.175.0`, and the repository-pinned pnpm `10.33.2`. The
@@ -472,7 +507,7 @@ hiding it.
       was edited manually.
 - [x] The full repository validation and Trunk cleanup pass, or every remaining
       gap is reported precisely.
-- [ ] The task records post-release clean-consumer verification without
+- [x] The task records post-release clean-consumer verification without
       performing a local publish.
-- [ ] This file is moved to `tasks/completed` only after all applicable items
+- [x] This file is moved to `tasks/completed` only after all applicable items
       are complete.
