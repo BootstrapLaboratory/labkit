@@ -1,6 +1,13 @@
 # Change Log - @omgjs/labkit-webapp-graphql-relay
 
-This log was last generated on Tue, 11 Aug 2026 14:08:42 GMT and should not be manually modified.
+This log was last generated on Tue, 11 Aug 2026 18:52:10 GMT and should not be manually modified.
+
+## 3.1.0
+Tue, 11 Aug 2026 18:52:10 GMT
+
+### Minor changes
+
+- Add route-query lifetime ownership for mounted Relay consumers and document TanStack Router migration.
 
 ## 3.0.0
 Tue, 11 Aug 2026 14:08:42 GMT

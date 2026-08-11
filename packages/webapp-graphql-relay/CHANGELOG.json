@@ -2,6 +2,18 @@
   "name": "@omgjs/labkit-webapp-graphql-relay",
   "entries": [
     {
+      "version": "3.1.0",
+      "tag": "@omgjs/labkit-webapp-graphql-relay_v3.1.0",
+      "date": "Tue, 11 Aug 2026 18:52:10 GMT",
+      "comments": {
+        "minor": [
+          {
+            "comment": "Add route-query lifetime ownership for mounted Relay consumers and document TanStack Router migration."
+          }
+        ]
+      }
+    },
+    {
       "version": "3.0.0",
       "tag": "@omgjs/labkit-webapp-graphql-relay_v3.0.0",
       "date": "Tue, 11 Aug 2026 14:08:42 GMT",
