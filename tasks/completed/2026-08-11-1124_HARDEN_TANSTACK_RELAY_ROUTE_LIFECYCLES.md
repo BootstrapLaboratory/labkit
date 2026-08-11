@@ -1,15 +1,13 @@
 # Harden TanStack Router And Relay Route-Query Lifecycles
 
-Status: implementation and validation complete; awaiting commit/PR and the
-post-merge release workflow.
+Status: complete; released and verified on 2026-08-11.
 Created: 2026-08-11
 Classification: confirmed lifecycle integration bug whose smallest reusable
 fix is an additive public API improvement.
 Prerequisite:
-[Fix Relay Peer Runtime Contract](./completed/2026-08-11-1124_FIX_RELAY_PEER_RUNTIME_CONTRACT.md).
-Release guidance: proposed minor release of
-`@omgjs/labkit-webapp-graphql-relay` (3.0.0 to 3.1.0) if Gate B approves the
-additive API. Do not edit the version manually.
+[Fix Relay Peer Runtime Contract](./2026-08-11-1124_FIX_RELAY_PEER_RUNTIME_CONTRACT.md).
+Release result: `@omgjs/labkit-webapp-graphql-relay` 3.1.0 was published as
+`latest` by Rush Delivery. Versions and changelogs were not edited manually.
 
 ## Decision Summary
 
@@ -63,7 +61,7 @@ clearing. Do not encode assumptions from another version.
 ## Repository Context
 
 The current public helper in
-[the Relay package source](../packages/webapp-graphql-relay/src/index.ts):
+[the Relay package source](../../packages/webapp-graphql-relay/src/index.ts):
 
 1. calls React Relay `loadQuery`;
 2. returns one `PreloadedQuery`;
@@ -71,12 +69,12 @@ The current public helper in
    signal.
 
 The focused tests in
-[the package test](../packages/webapp-graphql-relay/test/index.test.ts) inject
+[the package test](../../packages/webapp-graphql-relay/test/index.test.ts) inject
 fake query loaders and prove abort disposal. They do not mount a real
 `RouterProvider`, `RelayEnvironmentProvider`, or `usePreloadedQuery` consumer,
 and they do not characterize router cache/history ownership.
 
-Labkit's [browser architecture](../docs/architecture.md) assigns routes,
+Labkit's [browser architecture](../../docs/architecture.md) assigns routes,
 generated operations, hooks, and product behavior to the application. Labkit
 owns reusable Relay runtime mechanics and the documented behavior of its
 helper. The integration contract must preserve that boundary.
@@ -520,7 +518,7 @@ Permanent validation completed with:
 
 The customer migration is documented in
 [Upgrade Webapp GraphQL Relay To
-3.1](../docs/upgrades/webapp-graphql-relay-3.1.md) and registered in the
+3.1](../../docs/upgrades/webapp-graphql-relay-3.1.md) and registered in the
 Docusaurus docs tree. Package README/reference, GraphQL contract, webapp
 composition, and architecture sources describe the same ownership boundary.
 
@@ -529,6 +527,15 @@ out-of-scope autofixes were reverted. Remaining findings are repository-wide
 pre-existing Docker/action-pin, generated changelog Markdown, and dependency
 advisory findings; none points to the new public source, fixture source, or
 customer documentation.
+
+PR #4 passed the complete GitHub validation workflow and was merged to `main`
+as `213494b`. Rush Delivery completed successfully, created version commit
+`75746a7`, consumed the minor change file, and published
+`@omgjs/labkit-webapp-graphql-relay@3.1.0`. Registry metadata reports 3.1.0 as
+`latest`. A fresh registry tarball audit verified the exact Relay peers, the
+absence of private Relay dependencies, the lifetime-first declarations, and
+the deprecated compatibility declaration. The Docusaurus Pages build and
+deployment also completed successfully.
 
 ## Work Plan
 
@@ -645,12 +652,12 @@ retry loop, or cache workaround.
 
 After the ownership decision, update only affected current sources:
 
-- [x] [Package README](../packages/webapp-graphql-relay/README.md).
-- [x] [Package reference](../docs/packages/webapp-graphql-relay.md).
-- [x] [GraphQL contract](../docs/graphql-contract.md), if the general query
+- [x] [Package README](../../packages/webapp-graphql-relay/README.md).
+- [x] [Package reference](../../docs/packages/webapp-graphql-relay.md).
+- [x] [GraphQL contract](../../docs/graphql-contract.md), if the general query
       ownership contract changes.
-- [x] [Webapp composition](../docs/webapp-composition.md).
-- [x] [Architecture](../docs/architecture.md), only if the Labkit/application
+- [x] [Webapp composition](../../docs/webapp-composition.md).
+- [x] [Architecture](../../docs/architecture.md), only if the Labkit/application
       ownership boundary changes or needs a reusable rule.
 - [x] Add a customer-facing 3.1 upgrade guide to the current `docs` source and
       Docusaurus navigation. Cover migration from passing the TanStack loader
@@ -752,5 +759,5 @@ unavailable commands or unrelated failures precisely.
 - [x] Release metadata matches only the actual public impact.
 - [x] Focused, full Rush, docs, browser, and Trunk validation pass or every gap
       is reported.
-- [ ] This file is moved to `tasks/completed` only when every applicable item
+- [x] This file is moved to `tasks/completed` only when every applicable item
       is complete.
