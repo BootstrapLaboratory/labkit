@@ -295,12 +295,6 @@ importers:
       graphql-ws:
         specifier: ^6.0.8
         version: 6.0.8(graphql@16.14.0)(ws@8.20.0)
-      react-relay:
-        specifier: ^20.1.1
-        version: 20.1.1(react@19.2.6)
-      relay-runtime:
-        specifier: ^20.1.1
-        version: 20.1.1
     devDependencies:
       '@omgjs/labkit-eslint-config':
         specifier: workspace:*
@@ -320,6 +314,12 @@ importers:
       react:
         specifier: ^19.2.5
         version: 19.2.6
+      react-relay:
+        specifier: 20.1.1
+        version: 20.1.1(react@19.2.6)
+      relay-runtime:
+        specifier: 20.1.1
+        version: 20.1.1
       typescript:
         specifier: ^6.0.3
         version: 6.0.3

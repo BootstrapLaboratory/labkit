@@ -1,6 +1,6 @@
 # Fix Relay Peer Runtime Contract
 
-Status: open; ready for independent repository reproduction and implementation.
+Status: in progress; implementation and CI release authorized on 2026-08-11.
 Created: 2026-08-11
 Classification: packaging/runtime bug with a breaking public package-contract
 change.
@@ -14,9 +14,9 @@ Related follow-up:
 
 `@omgjs/labkit-webapp-graphql-relay` creates Relay environments and preloaded
 query references that are consumed by application-owned React providers and
-hooks. The package currently installs `react-relay` and `relay-runtime` as
-private production dependencies. A consumer can therefore execute one Relay
-implementation inside Labkit and another in application code.
+hooks. Before this fix, the package installed `react-relay` and `relay-runtime`
+as private production dependencies. A consumer could therefore execute one
+Relay implementation inside Labkit and another in application code.
 
 The correction is to make the consumer own one explicitly supported Relay
 version pair:
@@ -35,9 +35,10 @@ the published package must not own a private stateful Relay graph.
 
 ## Confirmed Repository Evidence
 
-- The [package manifest](../packages/webapp-graphql-relay/package.json)
-  declares `react-relay` and `relay-runtime` as `^20.1.1` production
-  dependencies. The range currently resolves to 20.1.1 in the Rush lockfile.
+- Before this fix, the
+  [package manifest](../packages/webapp-graphql-relay/package.json) declared
+  `react-relay` and `relay-runtime` as `^20.1.1` production dependencies. The
+  range resolved to 20.1.1 in the Rush lockfile.
 - The [package source](../packages/webapp-graphql-relay/src/index.ts) imports
   runtime values from both packages, creates Relay `Environment` instances,
   and calls React Relay `loadQuery` through `loadRouteQuery`.
@@ -48,9 +49,9 @@ the published package must not own a private stateful Relay graph.
   peer ranges would not express that correlated pair requirement.
 - Labkit already declares React as a peer and development dependency in the
   package manifest.
-- The [package groups documentation](../docs/package-groups.md) states that
-  React and Relay remain application dependencies, while the current package
-  metadata permits Labkit to own Relay privately.
+- The pre-fix metadata contradicted the
+  [package groups documentation](../docs/package-groups.md), which assigns
+  React and Relay ownership to the application.
 - The package publishes CommonJS, ESM, and declaration entrypoints. All three
   consumer surfaces must resolve the consumer-owned Relay pair.
 
@@ -70,7 +71,8 @@ the published package must not own a private stateful Relay graph.
   runtime imports.
 - Preserve both CommonJS and ESM package entrypoints.
 - Give existing consumers an actionable migration path.
-- Prepare, but do not locally publish, the correct Rush release metadata.
+- Prepare the correct Rush release metadata and let the repository's post-merge
+  CI publish the package.
 
 ## Non-Goals
 
@@ -88,7 +90,9 @@ the published package must not own a private stateful Relay graph.
   the supported production solution.
 - Do not change unrelated GraphQL, authentication, or realtime behavior.
 - Do not manually edit package versions or changelogs.
-- Do not publish locally, stage files, or commit.
+- Do not publish directly from the local workspace. Repository commits, pull
+  requests, and the configured post-merge CI release are in scope for this
+  execution.
 - Do not hand-edit generated Docusaurus docs or archived documentation.
 
 ## Architecture And Contract Rules
@@ -101,10 +105,10 @@ diagnostic with a missing-module or incompatible-runtime failure.
 
 The initial supported pair is:
 
-| Package | Supported version |
-| --- | --- |
-| `react-relay` | `20.1.1` |
-| `relay-runtime` | `20.1.1` |
+| Package         | Supported version |
+| --------------- | ----------------- |
+| `react-relay`   | `20.1.1`          |
+| `relay-runtime` | `20.1.1`          |
 
 Use exact peer and development versions for this release. If independent
 testing proves another pair should be supported, stop and update the contract
@@ -160,15 +164,25 @@ because those files compile into `dist` and the package publishes
 Add one stable repository command that:
 
 1. builds the publishable packages;
-2. creates a temporary release directory with `mktemp -d`;
-3. uses Rush's read-only pack flow (`rush publish --pack --include-all`) or a
-   proven equivalent that performs the same workspace-version rewriting;
-4. never passes publish, apply, commit, or tagging flags;
-5. installs the local tarball and its local first-party dependency closure into
+2. creates a temporary release directory and independent `git clone --no-local`
+   under an exact `mktemp -d` root, then overlays the current checkout without
+   sharing mutable package sources or Git remotes;
+3. uses Rush 5.175.0's tarball flow only inside that disposable clone
+   (`rush publish --publish --pack --include-all --release-folder <temp>`),
+   which requires `--publish` to execute but diverts output to local tarballs
+   because `--pack` is present;
+4. keeps the executable publish-mode command isolated as defense in depth;
+   Rush 5.175.0's `--include-all --pack` branch does not apply pending change
+   files, but a future command regression or accidental flag must not mutate
+   the live checkout;
+5. never passes apply, commit, tagging, or registry flags, and confirms from
+   Rush output, source inspection, and the temporary release directory that
+   the command only invokes `pnpm pack` and does not publish to a registry;
+6. installs the local tarball and its local first-party dependency closure into
    clean consumer directories;
-6. runs the npm and pnpm matrices without workspace linking;
-7. removes only the exact temporary directories it created;
-8. preserves useful install logs as CI artifacts when a case fails.
+7. runs the npm and pnpm matrices without workspace linking;
+8. removes only the exact clone and temporary directories it created;
+9. preserves useful install logs as CI artifacts when a case fails.
 
 The consumer must import Labkit from its package root. It must not import
 `src`, use a workspace symlink, or silently substitute a registry copy of the
@@ -200,14 +214,14 @@ application-specific authentication.
 
 ### Required consumer matrix
 
-| ID | Install shape | Expected result |
-| --- | --- | --- |
-| S1 | npm with both exact supported peers declared directly | Clean install, typecheck, CJS/ESM checks, Vite build, and render smoke pass without peer diagnostics |
-| S2 | isolated pnpm with both exact supported peers declared directly | Same result as S1 and one canonical Relay graph |
-| S3 | strict npm and pnpm modes with the supported pair | Both installs succeed without missing or invalid peers |
-| N1 | one synthetic or pinned unsupported coherent pair | Normal mode fails or emits the expected peer diagnostic; strict mode fails before build/render |
-| N2 | `react-relay` and `relay-runtime` selected from different pairs | The mismatch is diagnosed; strict mode fails before build/render |
-| N3 | one required Relay peer omitted | Missing-peer behavior is recorded; the fixture never relies on silent auto-installation as the documented contract |
+| ID  | Install shape                                                   | Expected result                                                                                                                                     |
+| --- | --------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| S1  | npm with both exact supported peers declared directly           | Clean install, typecheck, CJS/ESM checks, Vite build, and render smoke pass without peer diagnostics                                                |
+| S2  | isolated pnpm with both exact supported peers declared directly | Same result as S1 and one canonical Relay graph                                                                                                     |
+| S3  | strict npm and pnpm modes with the supported pair               | Both installs succeed without missing or invalid peers                                                                                              |
+| N1  | one synthetic or pinned unsupported coherent pair               | Normal mode fails or emits the expected peer diagnostic; strict mode fails before build/render                                                      |
+| N2  | `react-relay` and `relay-runtime` selected from different pairs | The mismatch is diagnosed; strict mode fails before build/render                                                                                    |
+| N3  | one required Relay peer omitted                                 | Missing-peer behavior is recorded, including manager auto-installation where applicable; the documented contract still requires a direct dependency |
 
 Do not use `--force`, legacy peer modes, aliases, overrides, hoisted linkers, or
 manual edits of installed packages to make a matrix case pass.
@@ -240,24 +254,24 @@ rendering.
 
 ### Phase 1 - Independent Baseline And Artifact Harness
 
-- [ ] Read `AGENTS.md`, `.ai/conventions.md`, `.ai/architecture.md`, and the
+- [x] Read `AGENTS.md`, `.ai/conventions.md`, `.ai/architecture.md`, and the
       task-specific task-file, documentation, and library-release rules before
       implementation.
-- [ ] Read the current package manifest, source imports, lockfile, entrypoints,
+- [x] Read the current package manifest, source imports, lockfile, entrypoints,
       package docs, and release rules before editing.
-- [ ] Inspect `git status --short` and preserve unrelated changes.
-- [ ] Record the exact Node, npm, Rush, pnpm, React, and Relay versions used by
+- [x] Inspect `git status --short` and preserve unrelated changes.
+- [x] Record the exact Node, npm, Rush, pnpm, React, and Relay versions used by
       the repository.
-- [ ] Capture the current workspace and packed dependency graphs, clearly
+- [x] Capture the current workspace and packed dependency graphs, clearly
       distinguishing manifest ranges from resolved versions.
-- [ ] Establish the publish-equivalent pack command and prove that local
+- [x] Establish the publish-equivalent pack command and prove that local
       first-party tarballs, rather than registry or workspace copies, are under
       test.
-- [ ] Add the isolated consumer runner, fixture schema, operation, generated
+- [x] Add the isolated consumer runner, fixture schema, operation, generated
       artifact, and deterministic transport.
-- [ ] Reproduce the current private-versus-consumer graph at the package
+- [x] Reproduce the current private-versus-consumer graph at the package
       resolution boundary before changing metadata.
-- [ ] Keep pre-fix diagnostic evidence, but do not make an unsupported runtime
+- [x] Keep pre-fix diagnostic evidence, but do not make an unsupported runtime
       rendering failure the permanent post-fix expectation.
 
 Phase 1 is complete when the repository can deterministically inspect and
@@ -265,16 +279,16 @@ exercise the publish-equivalent artifact outside the Rush workspace graph.
 
 ### Phase 2 - Correct Package Metadata
 
-- [ ] Remove `react-relay` and `relay-runtime` from production dependencies.
-- [ ] Add both as required exact `20.1.1` peer dependencies.
-- [ ] Add both as exact `20.1.1` development dependencies.
-- [ ] Preserve the compatible React peer and development setup.
-- [ ] Regenerate Rush/pnpm install state using repository commands; do not hand
+- [x] Remove `react-relay` and `relay-runtime` from production dependencies.
+- [x] Add both as required exact `20.1.1` peer dependencies.
+- [x] Add both as exact `20.1.1` development dependencies.
+- [x] Preserve the compatible React peer and development setup.
+- [x] Regenerate Rush/pnpm install state using repository commands; do not hand
       edit the lockfile.
-- [ ] Build CommonJS, ESM, and declarations and confirm they retain bare Relay
+- [x] Build CommonJS, ESM, and declarations and confirm they retain bare Relay
       imports resolved by the consumer.
-- [ ] Inspect the tarball manifest and contents.
-- [ ] Confirm that satisfying peers does not install a Labkit-private Relay
+- [x] Inspect the tarball manifest and contents.
+- [x] Confirm that satisfying peers does not install a Labkit-private Relay
       implementation.
 
 Phase 2 is complete when package metadata and the packed artifact express the
@@ -282,18 +296,18 @@ same exact, consumer-owned Relay contract.
 
 ### Phase 3 - Permanent Contract Tests And CI
 
-- [ ] Implement every supported and negative matrix row.
-- [ ] Add canonical path/version assertions for the application, Labkit,
+- [x] Implement every supported and negative matrix row.
+- [x] Add canonical path/version assertions for the application, Labkit,
       React Relay, CommonJS, ESM, and Vite boundaries.
-- [ ] Add consumer typechecking with strict library checks.
-- [ ] Add the real provider/load/read rendering smoke test.
-- [ ] Ensure the supported cases produce no peer warning or unexpected console
+- [x] Add consumer typechecking with strict library checks.
+- [x] Add the real provider/load/read rendering smoke test.
+- [x] Ensure the supported cases produce no peer warning or unexpected console
       error.
-- [ ] Ensure strict negative cases stop before rendering.
-- [ ] Add a stable root command for the packed-consumer contract.
-- [ ] Wire the command into PR validation outside any unsafe nested Rush
+- [x] Ensure strict negative cases stop before rendering.
+- [x] Add a stable root command for the packed-consumer contract.
+- [x] Wire the command into PR validation outside any unsafe nested Rush
       invocation.
-- [ ] Keep the fast existing unit tests unchanged except where metadata or
+- [x] Keep the fast existing unit tests unchanged except where metadata or
       fixture support requires a focused correction.
 
 Phase 3 is complete when a private dependency regression, unsupported pair, or
@@ -303,21 +317,21 @@ entrypoint-specific split fails CI deterministically.
 
 Update the current source documentation:
 
-- [ ] [Package README](../packages/webapp-graphql-relay/README.md): direct
+- [x] [Package README](../packages/webapp-graphql-relay/README.md): direct
       install command, exact supported pair, singleton/coherence rule, and
       package-manager diagnostic limitations.
-- [ ] [Package reference](../docs/packages/webapp-graphql-relay.md): required
+- [x] [Package reference](../docs/packages/webapp-graphql-relay.md): required
       peers, supported versions, types/compiler expectations, and migration.
-- [ ] [Package groups](../docs/package-groups.md): make the typical browser
+- [x] [Package groups](../docs/package-groups.md): make the typical browser
       install consistent with application-owned framework dependencies.
-- [ ] [Quick-start install](../docs/quick-start/README.md): pin the compatible
+- [x] [Quick-start install](../docs/quick-start/README.md): pin the compatible
       runtime pair and align development-time Relay tooling.
-- [ ] Review other current Relay installation or composition pages and update
+- [x] Review other current Relay installation or composition pages and update
       only statements affected by this contract.
-- [ ] Explain how consumers can inspect their graph with their package manager,
+- [x] Explain how consumers can inspect their graph with their package manager,
       align direct dependencies, remove temporary overrides, and verify one
       canonical pair.
-- [ ] State that unsupported pairs are not compatibility targets merely because
+- [x] State that unsupported pairs are not compatibility targets merely because
       a package manager allows installation with a warning.
 
 At task creation the documentation line is already `vNext`. Recheck before
@@ -330,23 +344,84 @@ consumer fixture describe the same contract.
 
 ### Phase 5 - Rush Release And Validation
 
-- [ ] Create a major Rush change for only
+- [x] Create a major Rush change for only
       `@omgjs/labkit-webapp-graphql-relay` with a message describing the new
       required Relay peer contract and migration.
-- [ ] Do not manually change the package version or generated changelogs.
-- [ ] Verify Rush change metadata against the target branch without fetching or
+- [x] Do not manually change the package version or generated changelogs.
+- [x] Verify Rush change metadata against the target branch without fetching or
       committing through Rush.
-- [ ] Run the focused package and packed-consumer commands while developing.
-- [ ] Run the full required validation listed below.
-- [ ] Record the exact supported pair, matrix results, tarball contents, and
+- [x] Run the focused package and packed-consumer commands while developing.
+- [x] Run the full required validation listed below.
+- [x] Record the exact supported pair, matrix results, tarball contents, and
       any manager-specific diagnostic differences in this task.
-- [ ] Leave npm publication to the repository's post-merge CI release flow.
+- [ ] Leave npm publication to the repository's post-merge CI release flow;
+      do not invoke a credentialed local publish.
 - [ ] After publication, verify a clean external consumer installs the expected
       major version and one Relay graph without an override or alias.
 
-Phase 5 is complete when the change is ready for CI publication and the
-post-release verification steps are explicit. Local publication is not part of
-implementation completion.
+Phase 5 is complete only after CI publishes the release and clean external npm
+and pnpm consumers verify the published artifact. Local publication is not part
+of implementation completion.
+
+## Execution Record
+
+Implementation and the final packed-consumer run used Node `24.18.0`, npm
+`11.16.0`, Rush `5.175.0`, and the repository-pinned pnpm `10.33.2`. The
+workspace resolved React `19.2.6`; the external fixture pinned React and React
+DOM `19.2.5`. Every supported case used the exact
+`react-relay@20.1.1`/`relay-runtime@20.1.1` pair.
+
+The runner built in an independent `git clone --no-local`, removed its remote,
+and used Rush's `--publish --pack` branch only inside that clone. It verified
+that the live package manifest, changelogs, and Rush change files stayed
+byte-identical. A loopback scoped registry served the packed first-party
+runtime closure, and both package-manager lockfiles were checked for the local
+tarball URLs and SHA-512 integrity values. The target tarball contained the
+CommonJS entrypoint, ESM entrypoint and `type: module` marker, declarations, and
+README; it contained neither `consumer-test` nor a `workspace:` specifier. The
+packed manifest contained the exact required peers and exact development
+dependencies, with no production, optional, bundled, or optional-peer Relay
+declaration.
+
+Both normal npm and isolated pnpm supported consumers passed Relay compilation,
+strict TypeScript compilation with `skipLibCheck: false`, native package export
+resolution, CommonJS execution, Vite ESM execution and singleton graph checks,
+a browser production build, and a real provider/load/hook render. Strict npm
+and strict isolated pnpm supported installs also passed without a peer
+diagnostic.
+
+The final negative install matrix was:
+
+| Case                       | npm normal     | npm strict     | pnpm normal    | pnpm strict |
+| -------------------------- | -------------- | -------------- | -------------- | ----------- |
+| Unsupported coherent pair  | Failed         | Failed         | Warned         | Failed      |
+| Mismatched pair            | Failed         | Failed         | Warned         | Failed      |
+| Omitted `react-relay` peer | Auto-installed | Auto-installed | Auto-installed | Failed      |
+
+Auto-install behavior does not change the documented requirement that the
+application declare both exact peers directly. No negative fixture proceeded
+to typecheck, build, or render.
+
+Local repository validation on 2026-08-11 produced these results:
+
+- `npm run rush:install` passed. It retained the existing, non-failing
+  `@nestjs/apollo` playground-plugin peer warning in `server-graphql`.
+- `npm run rush:build` and `npm run rush:lint` passed for all 15 projects.
+- Serialized `rush test` and `rush verify` passed for all 15 projects.
+- `npm run site:docusaurus:check` passed its sync, typecheck, and production
+  build.
+- `trunk check -a -y` ran but returned the repository's pre-existing findings:
+  Dockerfile `hadolint` rules, `pinact` parse failures for older workflow action
+  tags, generated changelog Markdown style, and dependency advisories in the
+  Rush and Docusaurus lockfiles. Its unrelated autoformats were reverted.
+- A follow-up Trunk check of all files changed by this task passed after
+  excluding only the repository-wide `pinact`, `osv-scanner`, and `grype`
+  findings. The newly added upload action is pinned to the verified v7 commit
+  and is not one of the remaining `pinact` failures.
+- After the implementation commit, the target-branch/no-fetch Rush change
+  verification found the one package-scoped major change file. A read-only
+  `rush publish` preview selected no other update and resolved
+  `@omgjs/labkit-webapp-graphql-relay` from `2.0.0` to `3.0.0`.
 
 ## Validation
 
@@ -369,31 +444,33 @@ hiding it.
 
 ## Acceptance Criteria
 
-- [ ] The packed manifest declares both Relay packages only as required peers
+- [x] The packed manifest declares both Relay packages only as required peers
       plus development dependencies, not private production dependencies.
-- [ ] The initial supported pair is exactly 20.1.1/20.1.1 and no broader
+- [x] The initial supported pair is exactly 20.1.1/20.1.1 and no broader
       compatibility is claimed.
-- [ ] A publish-equivalent local tarball, not a workspace/source link, is the
+- [x] A publish-equivalent local tarball, not a workspace/source link, is the
       authority for consumer assertions.
-- [ ] The packed fixture uses local first-party artifacts and cannot silently
+- [x] The packed fixture uses local first-party artifacts and cannot silently
       substitute the registry package under test.
-- [ ] Clean npm and isolated pnpm consumers that declare the supported pair
+- [x] Clean npm and isolated pnpm consumers that declare the supported pair
       install without peer diagnostics.
-- [ ] Unsupported, mismatched, and missing-peer cases produce the documented
-      manager-specific diagnostic; strict cases fail before build/render.
-- [ ] Application, Labkit, React Relay, CommonJS, ESM, and Vite resolve one
+- [x] Unsupported and mismatched cases produce the documented manager-specific
+      diagnostics and fail in strict mode before build/render; omitted-peer
+      behavior is recorded explicitly when a manager auto-installs the exact
+      peer instead of diagnosing it.
+- [x] Application, Labkit, React Relay, CommonJS, ESM, and Vite resolve one
       canonical implementation for each Relay package in supported installs.
-- [ ] Consumer typechecking passes with `skipLibCheck` disabled.
-- [ ] A real application provider and hook consume a Labkit-created environment
+- [x] Consumer typechecking passes with `skipLibCheck` disabled.
+- [x] A real application provider and hook consume a Labkit-created environment
       and query reference successfully.
-- [ ] The Vite production build contains no second Relay graph.
-- [ ] Package unit, type, build, lint, and verify checks pass.
-- [ ] Package README, current root docs, and migration guidance match the
+- [x] The Vite production build contains no second Relay graph.
+- [x] Package unit, type, build, lint, and verify checks pass.
+- [x] Package README, current root docs, and migration guidance match the
       released dependency contract.
-- [ ] A major Rush change exists only for the affected public package.
-- [ ] No package version, changelog, generated current-doc copy, or archived doc
+- [x] A major Rush change exists only for the affected public package.
+- [x] No package version, changelog, generated current-doc copy, or archived doc
       was edited manually.
-- [ ] The full repository validation and Trunk cleanup pass, or every remaining
+- [x] The full repository validation and Trunk cleanup pass, or every remaining
       gap is reported precisely.
 - [ ] The task records post-release clean-consumer verification without
       performing a local publish.
