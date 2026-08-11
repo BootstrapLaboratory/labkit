@@ -113,6 +113,9 @@ release.
 - `createWebappRelayEnvironment`;
 - `createWebappRelayRealtimeClient`;
 - `terminateRealtimeClientOnAuthTokenChange`;
+- `createRouteQueryLifetime` and `useRouteQueryLifetime`;
+- `LoadRouteQueryLifetimeOptions` for mounted route-query wrappers;
+- deprecated `LoadRouteQueryOptions` for abort-only compatibility wrappers;
 - `loadRouteQuery`;
 - `appendRootFieldRecordIfMissing`.
 
@@ -120,8 +123,8 @@ release.
 
 This package owns the Relay network mechanics: bearer auth headers, one refresh
 retry for non-auth operations, auth-aware websocket connection params,
-websocket subscription integration, auth-token change socket termination, route
-preload disposal, and a small store updater.
+websocket subscription integration, auth-token change socket termination,
+route-query lifetime ownership, and a small store updater.
 
 The recommended default is `DefaultWebappRelayRuntime`, which composes the Relay
 environment and Labkit realtime runtime so websocket recovery can refresh auth
@@ -181,6 +184,72 @@ export function createRelayEnvironment() {
   });
 }
 ```
+
+## Route Query Lifetimes
+
+A router loader signal represents loader/preload ownership, but mounted React
+UI can outlive that signal while replacement work is pending. For query
+references consumed by a route component, create a router-independent lifetime
+and mount its hook:
+
+```tsx
+import {
+  createRouteQueryLifetime,
+  loadRouteQuery,
+  useRouteQueryLifetime,
+} from "@omgjs/labkit-webapp-graphql-relay";
+import { usePreloadedQuery } from "react-relay";
+
+const itemRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "items/$itemId",
+  pendingComponent: ItemPending,
+  loader: ({ abortController, context, params }) => {
+    const queryLifetime = createRouteQueryLifetime({
+      routeAbortSignal: abortController.signal,
+    });
+
+    try {
+      return {
+        queryLifetime,
+        queryRef: loadRouteQuery({
+          environment: context.relayEnvironment,
+          lifetime: queryLifetime,
+          query: ItemRouteQuery,
+          variables: { id: params.itemId },
+        }),
+      };
+    } catch (error) {
+      queryLifetime.abort(error);
+      throw error;
+    }
+  },
+  component: ItemRoute,
+});
+
+function ItemRoute() {
+  const { queryLifetime, queryRef } = itemRoute.useLoaderData();
+  useRouteQueryLifetime(queryLifetime);
+  const data = usePreloadedQuery(ItemRouteQuery, queryRef);
+
+  return <ItemView item={data.item} />;
+}
+```
+
+Use one lifetime for all query references constructed by one loader, and call
+terminal `abort(error)` before rethrowing a partial-construction error. The
+`lifetime` and `abortSignal` options are mutually exclusive. The raw signal
+option is deprecated and is retained only for abort-scoped work that can never
+become a mounted React resource. The application still owns route definitions,
+pending/error UI, freshness/history policy, and retry. The tested TanStack
+configuration uses an explicit pending component, `defaultGcTime: 0`,
+`defaultStaleTime: 0`, and
+`defaultStaleReloadMode: "blocking"` so retired query-reference loader data is
+replaced before render.
+
+See [Upgrade Webapp GraphQL Relay To
+3.1](../upgrades/webapp-graphql-relay-3.1.md) for complete migration,
+multi-query, preload, history, Strict Mode, retry, and teardown guidance.
 
 ## Runtime Notes
 

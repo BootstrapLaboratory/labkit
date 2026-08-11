@@ -20,6 +20,7 @@ import {
   type LoadQueryOptions,
   type PreloadedQuery,
 } from "react-relay";
+import { useEffect, useLayoutEffect } from "react";
 import type { RelayObservable } from "relay-runtime/lib/network/RelayObservable";
 import type { Client, FormattedExecutionResult, Sink } from "graphql-ws";
 import {
@@ -152,6 +153,21 @@ export type RouteAbortSignal = {
   ): void;
 };
 
+export type RouteQueryOwnerSignal = RouteAbortSignal & {
+  readonly reason?: unknown;
+  removeEventListener(type: "abort", listener: () => void): void;
+};
+
+export type RouteQueryLifetime = {
+  readonly abortSignal: RouteAbortSignal;
+  abort(reason?: unknown): void;
+  acquire(): () => void;
+};
+
+export type CreateRouteQueryLifetimeOptions = {
+  routeAbortSignal: RouteQueryOwnerSignal;
+};
+
 export type RouteQueryLoader<TQuery extends OperationType> = (
   environment: Environment,
   query: GraphQLTaggedNode | PreloadableConcreteRequest<TQuery>,
@@ -159,8 +175,7 @@ export type RouteQueryLoader<TQuery extends OperationType> = (
   options?: LoadQueryOptions,
 ) => PreloadedQuery<TQuery>;
 
-export type LoadRouteQueryOptions<TQuery extends OperationType> = {
-  abortSignal: RouteAbortSignal;
+type LoadRouteQueryBaseOptions<TQuery extends OperationType> = {
   environment: Environment;
   fetchPolicy?: FetchPolicy | null;
   loadQuery?: RouteQueryLoader<TQuery>;
@@ -169,6 +184,23 @@ export type LoadRouteQueryOptions<TQuery extends OperationType> = {
   query: GraphQLTaggedNode | PreloadableConcreteRequest<TQuery>;
   variables: VariablesOf<TQuery>;
 };
+
+/**
+ * @deprecated Mounted route queries must use `LoadRouteQueryLifetimeOptions`.
+ * Raw abort-signal ownership remains available only for abort-scoped work that
+ * never becomes a mounted React resource.
+ */
+export type LoadRouteQueryOptions<TQuery extends OperationType> =
+  LoadRouteQueryBaseOptions<TQuery> & {
+    abortSignal: RouteAbortSignal;
+    lifetime?: never;
+  };
+
+export type LoadRouteQueryLifetimeOptions<TQuery extends OperationType> =
+  LoadRouteQueryBaseOptions<TQuery> & {
+    abortSignal?: never;
+    lifetime: RouteQueryLifetime;
+  };
 
 type GlobalWithGraphqlRelayFetch = typeof globalThis & {
   fetch?: GraphqlRelayFetch;
@@ -517,8 +549,37 @@ export class DefaultWebappRelayRuntime {
 }
 
 export function loadRouteQuery<TQuery extends OperationType>(
+  options: LoadRouteQueryLifetimeOptions<TQuery>,
+): PreloadedQuery<TQuery>;
+/**
+ * @deprecated Mounted route queries must use the `lifetime` overload. A raw
+ * signal remains available only for abort-scoped work that never becomes a
+ * mounted React resource.
+ */
+export function loadRouteQuery<TQuery extends OperationType>(
   options: LoadRouteQueryOptions<TQuery>,
+): PreloadedQuery<TQuery>;
+export function loadRouteQuery<TQuery extends OperationType>(
+  options:
+    | LoadRouteQueryLifetimeOptions<TQuery>
+    | LoadRouteQueryOptions<TQuery>,
 ): PreloadedQuery<TQuery> {
+  let abortSignal: RouteAbortSignal;
+  if (options.lifetime !== undefined) {
+    if (options.abortSignal !== undefined) {
+      throw new TypeError(
+        "loadRouteQuery requires exactly one of lifetime or abortSignal",
+      );
+    }
+    abortSignal = options.lifetime.abortSignal;
+  } else {
+    if (options.abortSignal === undefined) {
+      throw new TypeError(
+        "loadRouteQuery requires exactly one of lifetime or abortSignal",
+      );
+    }
+    abortSignal = options.abortSignal;
+  }
   const queryRef = (options.loadQuery ?? loadReactRelayQuery)(
     options.environment,
     options.query,
@@ -539,13 +600,105 @@ export function loadRouteQuery<TQuery extends OperationType>(
     queryRef.dispose();
   };
 
-  if (options.abortSignal.aborted) {
+  if (abortSignal.aborted) {
     disposeOnce();
     return queryRef;
   }
 
-  options.abortSignal.addEventListener("abort", disposeOnce, { once: true });
+  abortSignal.addEventListener("abort", disposeOnce, { once: true });
   return queryRef;
+}
+
+export function createRouteQueryLifetime({
+  routeAbortSignal,
+}: CreateRouteQueryLifetimeOptions): RouteQueryLifetime {
+  const queryAbortController = new AbortController();
+  let consumerCount = 0;
+  let routeLeaseActive = true;
+  let routeAbortReason: unknown;
+  let routeListenerAttached = false;
+  let terminal = false;
+
+  const detachRouteListener = () => {
+    if (!routeListenerAttached) {
+      return;
+    }
+
+    routeListenerAttached = false;
+    routeAbortSignal.removeEventListener("abort", releaseRouteLease);
+  };
+
+  const abort = (reason?: unknown) => {
+    if (terminal) {
+      return;
+    }
+
+    terminal = true;
+    routeLeaseActive = false;
+    detachRouteListener();
+    queryAbortController.abort(reason);
+  };
+
+  const abortWhenUnowned = () => {
+    if (!routeLeaseActive && consumerCount === 0) {
+      abort(routeAbortReason);
+    }
+  };
+
+  function releaseRouteLease(): void {
+    if (!routeLeaseActive || terminal) {
+      return;
+    }
+
+    routeLeaseActive = false;
+    routeAbortReason = routeAbortSignal.reason;
+    detachRouteListener();
+    abortWhenUnowned();
+  }
+
+  if (routeAbortSignal.aborted) {
+    routeAbortReason = routeAbortSignal.reason;
+    routeLeaseActive = false;
+    abortWhenUnowned();
+  } else {
+    routeListenerAttached = true;
+    routeAbortSignal.addEventListener("abort", releaseRouteLease, {
+      once: true,
+    });
+    if (routeAbortSignal.aborted) {
+      releaseRouteLease();
+    }
+  }
+
+  return {
+    abortSignal: queryAbortController.signal,
+    abort,
+    acquire: () => {
+      if (terminal) {
+        throw new Error("Cannot acquire an aborted route query lifetime.");
+      }
+
+      consumerCount += 1;
+      let released = false;
+      return () => {
+        if (released) {
+          return;
+        }
+
+        released = true;
+        consumerCount -= 1;
+        abortWhenUnowned();
+      };
+    },
+  };
+}
+
+export function useRouteQueryLifetime(lifetime: RouteQueryLifetime): void {
+  // Own the reference from commit until passive ownership is established.
+  useLayoutEffect(() => lifetime.acquire(), [lifetime]);
+  // Passive ownership survives Suspense disconnecting layout effects while
+  // the previous route remains visible.
+  useEffect(() => lifetime.acquire(), [lifetime]);
 }
 
 export function appendRootFieldRecordIfMissing(

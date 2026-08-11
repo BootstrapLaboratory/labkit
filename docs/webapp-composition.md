@@ -92,5 +92,21 @@ export function AppProviders() {
 }
 ```
 
-Labkit owns the mechanics. The app owns routes, generated operations, hooks,
-UI, and visual design.
+Labkit owns reusable runtime and resource-lifetime mechanics. The app owns
+routes, generated operations, product hooks, UI, and visual design.
+
+## Route-Owned Relay Queries
+
+When a TanStack loader creates a Relay query reference that a route component
+mounts, use `createRouteQueryLifetime` to bridge loader ownership and mounted
+React ownership. Return the lifetime with the references and call
+`useRouteQueryLifetime` in the route component. Use one lifetime for all
+references created by one loader and call terminal `abort(error)` if
+multi-query construction fails partway.
+
+The application still chooses pending/error components, freshness and cache
+settings, history behavior, retry UI, and generated operations. The validated
+policy replaces retired loader data before render with `defaultGcTime: 0`,
+`defaultStaleTime: 0`, and blocking stale reloads. See the
+[3.1 Relay upgrade guide](upgrades/webapp-graphql-relay-3.1.md) for complete
+loader/component examples and teardown rules.

@@ -48,6 +48,14 @@ jobs:
       - name: Verify packages
         run: node common/scripts/install-run-rush.js verify --parallelism 1
 
+      - name: Install Relay lifecycle browser
+        working-directory: tools/webapp-graphql-relay-lifecycle-fixture
+        run: npx playwright install --with-deps chromium
+
+      - name: Test Relay lifecycle browser
+        working-directory: tools/webapp-graphql-relay-lifecycle-fixture
+        run: npm run test:browser
+
       - name: Test packed Relay consumer contract
         run: npm run test:relay-consumer-contract
 

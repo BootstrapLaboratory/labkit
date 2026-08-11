@@ -1,0 +1,9 @@
+type Query {
+  item(id: ID!): Item!
+  secondaryItem(id: ID!): Item!
+}
+
+type Item {
+  id: ID!
+  label: String!
+}

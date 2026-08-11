@@ -39,11 +39,39 @@ The browser should:
 - generate Relay artifacts from the server schema;
 - create one `DefaultWebappRelayRuntime` with auth-aware HTTP fetch,
   auth-aware websocket reconnects, and websocket subscription support;
-- preload route queries through route loaders and dispose aborted preloads;
+- preload route queries through route loaders, give mounted query references an
+  explicit route-query lifetime, and dispose them after their final owner;
 - update Relay store records explicitly for mutations/subscriptions when needed.
 
 `@omgjs/labkit-webapp-graphql-relay` owns the reusable network behavior, but
 the app owns operation files and route loaders.
+
+## Route Query Ownership
+
+Network completion is not a release event for a Relay preloaded query
+reference. A router loader/preload and its mounted React consumer are separate
+owners: replacement navigation can retire the loader invocation while React
+still presents the previous route.
+
+For mounted route queries, the loader creates one
+`createRouteQueryLifetime(...)`, passes that lifetime to every
+`loadRouteQuery(...)` call in that loader, and returns the lifetime with the
+references. The route component calls `useRouteQueryLifetime(...)` before
+consuming those references. A route abort releases loader ownership; the final
+mounted release performs disposal. Partial multi-query construction calls
+terminal `abort(error)` before rethrowing.
+
+The `loadRouteQuery` ownership inputs are exclusive. `lifetime` is the safe
+path for mounted route queries. The deprecated raw `abortSignal` input remains
+only for abort-scoped work guaranteed never to become a mounted React
+resource. The lifetime's child signal remains available when the application
+must compose other abort-aware resources into the same ownership domain.
+
+The app continues to own route structure, generated operations, cache and
+freshness settings, pending/error UI, history, and retry. Labkit owns the
+router-independent lifetime accounting and idempotent terminal abort. See the
+[3.1 upgrade guide](upgrades/webapp-graphql-relay-3.1.md) for the validated
+TanStack policy and migration examples.
 
 ## Minimal Flow
 
